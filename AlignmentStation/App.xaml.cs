@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.ViewManagement;
 
 namespace AlignmentStation
 {
@@ -71,6 +72,25 @@ namespace AlignmentStation
                 // Ensure the current window is active
                 Window.Current.Activate();
             }
+
+            var titleBar = ApplicationView.GetForCurrentView().TitleBar;
+
+            // Set active window colors
+            titleBar.ForegroundColor = Windows.UI.Colors.White;
+            titleBar.BackgroundColor = Windows.UI.Colors.DarkRed;
+            titleBar.ButtonForegroundColor = Windows.UI.Colors.White;
+            titleBar.ButtonBackgroundColor = Windows.UI.Colors.DarkRed;
+            titleBar.ButtonHoverForegroundColor = Windows.UI.Colors.White;
+            titleBar.ButtonHoverBackgroundColor = Windows.UI.Colors.Gray;
+            titleBar.ButtonPressedForegroundColor = Windows.UI.Colors.Gray;
+            titleBar.ButtonPressedBackgroundColor = Windows.UI.Colors.Red;
+
+            // Set inactive window colors
+            titleBar.InactiveForegroundColor = Windows.UI.Colors.White;
+            titleBar.InactiveBackgroundColor = Windows.UI.Colors.IndianRed;
+            titleBar.ButtonInactiveForegroundColor = Windows.UI.Colors.White;
+            titleBar.ButtonInactiveBackgroundColor = Windows.UI.Colors.IndianRed;
+
         }
 
         /// <summary>
