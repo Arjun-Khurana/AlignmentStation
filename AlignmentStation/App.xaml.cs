@@ -90,7 +90,6 @@ namespace AlignmentStation
             titleBar.InactiveBackgroundColor = Windows.UI.Colors.IndianRed;
             titleBar.ButtonInactiveForegroundColor = Windows.UI.Colors.White;
             titleBar.ButtonInactiveBackgroundColor = Windows.UI.Colors.IndianRed;
-
         }
 
         /// <summary>
