@@ -12,29 +12,19 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Aerotech.A3200;
-using Aerotech.A3200.Exceptions;
-using System.Diagnostics;
-using Windows.UI.ViewManagement;
-using Windows.UI.Xaml.Media.Animation;
+
+// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace AlignmentStation
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class InsertTO : Page
+    public sealed partial class Step3 : Page
     {
-        public InsertTO()
+        public Step3()
         {
             this.InitializeComponent();
-            ApplicationView.PreferredLaunchViewSize = new Size(800, 600);
-            ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(MainPage));
         }
     }
 }

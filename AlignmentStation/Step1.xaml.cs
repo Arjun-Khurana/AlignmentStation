@@ -14,29 +14,45 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using System.Diagnostics;
 using Windows.UI.ViewManagement;
+using Windows.UI.Xaml.Media.Animation;
 
 namespace AlignmentStation
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class Step1 : Page
     {
-        public MainPage()
+        private int NumTries = 0;
+
+        public Step1()
         {
             this.InitializeComponent();
-            ApplicationView.PreferredLaunchViewSize = new Size(200, 600);
+            ApplicationView.PreferredLaunchViewSize = new Size(800, 600);
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
         }
 
-        private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(Step1));
+            this.Frame.Navigate(typeof(MainPage));
         }
 
-        private void HyperlinkButton_Click_1(object sender, RoutedEventArgs e)
+        private void Do_Task_Click(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(About));
+            NumTries++;
+
+            bool testPassed = true;
+            
+            if (testPassed)
+            {
+                this.Frame.Navigate(typeof(Step2));
+            }
+            
+            //TODO: do tests and check whether it passes or fails
+            if (NumTries == 3)
+            {
+                this.Frame.Navigate(typeof(MainPage));
+            }
         }
     }
 }
