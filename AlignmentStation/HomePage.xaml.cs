@@ -16,17 +16,19 @@ using System.Windows.Shapes;
 namespace AlignmentStation
 {
     /// <summary>
-    /// Interaction logic for Step1.xaml
+    /// Interaction logic for HomePage.xaml
     /// </summary>
-    public partial class Step1 : Page
+    public partial class HomePage : Page
     {
-        public Step1()
+        public HomePage()
         {
             InitializeComponent();
         }
 
-        private void Do_Task_Click(object sender, RoutedEventArgs e)
+        
+        private void StartButton(object sender, RoutedEventArgs e)
         {
+            NavigationService.Navigate(new Step1()); 
         }
     }
 }

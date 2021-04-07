@@ -1,24 +1,23 @@
-﻿<Page
-    Background="{ThemeResource SystemControlAcrylicWindowBrush}"
-    RequestedTheme="Dark"
-    mc:Ignorable="d"
-    x:Class="AlignmentStation.Step1"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="using:AlignmentStation"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<Page x:Class="AlignmentStation.Step1"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:AlignmentStation"
+      mc:Ignorable="d" 
+      d:Background="White"
+      d:DesignHeight="450" d:DesignWidth="400"
+      Title="Step1">
 
-    <Grid Padding="25">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50" />
             <RowDefinition Height="*" />
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" FontSize="18" Text="Step 1"></TextBlock>
 
-        <StackPanel Grid.Row="1">
+        <StackPanel Grid.Row="0">
+            <TextBlock Margin="0,0,0,10" FontSize="18" Text="Step 1"></TextBlock>
             <TextBlock
                 Margin="0,0,0,15"
                 FontSize="26"
@@ -26,23 +25,22 @@
                 Text="Instructions" />
 
             <TextBlock
+                TextWrapping="Wrap"
                 FontSize="18"
                 Text="(1) Insert TO into wand and into photodiode">
             </TextBlock>
 
             <Button
+                HorizontalAlignment="Left"
                 Click="Do_Task_Click"
-                FontSize="18"
+                FontSize="16"
+                Padding="10,0,10,3"
                 Content="Start test"
                 Margin="0,25,0,15" />
         </StackPanel>
 
         <StackPanel Grid.Row="2">
-            <HyperlinkButton
-                Click="Button_Click"
-                Content="Go to home"
-                Margin="0,0,0,0"
-                VerticalAlignment="Bottom" />
         </StackPanel>
     </Grid>
+
 </Page>

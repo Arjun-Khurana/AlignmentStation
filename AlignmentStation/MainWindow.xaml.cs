@@ -16,17 +16,14 @@ using System.Windows.Shapes;
 namespace AlignmentStation
 {
     /// <summary>
-    /// Interaction logic for Step1.xaml
+    /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class Step1 : Page
+    public partial class MainWindow : Window
     {
-        public Step1()
+        public MainWindow()
         {
             InitializeComponent();
-        }
-
-        private void Do_Task_Click(object sender, RoutedEventArgs e)
-        {
+            _mainFrame.Navigate(new HomePage());
         }
     }
 }
