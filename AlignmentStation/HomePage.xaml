@@ -20,6 +20,23 @@
                 FontSize="28"
                 HorizontalAlignment="Center" FontWeight="Light">Alignment Station</Label>
 
+            <StackPanel 
+                Margin="0,50,0,0"
+                Orientation="Horizontal"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+                
+                <Label 
+                   HorizontalAlignment="Center"
+                   >Select Device</Label>
+
+                <ComboBox 
+                    x:Name="DeviceSelector" 
+                    Height="auto" 
+                    Width="120"
+                    />
+            </StackPanel>
+
             <StackPanel
                 Margin="0,20,0,0"
                 HorizontalAlignment="Center"
@@ -39,6 +56,6 @@
                 ></Button>
 
         </StackPanel>
-        
+
     </Grid>
 </Page>

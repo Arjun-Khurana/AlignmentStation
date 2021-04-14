@@ -23,6 +23,10 @@ namespace AlignmentStation
         public HomePage()
         {
             InitializeComponent();
+            var i = new ComboBoxItem();
+            i.Content = "Hey";
+
+            DeviceSelector.Items.Add(i);
         }
 
         

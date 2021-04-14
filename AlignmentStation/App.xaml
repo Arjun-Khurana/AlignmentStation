@@ -4,9 +4,36 @@
              xmlns:local="clr-namespace:AlignmentStation"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-
+       
         <SolidColorBrush x:Key="DarkBg" Color="#FF232323"></SolidColorBrush>
 
+
+        <Style TargetType="{x:Type ComboBox}">
+            <Setter Property="Background" Value="{StaticResource DarkBg}"></Setter>
+            <Setter Property="Foreground" Value="{StaticResource DarkBg}"></Setter>
+            <Setter Property="BorderThickness" Value="0"></Setter>
+        </Style>
+        
+        <Style TargetType="{x:Type ComboBoxItem}">
+            <Setter Property="Background" Value="{StaticResource DarkBg}"></Setter>
+            <Setter Property="BorderThickness" Value="0"></Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ComboBoxItem}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter  VerticalAlignment="Center" Margin="5,3,5,3"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF686868"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        
         <Style TargetType="{x:Type TextBlock}">
             <Setter Property="Foreground" Value="#FFF8F8F8"></Setter>
         </Style>
