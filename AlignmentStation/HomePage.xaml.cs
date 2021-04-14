@@ -23,10 +23,17 @@ namespace AlignmentStation
         public HomePage()
         {
             InitializeComponent();
+
+            var t = MainWindow.Conn.GetTOSADevice(1);
             var i = new ComboBoxItem();
-            i.Content = "Hey";
+            i.Content = t.Part_Number;
+
+            var t1 = MainWindow.Conn.GetTOSADevice(2);
+            var i1 = new ComboBoxItem();
+            i1.Content = t1.Part_Number;
 
             DeviceSelector.Items.Add(i);
+            DeviceSelector.Items.Add(i1);
         }
 
         
