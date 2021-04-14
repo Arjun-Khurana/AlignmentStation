@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Diagnostics;
+using AlignmentStation.Models;
 
 namespace AlignmentStation
 {
@@ -20,6 +22,9 @@ namespace AlignmentStation
     /// </summary>
     public partial class HomePage : Page
     {
+        public List<TOSADevice> TosaDevices { get; set; } = new List<TOSADevice>();
+        public List<ROSADevice> RosaDevices { get; set; } = new List<ROSADevice>();
+
         public HomePage()
         {
             InitializeComponent();
@@ -32,14 +37,19 @@ namespace AlignmentStation
             var i1 = new ComboBoxItem();
             i1.Content = t1.Part_Number;
 
-            DeviceSelector.Items.Add(i);
-            DeviceSelector.Items.Add(i1);
+            TosaDevices.Add(t);
+            TosaDevices.Add(t1);
         }
 
         
         private void StartButton(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(new Step1()); 
+        }
+
+        private void DeviceSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

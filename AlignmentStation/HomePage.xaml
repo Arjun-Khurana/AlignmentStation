@@ -7,7 +7,8 @@
       mc:Ignorable="d" 
       d:Background="{StaticResource DarkBg}"
       d:DesignHeight="450" d:DesignWidth="400"
-      Title="HomePage">
+      Title="HomePage"
+      DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
     <Grid Background="{StaticResource DarkBg}">
         <Grid.RowDefinitions>
@@ -34,7 +35,12 @@
                     x:Name="DeviceSelector" 
                     Height="auto" 
                     Width="120"
+                    ItemsSource="{Binding TosaDevices}"
+                    DisplayMemberPath="Part_Number"
+                    SelectedValuePath="Id"
+                    SelectionChanged="DeviceSelector_SelectionChanged"
                     />
+
             </StackPanel>
 
             <StackPanel
