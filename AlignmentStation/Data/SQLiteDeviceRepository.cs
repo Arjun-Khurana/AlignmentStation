@@ -38,6 +38,20 @@ namespace AlignmentStation.Data
             }
         }
 
+        public List<TOSADevice> GetAllTOSADevices()
+        {
+            if (!File.Exists(DbFile)) return null;
+
+            using (var conn = SimpleDbConnection())
+            {
+                conn.Open();
+
+                var devices = conn.Query<TOSADevice>(@"select * from TOSADevice").ToList();
+
+                return devices;
+            }
+        }
+
         public TOSADevice GetTOSADevice(int id)
         {
             if (!File.Exists(DbFile)) return null;

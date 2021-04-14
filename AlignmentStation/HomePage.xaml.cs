@@ -29,16 +29,8 @@ namespace AlignmentStation
         {
             InitializeComponent();
 
-            var t = MainWindow.Conn.GetTOSADevice(1);
-            var i = new ComboBoxItem();
-            i.Content = t.Part_Number;
-
-            var t1 = MainWindow.Conn.GetTOSADevice(2);
-            var i1 = new ComboBoxItem();
-            i1.Content = t1.Part_Number;
-
-            TosaDevices.Add(t);
-            TosaDevices.Add(t1);
+            var devices = MainWindow.Conn.GetAllTOSADevices();
+            TosaDevices.AddRange(devices);
         }
 
         
