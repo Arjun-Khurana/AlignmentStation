@@ -12,17 +12,40 @@
 
     <Grid Background="{StaticResource DarkBg}">
         <Grid.RowDefinitions>
+            <RowDefinition Height="50"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="50"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0">
-            <Label 
+        <Grid
+            Grid.Row="0" 
+        >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="35"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Label
+                Grid.Column="0"
                 FontSize="28"
-                HorizontalAlignment="Center" FontWeight="Light">Alignment Station</Label>
+                FontWeight="Light">Alignment Station</Label>
+
+            <Button 
+                Grid.Column="1"
+                Width="35"
+                Height="35"
+                Style="{StaticResource MinimalButton}"
+                FontFamily="Segoe MDL2 Assets"
+                Content="&#xE713;"
+                FontSize="14" Click="Button_Click"
+                ></Button>
+
+        </Grid>
+
+        <StackPanel Grid.Row="1">
 
             <StackPanel 
-                Margin="0,50,0,0"
+                Margin="0,50,0,20"
                 Orientation="Horizontal"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center">
@@ -38,29 +61,24 @@
                     ItemsSource="{Binding TosaDevices}"
                     DisplayMemberPath="Part_Number"
                     SelectedValuePath="Id"
-                    SelectionChanged="DeviceSelector_SelectionChanged"
-                    />
+                    SelectionChanged="DeviceSelector_SelectionChanged" />
 
             </StackPanel>
-
-            <StackPanel
-                Margin="0,20,0,0"
+                
+            <Button
+                Content="Start" 
                 HorizontalAlignment="Center"
-                Orientation="Horizontal">
-
-                <Button
-                    Content="Start" 
-                    BorderThickness="1,1,1,1" 
-                    Padding="5,1,5,1" Click="StartButton"/>
+                BorderThickness="1,1,1,1" 
+                Padding="5,1,5,1" Click="StartButton"/>
+            
             </StackPanel>
-        </StackPanel>
 
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2">
+
             <Button 
-                Style="{StaticResource MinimalButton}"
+                Style="{StaticResource UnderlineButton}"
                 Content="About" 
                 ></Button>
-
         </StackPanel>
 
     </Grid>

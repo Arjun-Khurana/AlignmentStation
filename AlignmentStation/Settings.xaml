@@ -1,0 +1,70 @@
+﻿<Page x:Class="AlignmentStation.Settings"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:AlignmentStation"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="400"
+      DataContext="{Binding RelativeSource={RelativeSource self}}"
+      Title="Settings">
+
+    <Page.Resources>
+        <BooleanToVisibilityConverter x:Key="btvc"></BooleanToVisibilityConverter>
+    </Page.Resources>
+    
+    <Grid Background="{StaticResource DarkBg}">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <Button 
+            Grid.Row="0"
+            Width="35"
+            Click="Back_Click"
+            Style="{StaticResource MinimalButton}"
+            FontFamily="Segoe MDL2 Assets"
+            Content="&#xF0B0;"
+            FontSize="14"
+            HorizontalAlignment="Left"
+            />
+
+        <Label
+            Grid.Row="1"
+            FontSize="28"
+            FontWeight="Light">Settings</Label>
+
+
+        <StackPanel 
+            Grid.Row="2"
+            HorizontalAlignment="Center"
+            Margin="0,25,0,0">
+
+            <Button
+                Margin="0,0,0,20"
+                Content="Add new device" 
+                Click="NewDeviceButtonClick"
+                HorizontalAlignment="Center"
+                Style="{StaticResource UnderlineButton}"
+                BorderThickness="1,1,1,1" 
+                Padding="5,1,5,1" />
+
+            <StackPanel Visibility="{Binding Path=showNewPartForm, Converter={StaticResource btvc}}" >
+                <Label Content="Part Number"></Label>
+                <TextBox x:Name="PartNumberInput"></TextBox>
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel 
+            Orientation="Horizontal"
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Center" 
+            Grid.Row="2">
+
+        </StackPanel>
+
+    </Grid>
+</Page>
