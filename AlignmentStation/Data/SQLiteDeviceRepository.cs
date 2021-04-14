@@ -21,6 +21,20 @@ namespace AlignmentStation.Data
             }
         }
 
+        public List<ROSADevice> GetAllROSADevices()
+        {
+            if (!File.Exists(DbFile)) return null;
+
+            using (var conn = SimpleDbConnection())
+            {
+                conn.Open();
+
+                var devices = conn.Query<ROSADevice>(@"select * from ROSADevice").ToList();
+
+                return devices;
+            }
+        }
+
         public ROSADevice GetROSADevice(int id)
         {
             if (!File.Exists(DbFile)) return null;
