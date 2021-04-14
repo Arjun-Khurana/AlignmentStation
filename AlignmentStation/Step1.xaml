@@ -5,11 +5,11 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:AlignmentStation"
       mc:Ignorable="d" 
-      d:Background="White"
+      d:Background="{StaticResource DarkBg}"
       d:DesignHeight="450" d:DesignWidth="400"
       Title="Step1">
 
-    <Grid>
+    <Grid Background="{StaticResource DarkBg}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="50" />
@@ -33,10 +33,11 @@
             <Button
                 HorizontalAlignment="Left"
                 Click="Do_Task_Click"
-                FontSize="16"
-                Padding="10,0,10,3"
                 Content="Start test"
-                Margin="0,25,0,15" />
+                Margin="0,25,0,15" 
+                >
+
+            </Button>
         </StackPanel>
 
         <StackPanel Grid.Row="2">

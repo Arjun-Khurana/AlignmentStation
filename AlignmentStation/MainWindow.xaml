@@ -7,5 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="400">
 
-    <Frame Padding="15" NavigationUIVisibility="Hidden" x:Name="_mainFrame"></Frame>
+    <Frame Padding="15" NavigationUIVisibility="Hidden" x:Name="_mainFrame" Background="{StaticResource DarkBg}">
+    </Frame>
+
 </Window>
