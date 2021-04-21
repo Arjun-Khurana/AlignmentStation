@@ -38,6 +38,7 @@
                 >
 
             </Button>
+            <TextBlock x:Name="powerText" Text="TextBlock" TextWrapping="Wrap"/>
         </StackPanel>
 
         <StackPanel Grid.Row="2">

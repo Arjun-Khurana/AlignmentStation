@@ -90,6 +90,9 @@ namespace AlignmentStation
                 c.Commands.Axes["X"].Motion.FaultAck();
             }
 
+            c.Commands.Motion.Linear("X", -12.106);
+            c.Commands.Motion.Linear("Z", 0.42);
+            c.Commands.Motion.Linear("Y", 15.692);
         }
     }
 }

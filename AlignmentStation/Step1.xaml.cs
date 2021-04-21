@@ -35,50 +35,9 @@ namespace AlignmentStation
 
         private void Do_Task_Click(object sender, RoutedEventArgs e)
         {
-            HandleRef Instrument_Handle = new HandleRef();
-
-            TLPM searchDevice = new TLPM(Instrument_Handle.Handle);
-
-            uint count = 0;
-
-            string firstPowermeterFound = "";
-
-            try
-            {
-                int pInvokeResult = searchDevice.findRsrc(out count);
-
-                if (count > 0)
-                {
-                    StringBuilder descr = new StringBuilder(1024);
-
-                    searchDevice.getRsrcName(0, descr);
-
-                    firstPowermeterFound = descr.ToString();
-                }
-            }
-            catch { }
-
-            if (count == 0)
-            {
-                searchDevice.Dispose();
-                Debug.WriteLine("No power meter could be found.");
-                return;
-            }
-
-            //always use true for ID Query
-            TLPM device = new TLPM(firstPowermeterFound, true, false);  //  For valid Ressource_Name see NI-Visa documentation.
-            Debug.WriteLine("Power meter found: {0}", firstPowermeterFound);
-
-            double measuredPower = 0;
-            short unit = 0;
-            
-            device.getPowerUnit(out unit);
-            device.measPower(out measuredPower);
-
-            Debug.WriteLine("Measured Power: {0}", measuredPower);
-            Debug.WriteLine("Measured Power unit: {0}", unit);
-
-            device.Dispose();
+            double power = Instruments.instance.GetPowerMeasurement(); 
+            Debug.WriteLine("Power: {0} W", power);
+            powerText.Text = "Power: " + power + " W";
         }
 
         private static void autoset(TLPM device)
