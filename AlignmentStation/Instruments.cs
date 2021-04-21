@@ -180,7 +180,7 @@ namespace AlignmentStation
             //always use true for ID Query
             Debug.WriteLine(firstPowermeterFound);
 
-            TLPM device = new(firstPowermeterFound, true, true);  //  For valid Ressource_Name see NI-Visa documentation.
+            TLPM device = new(firstPowermeFormattedIOterFound, true, true);  //  For valid Ressource_Name see NI-Visa documentation.
             Debug.WriteLine("Power meter found: {0}", firstPowermeterFound);
 
             double measuredPower = 0;
