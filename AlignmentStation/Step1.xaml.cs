@@ -20,6 +20,8 @@ using Thorlabs.TLPM_64.Interop;
 using System.Runtime.InteropServices;
 using System.Globalization;
 using System.Reflection;
+using NationalInstruments.Visa;
+using Ivi.Visa;
 
 namespace AlignmentStation
 {
@@ -35,29 +37,12 @@ namespace AlignmentStation
 
         private void Do_Task_Click(object sender, RoutedEventArgs e)
         {
-            double power = Instruments.instance.GetPowerMeasurement(); 
-            Debug.WriteLine("Power: {0} W", power);
-            powerText.Text = "Power: " + power + " W";
+            Instruments.instance.OpenArroyo();
+            Instruments.instance.CallArroyo();
+
+
+            Instruments.instance.GetPowerMeasurement();
         }
 
-        private static void autoset(TLPM device)
-        {
-            //Set to PEAK mode for peak search/ autoset
-            device.setFreqMode(1);
-
-            device.startPeakDetector();
-
-            System.Threading.Thread.Sleep(1000);
-
-            bool isRunning = true;
-
-            while (isRunning)
-            {
-                device.isPeakDetectorRunning(out isRunning);
-            }
-
-            //Set to CW mode for normal measurement
-            device.setFreqMode(0);
-        }
     }
  }
