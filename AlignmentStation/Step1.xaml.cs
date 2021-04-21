@@ -32,42 +32,6 @@ namespace AlignmentStation
 
         private void Do_Task_Click(object sender, RoutedEventArgs e)
         {
-            c.Commands.Axes["Y"].Motion.Enable();
-            c.Commands.Axes["X"].Motion.Enable();
-            c.Commands.Axes["Z"].Motion.Enable();
-
-            try
-            {
-                c.Commands.Motion.Linear("Y", -100);
-            }
-            catch(A3200Exception ex)
-            {
-                Console.WriteLine("Error: {0}", ex.Message);
-                c.Parameters.Axes["Y"].Limits.LimitDebounceDistance.Value = 0;
-                c.Commands.Axes["Y"].Motion.FaultAck();
-            }
-
-            try
-            {
-                c.Commands.Motion.Linear("Z", 100);
-            }
-            catch(A3200Exception ex)
-            {
-                Console.WriteLine("Error: {0}", ex.Message);
-                c.Parameters.Axes["Z"].Limits.LimitDebounceDistance.Value = 0;
-                c.Commands.Axes["Z"].Motion.FaultAck();
-            }
-
-            try
-            {
-                c.Commands.Motion.Linear("X", 100);
-            }
-            catch(A3200Exception ex)
-            {
-                Console.WriteLine("Error: {0}", ex.Message);
-                c.Parameters.Axes["X"].Limits.LimitDebounceDistance.Value = 0;
-                c.Commands.Axes["X"].Motion.FaultAck();
-            }
         }
     }
  }
