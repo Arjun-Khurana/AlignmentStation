@@ -120,7 +120,7 @@ namespace AlignmentStation
             arroyo.RawIO.Write("LAS:LDI?\n");
             var r = arroyo.RawIO.ReadString();
 
-            Debug.WriteLine(r + "I");
+            Debug.WriteLine(r + "A");
 
             return Double.Parse(r);
         }
@@ -178,61 +178,6 @@ namespace AlignmentStation
         {
             powerMeter.RawIO.Write("MEAS:POW?\n");
             return Double.Parse(powerMeter.RawIO.ReadString());
-        }
-
-        public double GetPowerMeasurement()
-        {
-            HandleRef Instrument_Handle = new HandleRef();
-
-            TLPM searchDevice = new TLPM(Instrument_Handle.Handle);
-            uint count = 0;
-            string firstPowermeterFound = "";
-
-            try
-            {
-                int pInvokeResult = searchDevice.findRsrc(out count);
-
-                if (count > 0)
-                {
-                    StringBuilder descr = new StringBuilder(1024);
-
-                    searchDevice.getRsrcName(0, descr);
-
-                    firstPowermeterFound = descr.ToString();
-                }
-            }
-            catch { }
-
-            if (count == 0)
-            {
-                searchDevice.Dispose();
-
-                throw new Exception("No power meter could be found");
-            }
-
-            //always use true for ID Query
-            Debug.WriteLine(firstPowermeterFound);
-
-            TLPM device = new(firstPowermeterFound, true, false);  //  For valid Ressource_Name see NI-Visa documentation.
-            Debug.WriteLine("Power meter found: {0}", firstPowermeterFound);
-
-            double measuredPower = 0;
-            short unit = 0;
-            
-            device.getPowerUnit(out unit);
-            device.measPower(out measuredPower);
-
-            Debug.WriteLine("Measured Power: {0}", measuredPower);
-            Debug.WriteLine("Measured Power unit: {0}", unit);
-
-            device.Dispose();
-
-            return measuredPower;
-        }
-
-        public void OpenArroyo()
-        {
-
         }
     }
 }

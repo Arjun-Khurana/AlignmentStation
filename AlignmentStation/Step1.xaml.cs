@@ -37,7 +37,6 @@ namespace AlignmentStation
 
         private void Do_Task_Click(object sender, RoutedEventArgs e)
         {
-            Instruments.instance.OpenArroyo();
             Instruments.instance.SetArroyoLaserOn();
             Instruments.instance.SetArroyoCurrent(6);
 
@@ -57,6 +56,9 @@ namespace AlignmentStation
             currentText.Text = "Current: " + current + " mA";
             voltageText.Text = "Voltage: " + voltage + " V";
             powerText.Text = "Power: " + power * 1000 + " mW";
+
+            //TODO: Compare these values to the ones retrieved from test config
+            //      and either accept/reject
         }
     }
  }

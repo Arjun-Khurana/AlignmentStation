@@ -43,7 +43,9 @@ namespace AlignmentStation.Data
             {
                 conn.Open();
                 ROSADevice device = conn.Query<ROSADevice>(
-                    @"SELECT id, part_number, vpd_rssi,
+                    @"SELECT id, 
+                        part_number, 
+                        vpd_rssi,
                     FROM ROSADevice
                     where id = @id", 
                     new { id }).FirstOrDefault();
@@ -75,7 +77,14 @@ namespace AlignmentStation.Data
                 conn.Open();
 
                 TOSADevice device = conn.Query<TOSADevice>(
-                    @"SELECT Id, Part_Number, P_Min_TO, P_Min_FC, P_FC_Shift_Max
+                    @"SELECT Id, 
+                        Part_Number, 
+                        I_Align, 
+                        P_Min_TO, 
+                        P_Min_FC, 
+                        V_Max, 
+                        POPCT_Min, 
+                        P_FC_Shift_Max
                     FROM TOSADevice
                     where Id = @id", new { id }).FirstOrDefault();
 
@@ -104,15 +113,27 @@ namespace AlignmentStation.Data
                     (
                         Id integer primary key autoincrement,
                         Part_Number varchar(255) not null,
+                        I_Align double not null,
+                        I_Align_Tol double not null,
                         P_Min_TO double not null,
                         P_Min_FC double not null,
+                        V_Max double not null,
+                        POPCT_Min double not null,
                         P_FC_Shift_Max double not null
                     )");
 
 
-                conn.Execute(@"insert into TOSADevice (Part_Number, P_Min_TO, P_Min_FC, P_FC_Shift_Max)
-                                values  ('p-10', 1.0, 2.8, 3.6),
-                                        ('p-11', 2.0, 354.7, 32.6);");
+                conn.Execute(@"insert into TOSADevice (
+                                Part_Number, 
+                                I_Align,
+                                I_Align_Tol,
+                                P_Min_TO, 
+                                P_Min_FC, 
+                                V_Max, 
+                                POPCT_Min, 
+                                P_FC_Shift_Max)
+                                values  
+                                    ('Device 1', 6.0, 0.1, 1, 0.5, 3, 0.4, 0.1)");
                 
                 conn.Execute(
                     @"create table TOSAOutput

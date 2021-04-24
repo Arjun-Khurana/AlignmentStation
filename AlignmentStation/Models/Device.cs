@@ -14,9 +14,28 @@ namespace AlignmentStation.Models
 
     public class TOSADevice : Device
     {
-        double P_Min_TO { get; set; }
-        double P_Min_FC { get; set; }
-        double P_FC_Shift_Max { get; set; }
+        // I VCSEL min to be ok in step 1 - pass in before measure
+        double I_Align { get; set; }        
+        
+        // Tolerance for current drop across arroyo
+        double I_Align_Tol { get; set; }
+
+        // Min power to be ok in step 1
+        double P_Min_TO { get; set; }       
+        
+        // Min power to be ok after alignment
+        double P_Min_FC { get; set; }       
+        
+        // Max voltage to be ok in step 1
+        double V_Max { get; set; }          
+        
+        // Ratio of power after alignment / power before,
+        // at end of alignment process, see how good alignment went
+        double POPCT_Min { get; set; }      
+        
+        // After UV light, measure power again, this is max allowed different
+        // ( pre UV - post UV ) / pre UV - normalized into percent
+        double P_FC_Shift_Max { get; set; } 
     }
 
     public class TOSAOutput
