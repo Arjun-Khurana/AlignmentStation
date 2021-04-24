@@ -41,7 +41,11 @@ namespace AlignmentStation
 
         private void DeviceSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            TOSADevice d = (sender as ComboBox).SelectedItem as TOSADevice;
+            Debug.Print("Selected {0}", d.Part_Number);
 
+            MainWindow w = Window.GetWindow(this) as MainWindow;
+            w.tosaDevice = d;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

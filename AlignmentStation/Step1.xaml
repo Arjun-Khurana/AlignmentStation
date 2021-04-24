@@ -12,38 +12,86 @@
     <Grid Background="{StaticResource DarkBg}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <RowDefinition Height="50" />
         </Grid.RowDefinitions>
 
-
         <StackPanel Grid.Row="0">
-            <TextBlock Margin="0,0,0,10" FontSize="18" Text="Step 1"></TextBlock>
-            <TextBlock
-                Margin="0,0,0,15"
+            <TextBlock 
                 FontSize="26"
                 FontWeight="Light"
-                Text="Instructions" />
+                Margin="0,0,0,15" 
+                Text="Step 1"></TextBlock>
 
-            <TextBlock
-                TextWrapping="Wrap"
-                FontSize="18"
-                Text="(1) Insert TO into wand and into photodiode">
-            </TextBlock>
-
-            <Button
-                HorizontalAlignment="Left"
-                Click="Do_Task_Click"
-                Content="Start test"
-                Margin="0,25,0,15" 
+            <Border 
+                Padding="10"
+                BorderThickness="2"
+                BorderBrush="White"
+                Margin="0,0,0,10"
                 >
-            </Button>
+                <StackPanel>
+                    <TextBlock
+                        FontSize="18" 
+                        Margin="0,0,0,5"
+                        Text="Instructions" />
 
-            <TextBlock x:Name="currentText" Text="" TextWrapping="Wrap"/>
-            <TextBlock x:Name="voltageText" Text="" TextWrapping="Wrap"/>
-            <TextBlock x:Name="powerText" Text="" TextWrapping="Wrap"/>
-        </StackPanel>
+                    <TextBlock
+                        Margin="0,0,0,0"
+                        TextWrapping="Wrap"
+                        FontSize="15"
+                        Text="(1) Insert TO into wand and into photodiode">
+                    </TextBlock>
+                </StackPanel>
+            </Border>
 
-        <StackPanel Grid.Row="2">
+            <StackPanel
+                x:Name="measurementPanel" 
+                Visibility="Collapsed" 
+                Orientation="Vertical">
+                <TextBlock x:Name="currentText" Text="" TextWrapping="Wrap"/>
+                <TextBlock x:Name="voltageText" Text="" TextWrapping="Wrap"/>
+                <TextBlock x:Name="powerText" Text="" TextWrapping="Wrap"/>
+
+                <TextBlock 
+                    Margin="0,5,0,0"
+                    Visibility="Hidden"
+                    Foreground="OrangeRed"
+                    x:Name="failedMessage"
+                    FontSize="18"
+                    VerticalAlignment="Center"
+                    Text="Test Failed"></TextBlock>
+            </StackPanel>
+
+            <StackPanel
+                x:Name="errorPanel"
+                Visibility="Collapsed"
+                Orientation="Vertical">
+                <TextBlock
+                    Margin="0,5,0,0" 
+                    FontSize="14"
+                    FontWeight="Normal"
+                    Text="Errors"></TextBlock>
+                <ListBox
+                    HorizontalAlignment="Left"
+                    x:Name="errorList"
+                    Background="{StaticResource DarkBg}"
+                    Margin="0,10,0,0"
+                    Width="250"
+                    Height="75"/>
+            </StackPanel>
+
+            <StackPanel 
+                Margin="0,20,0,0"
+                Orientation="Horizontal">
+                <Button
+                    x:Name="startButton"
+                    HorizontalAlignment="Left"
+                    Click="Do_Task_Click"
+                    Content="Start test"
+                    Margin="0,0,10,0" 
+                    VerticalAlignment="Center"
+                    >
+                </Button>
+            </StackPanel>
+
         </StackPanel>
     </Grid>
 

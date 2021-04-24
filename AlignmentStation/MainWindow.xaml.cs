@@ -16,6 +16,7 @@ using AlignmentStation.Data;
 using Thorlabs.TLPM_64.Interop;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using AlignmentStation.Models;
 
 namespace AlignmentStation
 {
@@ -25,6 +26,8 @@ namespace AlignmentStation
     public partial class MainWindow : Window
     {
         public static SQLiteDeviceRepository Conn = new SQLiteDeviceRepository();
+        public TOSADevice tosaDevice = new TOSADevice();
+        public TOSAOutput tosaOutput = new TOSAOutput();
 
         public MainWindow()
         {
