@@ -39,9 +39,47 @@ namespace AlignmentStation
             InitializeComponent();
         }
 
+        private void ShowErrorPanels()
+        {
+            startButton.Content = "Retry test";
+            failedMessage.Text = $"Test attempt {attemptNumber} failed";
+            failedMessage.Visibility = Visibility.Visible;
+            errorPanel.Visibility = Visibility.Visible;
+            errorList.Visibility = Visibility.Visible;
+            errorList.ItemsSource = ErrorMessages;
+
+            successMessage.Visibility = Visibility.Collapsed;
+            nextStepButton.Visibility = Visibility.Collapsed;
+            startButton.Visibility = Visibility.Visible;
+        }
+
+        private void HideErrorPanels()
+        {
+            startButton.Content = "Start test";
+            failedMessage.Visibility = Visibility.Collapsed;
+            errorPanel.Visibility = Visibility.Collapsed;
+            errorList.Visibility = Visibility.Collapsed;
+            errorList.ItemsSource = null;
+
+            successMessage.Visibility = Visibility.Visible;
+            nextStepButton.Visibility = Visibility.Visible;
+            startButton.Visibility = Visibility.Collapsed;
+        }
+
         private void Do_Task_Click(object sender, RoutedEventArgs e)
         {
+            if (attemptNumber == 3)
+            {
+                NavigationService.Navigate(new HomePage());
+                return;
+            }
+
             attemptNumber++;
+
+
+            Mouse.OverrideCursor = Cursors.Wait;
+
+            ErrorMessages.Clear();
 
             TOSADevice tosa = (Window.GetWindow(this) as MainWindow).tosaDevice;
             TOSAOutput output = (Window.GetWindow(this) as MainWindow).tosaOutput;
@@ -83,10 +121,10 @@ namespace AlignmentStation
                 ErrorMessages.Add("Current drop across Arroyo is greater than threshold");
             }
 
-            if (power < tosa.P_Min_TO)
+            if (power * 1000 < tosa.P_Min_TO)
             {
-                Debug.Print("Power is below the acceptable value.");
-                ErrorMessages.Add($"Power is below the acceptable value: {tosa.P_Min_TO}.");
+                Debug.Print($"Power {power*1000} is below the acceptable value {tosa.P_Min_TO}.");
+                ErrorMessages.Add($"Power is below the acceptable value: {tosa.P_Min_TO} mW.");
             }
 
             if (voltage > tosa.V_Max)
@@ -97,16 +135,25 @@ namespace AlignmentStation
 
             if (ErrorMessages.Count == 0)
             {
+                HideErrorPanels();
                 Debug.Print("OK! Go to next step.");
             }
             else
             {
-                startButton.Content = "Retry test";
-                failedMessage.Visibility = Visibility.Visible;
-                errorPanel.Visibility = Visibility.Visible;
-                errorList.Visibility = Visibility.Visible;
-                errorList.ItemsSource = ErrorMessages;
+                ShowErrorPanels();
+                
+                if (attemptNumber >= 3)
+                {
+                    startButton.Content = "Go home";
+                }
             }
+
+            Mouse.OverrideCursor = Cursors.Arrow;
+        }
+
+        private void Next_Step_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
  }

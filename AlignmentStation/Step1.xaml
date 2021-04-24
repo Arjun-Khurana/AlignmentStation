@@ -37,7 +37,7 @@
                         Margin="0,0,0,0"
                         TextWrapping="Wrap"
                         FontSize="15"
-                        Text="(1) Insert TO into wand and into photodiode">
+                        Text="(1) Insert TO into Wand">
                     </TextBlock>
                 </StackPanel>
             </Border>
@@ -58,6 +58,14 @@
                     FontSize="18"
                     VerticalAlignment="Center"
                     Text="Test Failed"></TextBlock>
+                <TextBlock 
+                    Margin="0,15,0,0"
+                    Visibility="Hidden"
+                    Foreground="ForestGreen"
+                    x:Name="successMessage"
+                    FontSize="18"
+                    VerticalAlignment="Center"
+                    Text="Test Passed"></TextBlock>
             </StackPanel>
 
             <StackPanel
@@ -65,7 +73,7 @@
                 Visibility="Collapsed"
                 Orientation="Vertical">
                 <TextBlock
-                    Margin="0,5,0,0" 
+                    Margin="0,15,0,0" 
                     FontSize="14"
                     FontWeight="Normal"
                     Text="Errors"></TextBlock>
@@ -91,6 +99,18 @@
                     >
                 </Button>
             </StackPanel>
+
+            <Button
+                x:Name="nextStepButton"
+                HorizontalAlignment="Left"
+                Visibility="Hidden"
+                Click="Next_Step_Click"
+                Content="Next step"
+                Margin="0,0,0,0" 
+                VerticalAlignment="Center"
+                >
+                
+            </Button>
 
         </StackPanel>
     </Grid>
