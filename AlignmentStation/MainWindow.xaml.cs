@@ -26,8 +26,8 @@ namespace AlignmentStation
     public partial class MainWindow : Window
     {
         public static SQLiteDeviceRepository Conn = new SQLiteDeviceRepository();
-        public TOSADevice tosaDevice = new TOSADevice();
-        public TOSAOutput tosaOutput = new TOSAOutput();
+        public Device device;
+        public TestOutput output;
 
         public MainWindow()
         {

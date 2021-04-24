@@ -22,35 +22,61 @@ namespace AlignmentStation
     /// </summary>
     public partial class HomePage : Page
     {
-        public List<TOSADevice> TosaDevices { get; set; } = new List<TOSADevice>();
+        public List<Device> TosaDevices { get; set; } = new List<Device>();
         public List<ROSADevice> RosaDevices { get; set; } = new List<ROSADevice>();
 
         public HomePage()
         {
             InitializeComponent();
-
-            var devices = MainWindow.Conn.GetAllTOSADevices();
-            TosaDevices.AddRange(devices);
+            TosaDevices.AddRange(MainWindow.Conn.GetAllTOSADevices());
+            RosaDevices.AddRange(MainWindow.Conn.GetAllROSADevices());
         }
 
         
         private void StartButton(object sender, RoutedEventArgs e)
         {
+            if (DeviceSelector.SelectedItem == null)
+            {
+                Debug.Print("Pick one.");
+                return;
+            }
+
             NavigationService.Navigate(new Step1()); 
         }
 
         private void DeviceSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            TOSADevice d = (sender as ComboBox).SelectedItem as TOSADevice;
+            Device d = (sender as ComboBox).SelectedItem as Device;
             Debug.Print("Selected {0}", d.Part_Number);
 
             MainWindow w = Window.GetWindow(this) as MainWindow;
-            w.tosaDevice = d;
+
+            w.device = d;
+            if (d is TOSADevice)
+            {
+                w.output = new TOSAOutput();
+                w.output.Job_Number = "job 1";
+                w.output.Unit_Number = MainWindow.Conn.GetMaxTOSAUnitNumber("job 1");
+            }
+            else
+            {
+                w.output = new ROSAOutput();
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(new Settings());
+        }
+
+        private void TOSA_Radio_Checked(object sender, RoutedEventArgs e)
+        {
+            DeviceSelector.ItemsSource = TosaDevices;
+        }
+
+        private void ROSA_Radio_Checked(object sender, RoutedEventArgs e)
+        {
+            DeviceSelector.ItemsSource = RosaDevices;
         }
     }
 }

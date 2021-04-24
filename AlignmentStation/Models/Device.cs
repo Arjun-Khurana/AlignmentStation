@@ -12,6 +12,17 @@ namespace AlignmentStation.Models
         public int Id { get; set; }
     }
 
+    public abstract class TestOutput
+    {
+        public int Id { get; set; }
+        public string Part_Number { get; set; }
+        public string Job_Number { get; set; }
+        public int Unit_Number { get; set; }
+        public string Operator { get; set; }
+        public DateTime Timestamp { get; set; }
+        public int Repeat_Number { get; set; }
+    }
+
     public class TOSADevice : Device
     {
         // I VCSEL min to be ok in step 1 - pass in before measure
@@ -38,15 +49,8 @@ namespace AlignmentStation.Models
         public double P_FC_Shift_Max { get; set; } 
     }
 
-    public class TOSAOutput
+    public class TOSAOutput : TestOutput
     {
-        public int Id { get; set; }
-        public string Part_Number { get; set; }
-        public string Job_Number { get; set; }
-        public int Unit_Number { get; set; }
-        public string Operator { get; set; }
-        public DateTime Timestamp { get; set; }
-        public int Repeat_Number { get; set; }
         public double I_Align { get; set; }
         public double P_TO { get; set; }
         public double P_FC { get; set; }
@@ -59,15 +63,8 @@ namespace AlignmentStation.Models
         public double VPD_RSSI { get; set; }
     }
 
-    public class ROSAOutput
+    public class ROSAOutput : TestOutput
     {
-        public int Id { get; set; }
-        public string Part_Number { get; set; }
-        public string Job_Number { get; set; }
-        public int Unit_Number { get; set; }
-        public string Operator { get; set; }
-        public DateTime Timestamp { get; set; }
-        public int Repeat_Number { get; set; }
         public double P_Optical { get; set; }
         public double I_RSSI { get; set; }
         public double I_VPD { get; set; }

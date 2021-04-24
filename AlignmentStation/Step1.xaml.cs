@@ -76,15 +76,39 @@ namespace AlignmentStation
 
             attemptNumber++;
 
-
             Mouse.OverrideCursor = Cursors.Wait;
 
             ErrorMessages.Clear();
 
-            TOSADevice tosa = (Window.GetWindow(this) as MainWindow).tosaDevice;
-            TOSAOutput output = (Window.GetWindow(this) as MainWindow).tosaOutput;
+            var w = Window.GetWindow(this) as MainWindow;
+
+            if (w.device is TOSADevice)
+            {
+                TosaStep1();
+            }
+            else
+            {
+
+            }
+
+            Mouse.OverrideCursor = Cursors.Arrow;
+        }
+
+        private void Next_Step_Click(object sender, RoutedEventArgs e)
+        {
+            // select max (unit_number) from tosa_output where job_number = J;
+
+        }
+
+        private void TosaStep1()
+        {
+            var w = Window.GetWindow(this) as MainWindow;
+
+            TOSADevice tosa = w.device as TOSADevice;
+            TOSAOutput output = w.output as TOSAOutput;
             
             Instruments.instance.SetArroyoLaserOn();
+            Debug.Print($"Tosa I_Align: {tosa.I_Align}");
             Instruments.instance.SetArroyoCurrent(tosa.I_Align);
 
             var voltage = Instruments.instance.GetArroyoVoltage();
@@ -136,6 +160,11 @@ namespace AlignmentStation
             if (ErrorMessages.Count == 0)
             {
                 HideErrorPanels();
+
+                output.P_TO = power;
+                output.I_Align = current;
+                output.Repeat_Number = attemptNumber;
+
                 Debug.Print("OK! Go to next step.");
             }
             else
@@ -147,13 +176,6 @@ namespace AlignmentStation
                     startButton.Content = "Go home";
                 }
             }
-
-            Mouse.OverrideCursor = Cursors.Arrow;
-        }
-
-        private void Next_Step_Click(object sender, RoutedEventArgs e)
-        {
-
         }
     }
  }

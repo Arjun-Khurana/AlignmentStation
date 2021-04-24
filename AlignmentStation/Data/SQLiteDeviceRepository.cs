@@ -91,6 +91,32 @@ namespace AlignmentStation.Data
                 return device;
             }
         }
+        
+        public int GetMaxTOSAUnitNumber(string jobNumber)
+        {
+            using (var conn = SimpleDbConnection())
+            {
+                conn.Open();
+
+                int num = conn.Query<int>(
+                    @"select max(Unit_Number) from TOSAOutput where Job_Number = @jobNumber", new { jobNumber }).FirstOrDefault();
+
+                return num;
+            }
+        }
+        
+        public int GetMaxROSAUnitNumber(string jobNumber)
+        {
+            using (var conn = SimpleDbConnection())
+            {
+                conn.Open();
+
+                int num = conn.Query<int>(
+                    @"select max(Unit_Number) from ROSAOutput where Job_Number = @jobNumber", new { jobNumber }).FirstOrDefault();
+
+                return num;
+            }
+        }
 
         public void SaveROSAOutput(ROSAOutput output)
         {
