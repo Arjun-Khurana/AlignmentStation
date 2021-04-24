@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using NationalInstruments.Visa;
 using Ivi.Visa;
+using System.Threading;
 
 namespace AlignmentStation
 {
@@ -42,7 +43,7 @@ namespace AlignmentStation
                     IEnumerable<string> resources = rm.Find("ASRL?*INSTR");
                     foreach (string s in resources)
                     {
-                        Debug.WriteLine(s);
+                        Debug.WriteLine("Found resource", s);
                         myResource = s;
                     }
                 }
@@ -82,18 +83,46 @@ namespace AlignmentStation
                 var t = session2.ReadStatusByte();
 
                 r = session2.RawIO.ReadString();
-                Debug.WriteLine(r);
 
                 powerMeter = session2;
             }
         }
 
-        public void CallArroyo()
+        public void SetArroyoLaserOn()
+        {
+            arroyo.RawIO.Write("LAS:OUT 1\n");
+            Thread.Sleep(1000);
+        }
+
+        public void SetArroyoLaserOff()
+        {
+            arroyo.RawIO.Write("LAS:OUT 0\n");
+        }
+
+        public void SetArroyoCurrent(double current)
+        {
+            arroyo.RawIO.Write("LAS:LDI " + current + "\n");
+            Thread.Sleep(1000);
+        }
+
+        public double GetArroyoVoltage()
         {
             arroyo.RawIO.Write("LAS:LDV?\n");
             var r = arroyo.RawIO.ReadString();
 
             Debug.WriteLine(r + "v");
+
+            return Double.Parse(r);
+        }
+
+        public double GetArroyoCurrent()
+        {
+            arroyo.RawIO.Write("LAS:LDI?\n");
+            var r = arroyo.RawIO.ReadString();
+
+            Debug.WriteLine(r + "I");
+
+            return Double.Parse(r);
         }
 
         public void CalibrateAxes()
@@ -142,9 +171,13 @@ namespace AlignmentStation
 
         public void FindCentroid()
         {
-            c.Commands.IO.AnalogInput(0, 0);
-
             c.Commands.Motion.Fiber.Centroid3D();
+        }
+
+        public double GetThorlabsPower()
+        {
+            powerMeter.RawIO.Write("MEAS:POW?\n");
+            return Double.Parse(powerMeter.RawIO.ReadString());
         }
 
         public double GetPowerMeasurement()
@@ -180,7 +213,7 @@ namespace AlignmentStation
             //always use true for ID Query
             Debug.WriteLine(firstPowermeterFound);
 
-            TLPM device = new(firstPowermeFormattedIOterFound, true, true);  //  For valid Ressource_Name see NI-Visa documentation.
+            TLPM device = new(firstPowermeterFound, true, false);  //  For valid Ressource_Name see NI-Visa documentation.
             Debug.WriteLine("Power meter found: {0}", firstPowermeterFound);
 
             double measuredPower = 0;

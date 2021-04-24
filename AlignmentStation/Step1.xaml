@@ -36,9 +36,11 @@
                 Content="Start test"
                 Margin="0,25,0,15" 
                 >
-
             </Button>
-            <TextBlock x:Name="powerText" Text="TextBlock" TextWrapping="Wrap"/>
+
+            <TextBlock x:Name="currentText" Text="" TextWrapping="Wrap"/>
+            <TextBlock x:Name="voltageText" Text="" TextWrapping="Wrap"/>
+            <TextBlock x:Name="powerText" Text="" TextWrapping="Wrap"/>
         </StackPanel>
 
         <StackPanel Grid.Row="2">

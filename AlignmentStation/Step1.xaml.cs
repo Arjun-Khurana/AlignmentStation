@@ -38,11 +38,25 @@ namespace AlignmentStation
         private void Do_Task_Click(object sender, RoutedEventArgs e)
         {
             Instruments.instance.OpenArroyo();
-            Instruments.instance.CallArroyo();
+            Instruments.instance.SetArroyoLaserOn();
+            Instruments.instance.SetArroyoCurrent(6);
 
+            var voltage = Instruments.instance.GetArroyoVoltage();
+            var current = Instruments.instance.GetArroyoCurrent();
+            var power = Instruments.instance.GetThorlabsPower();
 
-            Instruments.instance.GetPowerMeasurement();
+            Debug.WriteLine("Voltage from Arroyo:");
+            Debug.WriteLine(voltage);
+
+            Debug.WriteLine("Current from Arroyo:");
+            Debug.WriteLine(current);
+
+            Debug.WriteLine("Power from Thorlabs:");
+            Debug.WriteLine(power);
+
+            currentText.Text = "Current: " + current + " mA";
+            voltageText.Text = "Voltage: " + voltage + " V";
+            powerText.Text = "Power: " + power * 1000 + " mW";
         }
-
     }
  }
