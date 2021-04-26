@@ -118,6 +118,16 @@ namespace AlignmentStation.Data
             }
         }
 
+        public void SaveROSADevice(ROSADevice device)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SaveTOSADevice(TOSADevice device)
+        {
+            throw new NotImplementedException();
+        }
+
         public void SaveROSAOutput(ROSAOutput output)
         {
             throw new NotImplementedException();

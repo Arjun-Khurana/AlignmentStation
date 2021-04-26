@@ -24,7 +24,7 @@
         <Button 
             Grid.Row="0"
             Width="35"
-            Click="Back_Click"
+            Click="BackClick"
             Style="{StaticResource MinimalButton}"
             FontFamily="Segoe MDL2 Assets"
             Content="&#xF0B0;"
@@ -41,30 +41,145 @@
         <StackPanel 
             Grid.Row="2"
             HorizontalAlignment="Center"
+            MinWidth="250"
             Margin="0,25,0,0">
 
             <Button
                 Margin="0,0,0,20"
                 Name="Calibrate_Button"
                 Content="Calibrate Limits" 
-                Click="Calibrate_Limits_Click"
+                Click="CalibrateLimitsClick"
                 HorizontalAlignment="Center"
                 Style="{StaticResource UnderlineButton}"
                 BorderThickness="1,1,1,1" 
                 Padding="5,1,5,1" />
 
-            <Button
-                Margin="0,0,0,20"
-                Content="Add new device" 
-                Click="NewDeviceButtonClick"
+            <StackPanel 
+                Visibility="Collapsed"
+                x:Name="newROSAPanel"
+                Margin="0,0,0,10"
                 HorizontalAlignment="Center"
-                Style="{StaticResource UnderlineButton}"
-                BorderThickness="1,1,1,1" 
-                Padding="5,1,5,1" />
+                >
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Margin="10,0,10,10" Orientation="Vertical">
+                        <Label Padding="0,0,0,5" Content="Part Number"></Label>
+                        <TextBox Width="100" x:Name="ROSAPartNumberInput"></TextBox>
+                    </StackPanel>
 
-            <StackPanel Visibility="{Binding Path=showNewPartForm, Converter={StaticResource btvc}}" >
-                <Label Content="Part Number"></Label>
-                <TextBox x:Name="PartNumberInput"></TextBox>
+                    <StackPanel Margin="10,0,10,10" Orientation="Vertical">
+                        <Label Padding="0,0,0,5" Content="VPD RSSI"></Label>
+                        <TextBox Width="100" x:Name="ROSA_VPD_RSSI_Input"></TextBox>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0" HorizontalAlignment="Center" Orientation="Horizontal">
+                    <Button 
+                        FontSize="13"
+                        Content="Save ROSA Device"
+                        Click="SaveROSADeviceButtonClick"></Button>
+
+                    <Button 
+                        Style="{StaticResource MinimalButton}"
+                        FontSize="12"
+                        Content="Cancel"
+                        Click="CancelROSAClick"></Button>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel 
+                x:Name="newTOSAPanel"
+                Visibility="Collapsed"
+                Margin="0,0,0,10"
+                HorizontalAlignment="Center"
+                >
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Margin="10,0,10,10" Orientation="Vertical">
+                        <Label Padding="0,0,0,5" Content="Part Number"></Label>
+                        <TextBox Width="100" x:Name="TOSAPartNumberInput"></TextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="10,0,10,10" Orientation="Vertical">
+                        <Label Padding="0,0,0,5" Content="I Align"></Label>
+                        <TextBox Width="100" x:Name="TOSA_I_Align_Input"></TextBox>
+                    </StackPanel>
+                </StackPanel>
+                
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Margin="10,0,10,10" Orientation="Vertical">
+                        <Label Padding="0,0,0,5" Content="I Align Tolerance"></Label>
+                        <TextBox Width="100" x:Name="TOSA_I_Align_Tol_Input"></TextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="10,0,10,10" Orientation="Vertical">
+                        <Label Padding="0,0,0,5" Content="TO Min Power"></Label>
+                        <TextBox Width="100" x:Name="TOSA_P_Min_TO_Input"></TextBox>
+                    </StackPanel>
+                </StackPanel>
+                
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Margin="10,0,10,10" Orientation="Vertical">
+                        <Label Padding="0,0,0,5" Content="FC Min Power"></Label>
+                        <TextBox Width="100" x:Name="TOSA_P_Min_FC_Input"></TextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="10,0,10,10" Orientation="Vertical">
+                        <Label Padding="0,0,0,5" Content="Max Voltage"></Label>
+                        <TextBox Width="100" x:Name="TOSA_V_Max_Input"></TextBox>
+                    </StackPanel>
+                </StackPanel>
+                
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Margin="10,0,10,10" Orientation="Vertical">
+                        <Label Padding="0,0,0,5" Content="Min POPCT"></Label>
+                        <TextBox Width="100" x:Name="TOSA_POPCT_Min_Input"></TextBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="10,0,10,10" Orientation="Vertical">
+                        <Label Padding="0,0,0,5" Content="FC Max Power Shift"></Label>
+                        <TextBox x:Name="TOSA_P_FC_Shift_Max_Input"></TextBox>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel
+                    Margin="0,10,0,0" 
+                    HorizontalAlignment="Center" 
+                    Orientation="Horizontal">
+                    <Button 
+                        FontSize="13"
+                        Margin="0,0,10,0"
+                        Content="Save TOSA Device"
+                        Click="SaveTOSADeviceButtonClick"></Button>
+
+                    <Button 
+                        Style="{StaticResource MinimalButton}"
+                        FontSize="12"
+                        Content="Cancel"
+                        Click="CancelTOSAClick"></Button>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <Button
+                    Margin="10,0,10,20"
+                    Content="New TOSA device" 
+                    Click="NewTOSAButtonClick"
+                    HorizontalAlignment="Center"
+                    x:Name="addNewROSAButton"
+                    Style="{StaticResource UnderlineButton}"
+                    BorderThickness="1,1,1,1" 
+                    Padding="5,1,5,1" />
+
+                
+                <Button
+                    Margin="10,0,10,20"
+                    Content="New ROSA device" 
+                    Click="NewROSAButtonClick"
+                    HorizontalAlignment="Center"
+                    x:Name="addNewTOSAButton"
+                    Style="{StaticResource UnderlineButton}"
+                    BorderThickness="1,1,1,1" 
+                    Padding="5,1,5,1" />
+
             </StackPanel>
         </StackPanel>
 
