@@ -120,12 +120,60 @@ namespace AlignmentStation.Data
 
         public void SaveROSADevice(ROSADevice device)
         {
-            throw new NotImplementedException();
+            using (var conn = SimpleDbConnection())
+            {
+                conn.Open();
+                conn.Execute(
+                @"INSERT INTO ROSADevice
+                    ( Part_Number, VPD_RSSI )
+                    values 
+                    ( @part_number, @vpd_rssi )", 
+                new {
+                    part_number = device.Part_Number,
+                    vpd_rssi = device.VPD_RSSI
+                });
+            }
         }
 
         public void SaveTOSADevice(TOSADevice device)
         {
-            throw new NotImplementedException();
+            using (var conn = SimpleDbConnection())
+            {
+                conn.Open();
+                conn.Execute(
+                @"INSERT INTO TOSADevice 
+                    ( 
+                        Part_Number, 
+                        I_Align,
+                        I_Align_Tol,
+                        P_Min_TO, 
+                        P_Min_FC, 
+                        V_Max, 
+                        POPCT_Min, 
+                        P_FC_Shift_Max
+                    )
+                    values 
+                    ( 
+                        @part_number, 
+                        @i_align,
+                        @i_align_tol, 
+                        @p_min_to,
+                        @p_min_fc, 
+                        @v_max,
+                        @popct_min, 
+                        @p_fc_shift_max,
+                        )", 
+                new {
+                    part_number = device.Part_Number,
+                    i_align = device.I_Align,
+                    i_align_tol = device.I_Align_Tol,
+                    p_min_to = device.P_Min_TO,
+                    p_min_fc = device.P_Min_FC,
+                    v_max = device.V_Max,
+                    popct_min = device.POPCT_Min,
+                    p_fc_shift_max = device.P_FC_Shift_Max,
+                });
+            }
         }
 
         public void SaveROSAOutput(ROSAOutput output)
