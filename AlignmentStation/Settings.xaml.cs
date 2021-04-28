@@ -45,7 +45,7 @@ namespace AlignmentStation
 
         private void NewROSAButtonClick(object sender, RoutedEventArgs e)
         {
-            newTOSAPanel.Visibility = Visibility.Visible;
+            newROSAPanel.Visibility = Visibility.Visible;
             addNewROSAButton.Visibility = Visibility.Collapsed;
             addNewTOSAButton.Visibility = Visibility.Collapsed;
         }
@@ -57,19 +57,13 @@ namespace AlignmentStation
 
         private void SaveROSADeviceButtonClick(object sender, RoutedEventArgs e)
         {
-            var device = new Models.TOSADevice
+            var device = new Models.ROSADevice
             {
-                Part_Number = TOSAPartNumberInput.Text,
-                I_Align = Double.Parse(TOSA_I_Align_Input.Text),
-                I_Align_Tol = Double.Parse(TOSA_I_Align_Tol_Input.Text),
-                P_Min_TO = Double.Parse(TOSA_P_Min_TO_Input.Text),
-                P_Min_FC = Double.Parse(TOSA_P_Min_FC_Input.Text),
-                V_Max = Double.Parse(TOSA_V_Max_Input.Text),
-                POPCT_Min = Double.Parse(TOSA_POPCT_Min_Input.Text),
-                P_FC_Shift_Max = Double.Parse(TOSA_POPCT_Min_Input.Text) 
+                Part_Number = ROSAPartNumberInput.Text,
+                VPD_RSSI = Double.Parse(ROSA_VPD_RSSI_Input.Text)
             };
 
-            MainWindow.Conn.SaveTOSADevice(device);
+            MainWindow.Conn.SaveROSADevice(device);
 
             newROSAPanel.Visibility = Visibility.Collapsed;
             addNewROSAButton.Visibility = Visibility.Visible;
