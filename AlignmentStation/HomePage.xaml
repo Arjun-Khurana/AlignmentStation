@@ -58,9 +58,11 @@
                     VerticalAlignment="Center"
                     Margin="0,0,0,20">
                     <RadioButton
+                        x:Name="TOSA_Radio"
                         Margin="5"
                         Checked="TOSA_Radio_Checked">TOSA</RadioButton>
                     <RadioButton 
+                        x:Name="ROSA_Radio"
                         Margin="5" 
                         Checked="ROSA_Radio_Checked">ROSA</RadioButton>
                 </StackPanel>
@@ -77,6 +79,7 @@
                    >Select Device</Label>
 
                 <ComboBox 
+                    MouseEnter="DeviceSelector_DropDownOpened"
                     x:Name="DeviceSelector" 
                     Height="auto" 
                     Width="120"

@@ -78,5 +78,22 @@ namespace AlignmentStation
         {
             DeviceSelector.ItemsSource = RosaDevices;
         }
+
+        private void DeviceSelector_DropDownOpened(object sender, EventArgs e)
+        {
+            if ((bool) TOSA_Radio.IsChecked)
+            {
+                TosaDevices.Clear();
+                TosaDevices.AddRange(MainWindow.Conn.GetAllTOSADevices());
+                DeviceSelector.ItemsSource = TosaDevices;
+            }
+            else if ((bool) TOSA_Radio.IsChecked)
+            {
+                RosaDevices.Clear();
+                RosaDevices.AddRange(MainWindow.Conn.GetAllROSADevices());
+                DeviceSelector.ItemsSource = RosaDevices;
+            }
+
+        }
     }
 }

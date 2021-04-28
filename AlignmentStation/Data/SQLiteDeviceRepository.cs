@@ -161,7 +161,7 @@ namespace AlignmentStation.Data
                         @p_min_fc, 
                         @v_max,
                         @popct_min, 
-                        @p_fc_shift_max,
+                        @p_fc_shift_max
                         )", 
                 new {
                     part_number = device.Part_Number,
@@ -171,7 +171,7 @@ namespace AlignmentStation.Data
                     p_min_fc = device.P_Min_FC,
                     v_max = device.V_Max,
                     popct_min = device.POPCT_Min,
-                    p_fc_shift_max = device.P_FC_Shift_Max,
+                    p_fc_shift_max = device.P_FC_Shift_Max
                 });
             }
         }

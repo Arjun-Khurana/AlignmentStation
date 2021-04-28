@@ -57,17 +57,23 @@ namespace AlignmentStation
 
         private void SaveROSADeviceButtonClick(object sender, RoutedEventArgs e)
         {
-            var device = new Models.ROSADevice
+            double vpd;
+            var parsed = Double.TryParse(ROSA_VPD_RSSI_Input.Text, out vpd);
+
+            if (parsed && !String.IsNullOrEmpty(ROSAPartNumberInput.Text))
             {
-                Part_Number = ROSAPartNumberInput.Text,
-                VPD_RSSI = Double.Parse(ROSA_VPD_RSSI_Input.Text)
-            };
+                var device = new Models.ROSADevice
+                {
+                    Part_Number = ROSAPartNumberInput.Text,
+                    VPD_RSSI = Double.Parse(ROSA_VPD_RSSI_Input.Text)
+                };
 
-            MainWindow.Conn.SaveROSADevice(device);
+                MainWindow.Conn.SaveROSADevice(device);
 
-            newROSAPanel.Visibility = Visibility.Collapsed;
-            addNewROSAButton.Visibility = Visibility.Visible;
-            addNewTOSAButton.Visibility = Visibility.Visible;
+                newROSAPanel.Visibility = Visibility.Collapsed;
+                addNewROSAButton.Visibility = Visibility.Visible;
+                addNewTOSAButton.Visibility = Visibility.Visible;
+            }
         }
 
         private void SaveTOSADeviceButtonClick(object sender, RoutedEventArgs e)
@@ -91,7 +97,7 @@ namespace AlignmentStation
             addNewTOSAButton.Visibility = Visibility.Visible;
         }
 
-        private void CancelROSAClick(object sender, RoutedEventArgs e)
+        private void CancelTOSAClick(object sender, RoutedEventArgs e)
         {
             TOSAPartNumberInput.Text = null; 
             TOSA_I_Align_Input.Text = null; 
@@ -102,19 +108,63 @@ namespace AlignmentStation
             TOSA_POPCT_Min_Input.Text = null; 
             TOSA_P_FC_Shift_Max_Input.Text = null; 
 
+            TOSAPartNumberInput.Style = (Style)Application.Current.Resources["RegularTextField"]; 
+            TOSA_I_Align_Input.Style = (Style)Application.Current.Resources["RegularTextField"]; 
+            TOSA_I_Align_Tol_Input.Style = (Style)Application.Current.Resources["RegularTextField"]; 
+            TOSA_P_Min_TO_Input.Style = (Style)Application.Current.Resources["RegularTextField"]; 
+            TOSA_P_Min_FC_Input.Style = (Style)Application.Current.Resources["RegularTextField"]; 
+            TOSA_V_Max_Input.Style = (Style)Application.Current.Resources["RegularTextField"]; 
+            TOSA_POPCT_Min_Input.Style = (Style)Application.Current.Resources["RegularTextField"]; 
+            TOSA_P_FC_Shift_Max_Input.Style = (Style)Application.Current.Resources["RegularTextField"]; 
+
+            newTOSAPanel.Visibility = Visibility.Collapsed;
+            addNewROSAButton.Visibility = Visibility.Visible;
+            addNewTOSAButton.Visibility = Visibility.Visible;
+        }
+
+        private void CancelROSAClick(object sender, RoutedEventArgs e)
+        {
+            ROSAPartNumberInput.Text = null;
+            ROSA_VPD_RSSI_Input.Text = null;
+
+            ROSAPartNumberInput.Style = (Style)Application.Current.Resources["RegularTextField"];
+            ROSA_VPD_RSSI_Input.Style = (Style)Application.Current.Resources["RegularTextField"];
+            
             newROSAPanel.Visibility = Visibility.Collapsed;
             addNewROSAButton.Visibility = Visibility.Visible;
             addNewTOSAButton.Visibility = Visibility.Visible;
         }
 
-        private void CancelTOSAClick(object sender, RoutedEventArgs e)
+        private void String_Input_Text_Changed(object sender, TextChangedEventArgs e)
         {
-            ROSAPartNumberInput.Text = null;
-            ROSA_VPD_RSSI_Input.Text = null;
+            TextBox t = (TextBox)sender;
+            var empty = String.IsNullOrEmpty(t.Text);
             
-            newTOSAPanel.Visibility = Visibility.Collapsed;
-            addNewROSAButton.Visibility = Visibility.Visible;
-            addNewTOSAButton.Visibility = Visibility.Visible;
+            if (empty)
+            {
+                t.Style = (Style)Application.Current.Resources["ErrorTextField"];
+            } 
+            else
+            {
+                t.Style = (Style)Application.Current.Resources["RegularTextField"];
+            }
+        }
+
+        private void Double_Input_Text_Changed(object sender, TextChangedEventArgs e)
+        {
+            double vpd;
+            TextBox t = (TextBox)sender;
+            var parsed = Double.TryParse(t.Text, out vpd);
+            
+            if (parsed)
+            {
+
+                t.Style = (Style)Application.Current.Resources["RegularTextField"];
+            } 
+            else
+            {
+                t.Style = (Style)Application.Current.Resources["ErrorTextField"];
+            }
         }
     }
 }

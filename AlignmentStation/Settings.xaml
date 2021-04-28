@@ -63,12 +63,12 @@
                 <StackPanel Orientation="Horizontal">
                     <StackPanel Margin="10,0,10,10" Orientation="Vertical">
                         <Label Padding="0,0,0,5" Content="Part Number"></Label>
-                        <TextBox Width="100" x:Name="ROSAPartNumberInput"></TextBox>
+                        <TextBox Width="100" x:Name="ROSAPartNumberInput" TextChanged="String_Input_Text_Changed"></TextBox>
                     </StackPanel>
 
                     <StackPanel Margin="10,0,10,10" Orientation="Vertical">
                         <Label Padding="0,0,0,5" Content="VPD RSSI"></Label>
-                        <TextBox Width="100" x:Name="ROSA_VPD_RSSI_Input"></TextBox>
+                        <TextBox Width="100" TextChanged="Double_Input_Text_Changed" x:Name="ROSA_VPD_RSSI_Input"></TextBox>
                     </StackPanel>
                 </StackPanel>
 
@@ -96,48 +96,48 @@
                 <StackPanel Orientation="Horizontal">
                     <StackPanel Margin="10,0,10,10" Orientation="Vertical">
                         <Label Padding="0,0,0,5" Content="Part Number"></Label>
-                        <TextBox Width="100" x:Name="TOSAPartNumberInput"></TextBox>
+                        <TextBox Width="100" x:Name="TOSAPartNumberInput" TextChanged="String_Input_Text_Changed"></TextBox>
                     </StackPanel>
 
                     <StackPanel Margin="10,0,10,10" Orientation="Vertical">
                         <Label Padding="0,0,0,5" Content="I Align"></Label>
-                        <TextBox Width="100" x:Name="TOSA_I_Align_Input"></TextBox>
+                        <TextBox Width="100" TextChanged="Double_Input_Text_Changed" x:Name="TOSA_I_Align_Input"></TextBox>
                     </StackPanel>
                 </StackPanel>
                 
                 <StackPanel Orientation="Horizontal">
                     <StackPanel Margin="10,0,10,10" Orientation="Vertical">
                         <Label Padding="0,0,0,5" Content="I Align Tolerance"></Label>
-                        <TextBox Width="100" x:Name="TOSA_I_Align_Tol_Input"></TextBox>
+                        <TextBox Width="100" TextChanged="Double_Input_Text_Changed" x:Name="TOSA_I_Align_Tol_Input"></TextBox>
                     </StackPanel>
 
                     <StackPanel Margin="10,0,10,10" Orientation="Vertical">
                         <Label Padding="0,0,0,5" Content="TO Min Power"></Label>
-                        <TextBox Width="100" x:Name="TOSA_P_Min_TO_Input"></TextBox>
+                        <TextBox Width="100" TextChanged="Double_Input_Text_Changed" x:Name="TOSA_P_Min_TO_Input"></TextBox>
                     </StackPanel>
                 </StackPanel>
                 
                 <StackPanel Orientation="Horizontal">
                     <StackPanel Margin="10,0,10,10" Orientation="Vertical">
                         <Label Padding="0,0,0,5" Content="FC Min Power"></Label>
-                        <TextBox Width="100" x:Name="TOSA_P_Min_FC_Input"></TextBox>
+                        <TextBox Width="100" TextChanged="Double_Input_Text_Changed" x:Name="TOSA_P_Min_FC_Input"></TextBox>
                     </StackPanel>
 
                     <StackPanel Margin="10,0,10,10" Orientation="Vertical">
                         <Label Padding="0,0,0,5" Content="Max Voltage"></Label>
-                        <TextBox Width="100" x:Name="TOSA_V_Max_Input"></TextBox>
+                        <TextBox Width="100" TextChanged="Double_Input_Text_Changed" x:Name="TOSA_V_Max_Input"></TextBox>
                     </StackPanel>
                 </StackPanel>
                 
                 <StackPanel Orientation="Horizontal">
                     <StackPanel Margin="10,0,10,10" Orientation="Vertical">
                         <Label Padding="0,0,0,5" Content="Min POPCT"></Label>
-                        <TextBox Width="100" x:Name="TOSA_POPCT_Min_Input"></TextBox>
+                        <TextBox Width="100" TextChanged="Double_Input_Text_Changed" x:Name="TOSA_POPCT_Min_Input"></TextBox>
                     </StackPanel>
 
                     <StackPanel Margin="10,0,10,10" Orientation="Vertical">
                         <Label Padding="0,0,0,5" Content="FC Max Power Shift"></Label>
-                        <TextBox x:Name="TOSA_P_FC_Shift_Max_Input"></TextBox>
+                        <TextBox Width="100" TextChanged="Double_Input_Text_Changed" x:Name="TOSA_P_FC_Shift_Max_Input"></TextBox>
                     </StackPanel>
                 </StackPanel>
 
