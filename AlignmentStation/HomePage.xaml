@@ -79,7 +79,7 @@
                    >Select Device</Label>
 
                 <ComboBox 
-                    MouseEnter="DeviceSelector_DropDownOpened"
+                    MouseEnter="DeviceSelector_MouseEnter"
                     x:Name="DeviceSelector" 
                     Height="auto" 
                     Width="120"

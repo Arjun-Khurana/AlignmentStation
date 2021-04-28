@@ -47,7 +47,6 @@ namespace AlignmentStation
         private void DeviceSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Device d = (sender as ComboBox).SelectedItem as Device;
-            Debug.Print("Selected {0}", d.Part_Number);
 
             MainWindow w = Window.GetWindow(this) as MainWindow;
 
@@ -79,21 +78,22 @@ namespace AlignmentStation
             DeviceSelector.ItemsSource = RosaDevices;
         }
 
-        private void DeviceSelector_DropDownOpened(object sender, EventArgs e)
+        private void DeviceSelector_MouseEnter(object sender, EventArgs e)
         {
             if ((bool) TOSA_Radio.IsChecked)
             {
                 TosaDevices.Clear();
                 TosaDevices.AddRange(MainWindow.Conn.GetAllTOSADevices());
+                DeviceSelector.ItemsSource = new List<TOSADevice>();
                 DeviceSelector.ItemsSource = TosaDevices;
             }
-            else if ((bool) TOSA_Radio.IsChecked)
+            else if ((bool) ROSA_Radio.IsChecked)
             {
                 RosaDevices.Clear();
                 RosaDevices.AddRange(MainWindow.Conn.GetAllROSADevices());
+                DeviceSelector.ItemsSource = new List<ROSADevice>();
                 DeviceSelector.ItemsSource = RosaDevices;
             }
-
         }
     }
 }
