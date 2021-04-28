@@ -20,7 +20,7 @@ namespace AlignmentStation
         private static readonly Lazy<Instruments> lazy = new Lazy<Instruments>(() => new Instruments());
         public static Instruments instance { get { return lazy.Value; } } 
 
-        private Controller c;
+        private Controller aerotechController;
         private SerialSession arroyo;
         private UsbSession powerMeter;
 
@@ -28,7 +28,7 @@ namespace AlignmentStation
         {
             try
             {
-                c = Controller.Connect();
+                aerotechController = Controller.Connect();
             }
             catch(A3200Exception ex)
             {
@@ -50,6 +50,7 @@ namespace AlignmentStation
                 catch (Exception ex)
                 {
                     Debug.WriteLine("fuck u bloody");
+
                 }
 
                 SerialSession session = (SerialSession)rm.Open(myResource);
@@ -83,6 +84,8 @@ namespace AlignmentStation
                 var t = session2.ReadStatusByte();
 
                 r = session2.RawIO.ReadString();
+
+                session2.RawIO.Write("SENS:CORR 27\n");
 
                 powerMeter = session2;
             }
@@ -127,51 +130,55 @@ namespace AlignmentStation
 
         public void CalibrateAxes()
         {
-            c.Commands.Axes["Y"].Motion.Enable();
-            c.Commands.Axes["X"].Motion.Enable();
-            c.Commands.Axes["Z"].Motion.Enable();
+            aerotechController.Commands.Axes["Y"].Motion.Enable();
+            aerotechController.Commands.Axes["X"].Motion.Enable();
+            aerotechController.Commands.Axes["Z"].Motion.Enable();
 
             try
             {
-                c.Commands.Motion.Linear("Y", -100);
+                aerotechController.Commands.Motion.Linear("Y", -100);
             }
             catch(A3200Exception ex)
             {
                 Console.WriteLine("Error: {0}", ex.Message);
-                c.Parameters.Axes["Y"].Limits.LimitDebounceDistance.Value = 0;
-                c.Commands.Axes["Y"].Motion.FaultAck();
+                aerotechController.Parameters.Axes["Y"].Limits.LimitDebounceDistance.Value = 0;
+                aerotechController.Commands.Axes["Y"].Motion.FaultAck();
             }
 
             try
             {
-                c.Commands.Motion.Linear("Z", 100);
+                aerotechController.Commands.Motion.Linear("Z", 100);
             }
             catch(A3200Exception ex)
             {
                 Console.WriteLine("Error: {0}", ex.Message);
-                c.Parameters.Axes["Z"].Limits.LimitDebounceDistance.Value = 0;
-                c.Commands.Axes["Z"].Motion.FaultAck();
+                aerotechController.Parameters.Axes["Z"].Limits.LimitDebounceDistance.Value = 0;
+                aerotechController.Commands.Axes["Z"].Motion.FaultAck();
             }
 
             try
             {
-                c.Commands.Motion.Linear("X", 100);
+                aerotechController.Commands.Motion.Linear("X", 100);
             }
             catch(A3200Exception ex)
             {
                 Console.WriteLine("Error: {0}", ex.Message);
-                c.Parameters.Axes["X"].Limits.LimitDebounceDistance.Value = 0;
-                c.Commands.Axes["X"].Motion.FaultAck();
+                aerotechController.Parameters.Axes["X"].Limits.LimitDebounceDistance.Value = 0;
+                aerotechController.Commands.Axes["X"].Motion.FaultAck();
             }
 
-            c.Commands.Motion.Linear("X", -12.106);
-            c.Commands.Motion.Linear("Z", 0.42);
-            c.Commands.Motion.Linear("Y", 15.692);
+            aerotechController.Commands.Motion.Linear("X", -12.106);
+            aerotechController.Commands.Motion.Linear("Z", 0.42);
+            aerotechController.Commands.Motion.Linear("Y", 15.692);
         }
 
         public void FindCentroid()
         {
-            c.Commands.Motion.Fiber.Centroid3D();
+            aerotechController.Commands.Execute("WAIT MODE INPOS");
+            aerotechController.Commands.DataAcquisition.Input(0, 0);
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CInputChannelNum.Value = 0;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CInputMode.Value = 0;
+            aerotechController.Commands.Motion.Fiber.Centroid3D();
         }
 
         public double GetThorlabsPower()

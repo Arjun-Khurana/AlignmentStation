@@ -96,8 +96,7 @@ namespace AlignmentStation
 
         private void Next_Step_Click(object sender, RoutedEventArgs e)
         {
-            // select max (unit_number) from tosa_output where job_number = J;
-
+            NavigationService.Navigate(new Step2());
         }
 
         private void TosaStep1()

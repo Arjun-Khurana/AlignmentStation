@@ -82,8 +82,7 @@
                     x:Name="errorList"
                     Background="{StaticResource DarkBg}"
                     Margin="0,10,0,0"
-                    Width="250"
-                    Height="75"/>
+                    />
             </StackPanel>
 
             <StackPanel 

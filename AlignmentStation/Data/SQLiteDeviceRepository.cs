@@ -98,10 +98,10 @@ namespace AlignmentStation.Data
             {
                 conn.Open();
 
-                int num = conn.Query<int>(
+                int? num = conn.Query<int?>(
                     @"select max(Unit_Number) from TOSAOutput where Job_Number = @jobNumber", new { jobNumber }).FirstOrDefault();
 
-                return num;
+                return (int)(num == null ? 0 : num);
             }
         }
         
@@ -111,10 +111,10 @@ namespace AlignmentStation.Data
             {
                 conn.Open();
 
-                int num = conn.Query<int>(
+                int? num = conn.Query<int?>(
                     @"select max(Unit_Number) from ROSAOutput where Job_Number = @jobNumber", new { jobNumber }).FirstOrDefault();
 
-                return num;
+                return (int)(num == null ? 0 : num);
             }
         }
 
