@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Aerotech.A3200;
 using Aerotech.A3200.Exceptions;
 using Aerotech.A3200.Status;
-using Thorlabs.TLPM_64.Interop;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using NationalInstruments.Visa;
@@ -34,6 +33,10 @@ namespace AlignmentStation
             {
                 Console.WriteLine("Error connecting to controller");
             }
+
+            aerotechController.Commands.Axes["Y"].Motion.Enable();
+            aerotechController.Commands.Axes["X"].Motion.Enable();
+            aerotechController.Commands.Axes["Z"].Motion.Enable();
 
             using (var rm = new ResourceManager())
             {
@@ -136,20 +139,9 @@ namespace AlignmentStation
 
             try
             {
-                aerotechController.Commands.Motion.Linear("Y", -100);
+                aerotechController.Commands.Motion.Linear("Z", -100);
             }
-            catch(A3200Exception ex)
-            {
-                Console.WriteLine("Error: {0}", ex.Message);
-                aerotechController.Parameters.Axes["Y"].Limits.LimitDebounceDistance.Value = 0;
-                aerotechController.Commands.Axes["Y"].Motion.FaultAck();
-            }
-
-            try
-            {
-                aerotechController.Commands.Motion.Linear("Z", 100);
-            }
-            catch(A3200Exception ex)
+            catch (A3200Exception ex)
             {
                 Console.WriteLine("Error: {0}", ex.Message);
                 aerotechController.Parameters.Axes["Z"].Limits.LimitDebounceDistance.Value = 0;
@@ -158,26 +150,53 @@ namespace AlignmentStation
 
             try
             {
+                aerotechController.Commands.Motion.Linear("Y", 100);
+            }
+            catch (A3200Exception ex)
+            {
+                Console.WriteLine("Error: {0}", ex.Message);
+                aerotechController.Parameters.Axes["Y"].Limits.LimitDebounceDistance.Value = 0;
+                aerotechController.Commands.Axes["Y"].Motion.FaultAck();
+            }
+
+            try
+            {
                 aerotechController.Commands.Motion.Linear("X", 100);
             }
-            catch(A3200Exception ex)
+            catch (A3200Exception ex)
             {
                 Console.WriteLine("Error: {0}", ex.Message);
                 aerotechController.Parameters.Axes["X"].Limits.LimitDebounceDistance.Value = 0;
                 aerotechController.Commands.Axes["X"].Motion.FaultAck();
             }
 
-            aerotechController.Commands.Motion.Linear("X", -12.106);
-            aerotechController.Commands.Motion.Linear("Z", 0.42);
-            aerotechController.Commands.Motion.Linear("Y", 15.692);
+            aerotechController.Commands.Motion.Linear("X", 11.6632 - 0.4948 );
+            // aerotechController.Commands.Motion.Linear("Y", 0.3858 - 9.4170);
+            // aerotechController.Commands.Motion.Linear("Z", 0.5379 + 17.9926);
+        }
+
+        public void FindFirstLight()
+        {
+            aerotechController.Commands.Execute("WAIT MODE INPOS");
+
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.SpiralRough.SRAxis1.Value = 0;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.SpiralRough.SRAxis1.Value = 1;
+
+            aerotechController.Commands.Motion.Fiber.SpiralRough();
+
         }
 
         public void FindCentroid()
         {
             aerotechController.Commands.Execute("WAIT MODE INPOS");
-            aerotechController.Commands.DataAcquisition.Input(0, 0);
-            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CInputChannelNum.Value = 0;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CInputMode.Value = 0;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CEdgeValue.Value = 0.75;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CScanIncrement.Value = 0.0005;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement1.Value = 1;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement2.Value = 1;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement3.Value = 1;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CReturnToCenter.Value = 1;
+
             aerotechController.Commands.Motion.Fiber.Centroid3D();
         }
 

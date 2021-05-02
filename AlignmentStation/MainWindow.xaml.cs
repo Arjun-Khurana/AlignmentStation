@@ -13,7 +13,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using AlignmentStation.Data;
-using Thorlabs.TLPM_64.Interop;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using AlignmentStation.Models;

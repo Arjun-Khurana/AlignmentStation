@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Diagnostics;
 
 namespace AlignmentStation
 {
@@ -27,7 +28,19 @@ namespace AlignmentStation
 
         private void AlignmentButtonClick(object sender, RoutedEventArgs e)
         {
+            Instruments.instance.FindFirstLight();
+            var firstLightPower = Instruments.instance.GetThorlabsPower();
+            Debug.Print("First light power: {0}", firstLightPower);
+
             Instruments.instance.FindCentroid();
+            var powerAfterAlignment = Instruments.instance.GetThorlabsPower();
+            var alignmentPowerCalibration = 500.0;
+            Debug.Print("Power after alignment: {0}", powerAfterAlignment);
+
+            var w = Window.GetWindow(this) as MainWindow;
+            var o = w.output as Models.TOSAOutput;
+            o.P_FC = powerAfterAlignment / alignmentPowerCalibration;
+            o.POPCT = powerAfterAlignment / o.P_TO;
         }
     }
 }

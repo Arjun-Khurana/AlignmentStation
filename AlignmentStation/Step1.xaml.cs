@@ -16,7 +16,6 @@ using Aerotech.A3200;
 using Aerotech.A3200.Exceptions;
 using System.Diagnostics;
 using System.IO;
-using Thorlabs.TLPM_64.Interop;
 using System.Runtime.InteropServices;
 using System.Globalization;
 using System.Reflection;
