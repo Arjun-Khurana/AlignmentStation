@@ -159,7 +159,7 @@ namespace AlignmentStation
             {
                 HideErrorPanels();
 
-                output.P_TO = power;
+                output.P_TO = power / 500.0;
                 output.I_Align = current;
                 output.Repeat_Number = attemptNumber;
 

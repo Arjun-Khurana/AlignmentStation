@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
+using AlignmentStation.Models;
 
 namespace AlignmentStation
 {
@@ -21,6 +22,9 @@ namespace AlignmentStation
     /// </summary>
     public partial class Step2 : Page
     {
+        List<string> ErrorMessages = new();
+        int attemptNumber = 0;
+
         public Step2()
         {
             InitializeComponent();
@@ -28,19 +32,65 @@ namespace AlignmentStation
 
         private void AlignmentButtonClick(object sender, RoutedEventArgs e)
         {
-            Instruments.instance.FindFirstLight();
+            if (attemptNumber == 3)
+            {
+                NavigationService.Navigate(new HomePage());
+                return;
+            }
+
+            attemptNumber++;
+
+            Mouse.OverrideCursor = Cursors.Wait;
+
+            ErrorMessages.Clear();
+
+            var w = Window.GetWindow(this) as MainWindow;
+            if (w.device is TOSADevice)
+            {
+                TosaStep2();
+            }
+
+            Mouse.OverrideCursor = Cursors.Arrow;
+        }
+
+        private void TosaStep2()
+        {
+            var w = Window.GetWindow(this) as MainWindow;
+            if ((w.output as TOSAOutput).P_TO < 0.3)
+            {
+                Instruments.instance.FindFirstLight();
+            }
+
             var firstLightPower = Instruments.instance.GetThorlabsPower();
             Debug.Print("First light power: {0}", firstLightPower);
 
             Instruments.instance.FindCentroid();
+
             var powerAfterAlignment = Instruments.instance.GetThorlabsPower();
             var alignmentPowerCalibration = 500.0;
             Debug.Print("Power after alignment: {0}", powerAfterAlignment);
 
-            var w = Window.GetWindow(this) as MainWindow;
-            var o = w.output as Models.TOSAOutput;
+            var o = w.output as TOSAOutput;
+            var d = w.device as TOSADevice;
+
             o.P_FC = powerAfterAlignment / alignmentPowerCalibration;
-            o.POPCT = powerAfterAlignment / o.P_TO;
+            o.POPCT = o.P_FC / o.P_TO;
+
+            if (o.POPCT < d.POPCT_Min)
+            {
+                ErrorMessages.Add("POPCT > POPCT_MIN");
+                this.failedMessage.Visibility = Visibility.Visible;
+                this.successMessage.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                this.failedMessage.Visibility = Visibility.Collapsed;
+                this.successMessage.Visibility = Visibility.Visible;
+
+                this.NextStepButton.Visibility = Visibility.Visible;
+                this.AlignmentButton.Visibility = Visibility.Collapsed;
+            }
         }
+
     }
 }
