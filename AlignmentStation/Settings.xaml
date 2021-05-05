@@ -46,6 +46,27 @@
 
             <Button
                 Margin="0,0,0,20"
+                Name="FindFirstLight_Button"
+                Content="Find first light" 
+                Click="FindFirstLightClick"
+                HorizontalAlignment="Center"
+                Style="{StaticResource UnderlineButton}"
+                BorderThickness="1,1,1,1" 
+                Padding="5,1,5,1" />
+
+            <Button
+                Margin="0,0,0,20"
+                Name="FindCentroidButton"
+                Content="Find centroid" 
+                Click="FindCentroidClick"
+                HorizontalAlignment="Center"
+                Style="{StaticResource UnderlineButton}"
+                BorderThickness="1,1,1,1" 
+                Padding="5,1,5,1" />
+
+
+            <Button
+                Margin="0,0,0,20"
                 Name="Calibrate_Button"
                 Content="Calibrate Limits" 
                 Click="CalibrateLimitsClick"

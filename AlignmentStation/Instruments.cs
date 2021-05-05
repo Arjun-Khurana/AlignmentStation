@@ -170,28 +170,47 @@ namespace AlignmentStation
                 aerotechController.Commands.Axes["X"].Motion.FaultAck();
             }
 
-            aerotechController.Commands.Motion.Linear("X", 11.6632 - 0.4948 );
-            // aerotechController.Commands.Motion.Linear("Y", 0.3858 - 9.4170);
-            // aerotechController.Commands.Motion.Linear("Z", 0.5379 + 17.9926);
+            aerotechController.Reset();
+
+            aerotechController.Commands.Axes["Y"].Motion.Enable();
+            aerotechController.Commands.Axes["X"].Motion.Enable();
+            aerotechController.Commands.Axes["Z"].Motion.Enable();
+
+            aerotechController.Commands.Motion.Linear("X", -11.9443);
+            aerotechController.Commands.Motion.Linear("Y", -8.9381);
+            // aerotechController.Commands.Motion.Linear("Z", 18.9341);
+            aerotechController.Commands.Motion.Linear("Z", 19.0);
         }
 
         public void FindFirstLight()
         {
+            this.SetArroyoLaserOn();
+
+            Thread.Sleep(3200);
+
             aerotechController.Commands.Execute("WAIT MODE INPOS");
 
-            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.SpiralRough.SRAxis1.Value = 0;
-            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.SpiralRough.SRAxis1.Value = 1;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.SpiralFine.SFAxis1.Value = 0;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.SpiralFine.SFAxis2.Value = 2;
 
-            aerotechController.Commands.Motion.Fiber.SpiralRough();
-
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.SpiralFine.SFMotionType.Value = 0;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.SpiralFine.SFEndRadius.Value = 0.2;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.SpiralFine.SFNumSpirals.Value = 20;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.SpiralFine.SFSegmentLength.Value = 0.05;
+            aerotechController.Commands.Motion.Fiber.SpiralFine();
         }
 
         public void FindCentroid()
         {
+            double firstPower = this.GetThorlabsPower();
+            double edgeValue = firstPower * 0.75; 
+            Debug.Print("Using first light power: {0}", firstPower);
+            Debug.Print("Using edge value: {0}", edgeValue);
+
             aerotechController.Commands.Execute("WAIT MODE INPOS");
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CInputMode.Value = 0;
-            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CEdgeValue.Value = 0.75;
-            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CScanIncrement.Value = 0.0005;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CEdgeValue.Value = edgeValue;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CScanIncrement.Value = 0.00025;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement1.Value = 1;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement2.Value = 1;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement3.Value = 1;

@@ -166,5 +166,15 @@ namespace AlignmentStation
                 t.Style = (Style)Application.Current.Resources["ErrorTextField"];
             }
         }
+
+        private void FindFirstLightClick(object sender, RoutedEventArgs e)
+        {
+            Instruments.instance.FindFirstLight();
+        }
+
+        private void FindCentroidClick(object sender, RoutedEventArgs e)
+        {
+            Instruments.instance.FindCentroid();
+        }
     }
 }
