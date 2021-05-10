@@ -193,6 +193,7 @@ namespace AlignmentStation.Data
                         P_Optical,
                         I_RSSI,
                         I_VPD,
+                        I_Mon,
                         POPCT,
                         POPCT_Shift
                     )
@@ -207,6 +208,7 @@ namespace AlignmentStation.Data
                         @p_optical,
                         @i_rssi,
                         @i_vpd,
+                        @i_mon,
                         @popct,
                         @popct_shift
                         )", 
@@ -220,6 +222,7 @@ namespace AlignmentStation.Data
                     p_optical = output.P_Optical, 
                     i_rssi = output.I_RSSI,
                     i_vpd = output.I_VPD,
+                    i_mon = output.I_Mon,
                     popct = output.POPCT,
                     popct_shift = output.POPCT_Shift
                 });
@@ -351,6 +354,7 @@ namespace AlignmentStation.Data
                         P_Optical double not null,
                         I_RSSI double not null,
                         I_VPD double not null,
+                        I_Mon double not null,
                         POPCT double not null,
                         POPCT_Shift double not null
                     )");

@@ -107,8 +107,17 @@ namespace AlignmentStation
             arroyo.RawIO.Write("LAS:OUT 0\n");
         }
 
+        public void SetArroyoVoltage(double voltage)
+        {
+            arroyo.RawIO.Write("LAS:MODE:LDV\n");
+            arroyo.RawIO.Write("LAS:LDV " + voltage + "\n");
+            Thread.Sleep(1000);
+        }
+
         public void SetArroyoCurrent(double current)
         {
+            // set control mode to current
+            arroyo.RawIO.Write("LAS:MODE:ILBW\n");
             arroyo.RawIO.Write("LAS:LDI " + current + "\n");
             Thread.Sleep(1000);
         }

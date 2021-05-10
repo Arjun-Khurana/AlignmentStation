@@ -87,7 +87,7 @@ namespace AlignmentStation
             }
             else
             {
-
+                RosaStep1();
             }
 
             Mouse.OverrideCursor = Cursors.Arrow;
@@ -98,6 +98,27 @@ namespace AlignmentStation
             NavigationService.Navigate(new Step2());
         }
 
+        private void RosaStep1()
+        {
+            var w = Window.GetWindow(this) as MainWindow;
+
+            ROSADevice rosa = w.device as ROSADevice;
+            ROSAOutput output = w.output as ROSAOutput;
+
+            // use switches to set voltage
+
+            // get voltage from aerotech,
+            // multiply by calibration constant to get current 
+
+            // step 1: turn on switches, get voltage going
+            //          no measurement
+            // step 2: do the alignment, get voltage from aerotech
+            //          multiply by constant - get from jim
+            //          this voltage gets converted to I_Mon
+            // step 3: cure the epoxy, retest voltage
+
+        }
+        
         private void TosaStep1()
         {
             var w = Window.GetWindow(this) as MainWindow;

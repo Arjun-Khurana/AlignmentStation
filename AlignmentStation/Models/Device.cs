@@ -68,7 +68,10 @@ namespace AlignmentStation.Models
         public double P_Optical { get; set; }
         public double I_RSSI { get; set; }
         public double I_VPD { get; set; }
+        public double I_Mon { get; set; }
         public double POPCT { get; set; }
         public double POPCT_Shift { get; set; }
+
+        // add I_Mon output
     }
 }
