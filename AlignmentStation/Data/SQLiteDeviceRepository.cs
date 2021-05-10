@@ -178,12 +178,102 @@ namespace AlignmentStation.Data
 
         public void SaveROSAOutput(ROSAOutput output)
         {
-            throw new NotImplementedException();
+            using (var conn = SimpleDbConnection())
+            {
+                conn.Open();
+                conn.Execute(
+                @"INSERT INTO ROSAOutput 
+                    ( 
+                        Part_Number,
+                        Job_Number,
+                        Unit_Number,
+                        Operator,
+                        Timestamp,
+                        Repeat_Number,
+                        P_Optical,
+                        I_RSSI,
+                        I_VPD,
+                        POPCT,
+                        POPCT_Shift
+                    )
+                    values 
+                    ( 
+                        @part_number, 
+                        @job_number,
+                        @unit_number, 
+                        @op,
+                        @timestamp, 
+                        @repeat_number,
+                        @p_optical,
+                        @i_rssi,
+                        @i_vpd,
+                        @popct,
+                        @popct_shift
+                        )", 
+                new {
+                    part_number = output.Part_Number, 
+                    job_number = output.Job_Number,
+                    unit_number = output.Unit_Number, 
+                    op = output.Operator,
+                    timestamp = output.Timestamp, 
+                    repeat_number = output.Repeat_Number,
+                    p_optical = output.P_Optical, 
+                    i_rssi = output.I_RSSI,
+                    i_vpd = output.I_VPD,
+                    popct = output.POPCT,
+                    popct_shift = output.POPCT_Shift
+                });
+            }
         }
 
         public void SaveTOSAOutput(TOSAOutput output)
         {
-            throw new NotImplementedException();
+            using (var conn = SimpleDbConnection())
+            {
+                conn.Open();
+                conn.Execute(
+                @"INSERT INTO TOSAOutput 
+                    ( 
+                        Part_Number,
+                        Job_Number,
+                        Unit_Number,
+                        Operator,
+                        Timestamp,
+                        Repeat_Number,
+                        I_Align,
+                        P_TO,
+                        P_FC,
+                        POPCT,
+                        POPCT_Shift
+                    )
+                    values 
+                    ( 
+                        @part_number, 
+                        @job_number,
+                        @unit_number, 
+                        @op,
+                        @timestamp, 
+                        @repeat_number,
+                        @i_align, 
+                        @p_to,
+                        @p_fc,
+                        @popct,
+                        @popct_shift
+                        )", 
+                new {
+                    part_number = output.Part_Number, 
+                    job_number = output.Job_Number,
+                    unit_number = output.Unit_Number, 
+                    op = output.Operator,
+                    timestamp = output.Timestamp, 
+                    repeat_number = output.Repeat_Number,
+                    i_align = output.I_Align, 
+                    p_to = output.P_TO,
+                    p_fc = output.P_FC,
+                    popct = output.POPCT,
+                    popct_shift = output.POPCT_Shift
+                });
+            }
         }
 
         private static void CreateDatabase()
@@ -231,8 +321,8 @@ namespace AlignmentStation.Data
                         Repeat_Number integer not null,
                         I_Align double not null,
                         P_TO double not null,
-                        P_TC double not null,
-                        POPCF double not null,
+                        P_FC double not null,
+                        POPCT double not null,
                         POPCT_Shift double not null
                     )");
 

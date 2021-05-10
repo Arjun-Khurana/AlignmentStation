@@ -23,6 +23,8 @@ namespace AlignmentStation
         private SerialSession arroyo;
         private UsbSession powerMeter;
 
+        public double alignmentPowerCalibration = 500.0;
+
         private Instruments()
         {
             try

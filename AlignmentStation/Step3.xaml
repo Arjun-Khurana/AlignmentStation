@@ -1,4 +1,4 @@
-﻿<Page x:Class="AlignmentStation.Step2"
+﻿<Page x:Class="AlignmentStation.Step3"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,7 +7,7 @@
       mc:Ignorable="d" 
       d:Background="{StaticResource DarkBg}"
       d:DesignHeight="450" d:DesignWidth="400"
-      Title="Step2">
+      Title="Step3">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -19,7 +19,7 @@
                 FontSize="26"
                 FontWeight="Light"
                 Margin="0,0,0,15" 
-                Text="Step 2"></TextBlock>
+                Text="Step 3"></TextBlock>
 
             <Border 
                 Padding="10"
@@ -38,23 +38,7 @@
                         Margin="0,0,0,0"
                         TextWrapping="Wrap"
                         FontSize="15"
-                        Text="(1) Dispense UV cure epoxy on lens barrel">
-                    </TextBlock>
-
-                    <TextBlock
-                        x:Name="secondInstruction"
-                        Margin="0,0,0,0"
-                        TextWrapping="Wrap"
-                        FontSize="15"
-                        Text="(2) Load lens barrel">
-                    </TextBlock>
-
-                    <TextBlock
-                        x:Name="thirdInstruction"
-                        Margin="0,0,0,0"
-                        TextWrapping="Wrap"
-                        FontSize="15"
-                        Text="(3) Insert wand with TO into fixture">
+                        Text="(1) Cure epoxy with UV pedal">
                     </TextBlock>
                 </StackPanel>
             </Border>
@@ -77,6 +61,7 @@
                     VerticalAlignment="Center"
                     Text="Test Passed"></TextBlock>
             </StackPanel>
+
             <StackPanel
                 x:Name="errorPanel"
                 Visibility="Collapsed"
@@ -94,26 +79,14 @@
                     />
             </StackPanel>
 
-
             <StackPanel 
                 Margin="0,20,0,0"
                 Orientation="Horizontal">
                 <Button
-                    x:Name="AlignmentButton"
+                    x:Name="TestButton"
                     HorizontalAlignment="Left"
-                    Click="AlignmentButtonClick"
-                    Content="Begin alignment"
-                    Margin="0,0,10,0" 
-                    VerticalAlignment="Center"
-                    >
-                </Button>
-
-                <Button
-                    x:Name="NextStepButton"
-                    HorizontalAlignment="Left"
-                    Visibility="Collapsed"
-                    Click="Next_Step_Click"
-                    Content="Next step"
+                    Click="TestButton_Click"
+                    Content="Begin test"
                     Margin="0,0,10,0" 
                     VerticalAlignment="Center"
                     >

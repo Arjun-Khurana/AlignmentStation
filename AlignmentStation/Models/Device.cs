@@ -69,6 +69,6 @@ namespace AlignmentStation.Models
         public double I_RSSI { get; set; }
         public double I_VPD { get; set; }
         public double POPCT { get; set; }
-        public double POPCT_SHIFT { get; set; }
+        public double POPCT_Shift { get; set; }
     }
 }

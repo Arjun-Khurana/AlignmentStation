@@ -41,6 +41,15 @@ namespace AlignmentStation
                 return;
             }
 
+            if (String.IsNullOrEmpty(OperatorNameBox.Text))
+            {
+                Debug.Print("Enter operator name");
+                return;
+            }
+
+            var w = Window.GetWindow(this) as MainWindow;
+            w.output.Operator = OperatorNameBox.Text;
+
             NavigationService.Navigate(new Step1()); 
         }
 
@@ -54,8 +63,9 @@ namespace AlignmentStation
             if (d is TOSADevice)
             {
                 w.output = new TOSAOutput();
+                w.output.Part_Number = d.Part_Number;
                 w.output.Job_Number = "job 1";
-                w.output.Unit_Number = MainWindow.Conn.GetMaxTOSAUnitNumber("job 1");
+                w.output.Unit_Number = MainWindow.Conn.GetMaxTOSAUnitNumber("job 1") + 1;
             }
             else
             {

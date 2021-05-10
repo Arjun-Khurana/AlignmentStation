@@ -24,18 +24,31 @@ namespace AlignmentStation
     {
         List<string> ErrorMessages = new();
         int attemptNumber = 0;
+        bool barrelReplaced = false;
 
         public Step2()
         {
             InitializeComponent();
         }
 
+        private void Next_Step_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(new Step3());
+        }
+
         private void AlignmentButtonClick(object sender, RoutedEventArgs e)
         {
-            if (attemptNumber == 3)
+            if (barrelReplaced)
             {
+                // complete fail go back to home
                 NavigationService.Navigate(new HomePage());
+                // output device so far with failure
                 return;
+            }
+            else if (attemptNumber == 3)
+            {
+                // change instructions to replace barrel
+                barrelReplaced = true;
             }
 
             attemptNumber++;
@@ -56,7 +69,7 @@ namespace AlignmentStation
         private void TosaStep2()
         {
             var w = Window.GetWindow(this) as MainWindow;
-            if ((w.output as TOSAOutput).P_TO < 0.3)
+            if ((w.output as TOSAOutput).P_TO * 500 < 0.3)
             {
                 Instruments.instance.FindFirstLight();
             }
@@ -67,13 +80,12 @@ namespace AlignmentStation
             Instruments.instance.FindCentroid();
 
             var powerAfterAlignment = Instruments.instance.GetThorlabsPower();
-            var alignmentPowerCalibration = 500.0;
             Debug.Print("Power after alignment: {0}", powerAfterAlignment);
 
             var o = w.output as TOSAOutput;
             var d = w.device as TOSADevice;
 
-            o.P_FC = powerAfterAlignment / alignmentPowerCalibration;
+            o.P_FC = powerAfterAlignment / Instruments.instance.alignmentPowerCalibration;
             o.POPCT = o.P_FC / o.P_TO;
 
             if (o.POPCT < d.POPCT_Min)
@@ -82,15 +94,43 @@ namespace AlignmentStation
                 this.failedMessage.Visibility = Visibility.Visible;
                 this.successMessage.Visibility = Visibility.Collapsed;
             }
-            else
+
+            if (ErrorMessages.Count == 0) 
             {
+                this.errorPanel.Visibility = Visibility.Collapsed;
                 this.failedMessage.Visibility = Visibility.Collapsed;
                 this.successMessage.Visibility = Visibility.Visible;
 
                 this.NextStepButton.Visibility = Visibility.Visible;
                 this.AlignmentButton.Visibility = Visibility.Collapsed;
             }
-        }
+            else
+            {
+                this.errorList.ItemsSource = ErrorMessages;
+                this.errorPanel.Visibility = Visibility.Visible;
+                this.failedMessage.Visibility = Visibility.Visible;
+                this.failedMessage.Text = $"Test attempt {attemptNumber} failed, check TO and lens";
+                this.successMessage.Visibility = Visibility.Collapsed;
 
+                this.NextStepButton.Visibility = Visibility.Collapsed;
+
+                if (attemptNumber > 3)
+                {
+                    this.AlignmentButton.Content = "Go home";
+                }
+                else
+                {
+                    if (attemptNumber == 3)
+                    {
+                        firstInstruction.Text = "(1) Remove lens barrel";
+                        this.failedMessage.Text = $"Test attempt {attemptNumber} failed\nReplace TO and try again.";
+                        secondInstruction.Visibility = Visibility.Collapsed;
+                        thirdInstruction.Visibility = Visibility.Collapsed;
+                    }
+
+                    this.AlignmentButton.Content = "Retry";
+                }
+            }
+        }
     }
 }
