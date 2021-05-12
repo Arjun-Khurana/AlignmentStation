@@ -243,6 +243,7 @@ namespace AlignmentStation
             string strCmdText;
             strCmdText = $"QAAMZ open {relayNum}";
             Process.Start("relay.exe", strCmdText);
+            Thread.Sleep(250);
         }
 
         public void CloseRelay(int relayNum)
@@ -250,6 +251,7 @@ namespace AlignmentStation
             string strCmdText;
             strCmdText = $"QAAMZ close {relayNum}";
             Process.Start("relay.exe", strCmdText);
+            Thread.Sleep(250);
         }
     }
 }
