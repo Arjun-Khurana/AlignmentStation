@@ -334,12 +334,12 @@ namespace AlignmentStation.Data
                     (
                         Id integer primary key autoincrement,
                         Part_Number varchar(255) not null,
-                        VPD_RSSI double not null
+                        VPD_RSSI varchar(4) not null
                     )");
 
                 conn.Execute(@"insert into ROSADevice (Part_Number, VPD_RSSI)
-                                values  ('r-10', 1.0),
-                                        ('r-11', 32.6);");
+                                values  ('r-10', 'vpd'),
+                                        ('r-11', 'rssi');");
                 
                 conn.Execute(
                     @"create table ROSAOutput 

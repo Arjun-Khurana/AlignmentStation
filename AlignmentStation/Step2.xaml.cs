@@ -69,13 +69,30 @@ namespace AlignmentStation
         private void TosaStep2()
         {
             var w = Window.GetWindow(this) as MainWindow;
-            if ((w.output as TOSAOutput).P_TO * 500 < 0.3)
+            var firstLightPower = Instruments.instance.GetThorlabsPower();
+            if (firstLightPower < 0.3)
             {
+                Debug.Print("Power is too low: {0}", firstLightPower);
+                Debug.Print("Finding first light");
                 Instruments.instance.FindFirstLight();
+                firstLightPower = Instruments.instance.GetThorlabsPower();
             }
 
-            var firstLightPower = Instruments.instance.GetThorlabsPower();
-            Debug.Print("First light power: {0}", firstLightPower);
+            if (firstLightPower < 0.3)
+            {
+                Debug.Print("First light power: {0}", firstLightPower);
+                Debug.Print("Could not find first light");
+
+                ErrorMessages.Clear();
+                ErrorMessages.Add("Could not find first light.");
+                errorList.ItemsSource = ErrorMessages;
+                errorPanel.Visibility = Visibility.Visible;
+                AlignmentButton.Visibility = Visibility.Visible;
+                AlignmentButton.Content = "Go home";
+                attemptNumber = 3;
+                barrelReplaced = true;
+                return;
+            }
 
             Instruments.instance.FindCentroid();
 

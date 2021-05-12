@@ -80,7 +80,6 @@ namespace AlignmentStation
             ErrorMessages.Clear();
 
             var w = Window.GetWindow(this) as MainWindow;
-
             if (w.device is TOSADevice)
             {
                 TosaStep1();

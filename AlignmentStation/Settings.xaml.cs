@@ -55,6 +55,16 @@ namespace AlignmentStation
             Instruments.instance.CalibrateAxes();
         }
 
+        private void OpenRelayClick(object sender, RoutedEventArgs e)
+        {
+            Instruments.instance.OpenRelay(1);
+        }
+
+        private void CloseRelayClick(object sender, RoutedEventArgs e)
+        {
+            Instruments.instance.CloseRelay(1);
+        }
+
         private void SaveROSADeviceButtonClick(object sender, RoutedEventArgs e)
         {
             double vpd;
@@ -65,7 +75,7 @@ namespace AlignmentStation
                 var device = new Models.ROSADevice
                 {
                     Part_Number = ROSAPartNumberInput.Text,
-                    VPD_RSSI = Double.Parse(ROSA_VPD_RSSI_Input.Text)
+                    VPD_RSSI = ROSA_VPD_RSSI_Input.Text
                 };
 
                 MainWindow.Conn.SaveROSADevice(device);

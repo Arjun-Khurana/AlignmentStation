@@ -23,6 +23,8 @@ namespace AlignmentStation
         private SerialSession arroyo;
         private UsbSession powerMeter;
 
+        private string RelaySerial = "QAAMZ";
+
         public double alignmentPowerCalibration = 500.0;
 
         private Instruments()
@@ -187,10 +189,10 @@ namespace AlignmentStation
             aerotechController.Commands.Axes["X"].Motion.Enable();
             aerotechController.Commands.Axes["Z"].Motion.Enable();
 
-            aerotechController.Commands.Motion.Linear("X", -11.9443);
-            aerotechController.Commands.Motion.Linear("Y", -8.9381);
+            aerotechController.Commands.Motion.Linear("X", -10.3059);
+            aerotechController.Commands.Motion.Linear("Y", -13.5771);
             // aerotechController.Commands.Motion.Linear("Z", 18.9341);
-            aerotechController.Commands.Motion.Linear("Z", 19.0);
+            aerotechController.Commands.Motion.Linear("Z", 17.6605);
         }
 
         public void FindFirstLight()
@@ -234,6 +236,20 @@ namespace AlignmentStation
         {
             powerMeter.RawIO.Write("MEAS:POW?\n");
             return Double.Parse(powerMeter.RawIO.ReadString());
+        }
+
+        public void OpenRelay(int relayNum)
+        {
+            string strCmdText;
+            strCmdText = $"QAAMZ open {relayNum}";
+            Process.Start("relay.exe", strCmdText);
+        }
+
+        public void CloseRelay(int relayNum)
+        {
+            string strCmdText;
+            strCmdText = $"QAAMZ close {relayNum}";
+            Process.Start("relay.exe", strCmdText);
         }
     }
 }

@@ -60,7 +60,7 @@ namespace AlignmentStation.Models
 
     public class ROSADevice : Device
     {
-        public double VPD_RSSI { get; set; }
+        public string VPD_RSSI { get; set; }
     }
 
     public class ROSAOutput : TestOutput

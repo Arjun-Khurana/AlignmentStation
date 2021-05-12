@@ -57,53 +57,67 @@ namespace AlignmentStation
         {
             Device d = (sender as ComboBox).SelectedItem as Device;
 
+            if (d == null)
+            {
+                return;
+            }
+
             MainWindow w = Window.GetWindow(this) as MainWindow;
 
             w.device = d;
             if (d is TOSADevice)
             {
-                w.output = new TOSAOutput();
-                w.output.Part_Number = d.Part_Number;
-                w.output.Job_Number = "job 1";
-                w.output.Unit_Number = MainWindow.Conn.GetMaxTOSAUnitNumber("job 1") + 1;
+                var job = JobNumberBox.Text;
+
+                w.output = new TOSAOutput
+                {
+                    Part_Number = d.Part_Number,
+                    Job_Number = job,
+                    Unit_Number = MainWindow.Conn.GetMaxTOSAUnitNumber(job) + 1
+                };
+
+                Instruments.instance.CloseRelay(2);
+                Instruments.instance.CloseRelay(4);
             }
             else
             {
                 w.output = new ROSAOutput();
+                var r = d as ROSADevice;
+                
+                if (r.VPD_RSSI == "vpd")
+                {
+                    Instruments.instance.OpenRelay(1);
+                    Instruments.instance.OpenRelay(2);
+                    Instruments.instance.OpenRelay(4);
+                } 
+                else
+                {
+                    Instruments.instance.CloseRelay(1);
+                    Instruments.instance.OpenRelay(2);
+                    Instruments.instance.OpenRelay(4);
+                }
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Settings_Button_Click(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(new Settings());
         }
 
         private void TOSA_Radio_Checked(object sender, RoutedEventArgs e)
         {
-            DeviceSelector.ItemsSource = TosaDevices;
-        }
-
-        private void ROSA_Radio_Checked(object sender, RoutedEventArgs e)
-        {
-            DeviceSelector.ItemsSource = RosaDevices;
-        }
-
-        private void DeviceSelector_MouseEnter(object sender, EventArgs e)
-        {
-            if ((bool) TOSA_Radio.IsChecked)
-            {
                 TosaDevices.Clear();
                 TosaDevices.AddRange(MainWindow.Conn.GetAllTOSADevices());
                 DeviceSelector.ItemsSource = new List<TOSADevice>();
                 DeviceSelector.ItemsSource = TosaDevices;
-            }
-            else if ((bool) ROSA_Radio.IsChecked)
-            {
+        }
+
+        private void ROSA_Radio_Checked(object sender, RoutedEventArgs e)
+        {
                 RosaDevices.Clear();
                 RosaDevices.AddRange(MainWindow.Conn.GetAllROSADevices());
                 DeviceSelector.ItemsSource = new List<ROSADevice>();
                 DeviceSelector.ItemsSource = RosaDevices;
-            }
         }
     }
 }
