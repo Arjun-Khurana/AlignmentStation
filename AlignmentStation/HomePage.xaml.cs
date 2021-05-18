@@ -32,7 +32,6 @@ namespace AlignmentStation
             RosaDevices.AddRange(MainWindow.Conn.GetAllROSADevices());
         }
 
-        
         private void StartButton(object sender, RoutedEventArgs e)
         {
             if (DeviceSelector.SelectedItem == null)
@@ -56,7 +55,6 @@ namespace AlignmentStation
             var w = Window.GetWindow(this) as MainWindow;
             w.output.Operator = OperatorNameBox.Text;
             w.output.Job_Number = JobNumberBox.Text.Trim();
-
 
             if (w.device is ROSADevice)
             {
@@ -95,7 +93,6 @@ namespace AlignmentStation
                 w.output = new TOSAOutput
                 {
                     Part_Number = d.Part_Number,
-                    Job_Number = job,
                     Unit_Number = MainWindow.Conn.GetMaxTOSAUnitNumber(job) + 1
                 };
 
@@ -107,7 +104,6 @@ namespace AlignmentStation
                 w.output = new ROSAOutput
                 {
                     Part_Number = d.Part_Number,
-                    Job_Number = job,
                     Unit_Number = MainWindow.Conn.GetMaxROSAUnitNumber(job) + 1,
                 };
                 var r = d as ROSADevice;
