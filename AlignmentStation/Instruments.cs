@@ -26,6 +26,7 @@ namespace AlignmentStation
         private string RelaySerial = "QAAMZ";
 
         public double alignmentPowerCalibration = 500.0;
+        public double seriesResistance = 4700;
 
         private Instruments()
         {
@@ -213,17 +214,14 @@ namespace AlignmentStation
             aerotechController.Commands.Motion.Fiber.SpiralFine();
         }
 
-        public void FindCentroid()
+        public void FindCentroid(double edgeValue, double stepSize)
         {
-            double firstPower = this.GetThorlabsPower();
-            double edgeValue = firstPower * 0.75; 
-            Debug.Print("Using first light power: {0}", firstPower);
             Debug.Print("Using edge value: {0}", edgeValue);
 
             aerotechController.Commands.Execute("WAIT MODE INPOS");
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CInputMode.Value = 0;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CEdgeValue.Value = edgeValue;
-            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CScanIncrement.Value = 0.00025;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CScanIncrement.Value = stepSize;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement1.Value = 1;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement2.Value = 1;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement3.Value = 1;
@@ -241,7 +239,7 @@ namespace AlignmentStation
         public void OpenRelay(int relayNum)
         {
             string strCmdText;
-            strCmdText = $"QAAMZ open {relayNum}";
+            strCmdText = $"{RelaySerial} open {relayNum}";
             Process.Start("relay.exe", strCmdText);
             Thread.Sleep(250);
         }
@@ -249,9 +247,17 @@ namespace AlignmentStation
         public void CloseRelay(int relayNum)
         {
             string strCmdText;
-            strCmdText = $"QAAMZ close {relayNum}";
+            strCmdText = $"{RelaySerial} close {relayNum}";
             Process.Start("relay.exe", strCmdText);
             Thread.Sleep(250);
+        }
+
+        public double GetAerotechAnalogVoltage()
+        {
+            var v = aerotechController.Commands.IO.AnalogInput(0, "X");
+            Debug.Print($"Aerotech voltage: {v}");
+
+            return v;
         }
     }
 }

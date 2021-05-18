@@ -20,7 +20,6 @@ namespace AlignmentStation.Models
         public int Unit_Number { get; set; }
         public string Operator { get; set; }
         public DateTime Timestamp { get; set; }
-        public int Repeat_Number { get; set; }
     }
 
     public class TOSADevice : Device
@@ -61,17 +60,14 @@ namespace AlignmentStation.Models
     public class ROSADevice : Device
     {
         public string VPD_RSSI { get; set; }
+        public double Resp_Min { get; set; }
     }
 
     public class ROSAOutput : TestOutput
     {
-        public double P_Optical { get; set; }
-        public double I_RSSI { get; set; }
-        public double I_VPD { get; set; }
-        public double I_Mon { get; set; }
-        public double POPCT { get; set; }
-        public double POPCT_Shift { get; set; }
-
-        // add I_Mon output
+        // 10 * log( pre-alignment resp / post-alignment resp )
+        public double Resp { get; set; }
+        public double Resp_Shift { get; set; } 
+        public double Fiber_Power { get; set; }
     }
 }

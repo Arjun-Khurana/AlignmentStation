@@ -62,8 +62,95 @@ namespace AlignmentStation
             {
                 TosaStep2();
             }
+            else
+            {
+                RosaStep2();
+            }
 
             Mouse.OverrideCursor = Cursors.Arrow;
+        }
+
+        private void RosaStep2()
+        {
+            var w = Window.GetWindow(this) as MainWindow;
+            var rosa = w.device as ROSADevice;
+            var output = w.output as ROSAOutput;
+
+            var voltage = Instruments.instance.GetAerotechAnalogVoltage();
+            var current = voltage / Instruments.instance.seriesResistance;
+
+            if (voltage < 0.4)
+            {
+                Debug.Print("Voltage is too low: {0}", voltage);
+                Debug.Print("Finding first light");
+                Instruments.instance.FindFirstLight();
+                voltage = Instruments.instance.GetAerotechAnalogVoltage();
+            }
+
+            if (voltage < 0.4)
+            {
+                Debug.Print("First light voltage: {0}", voltage);
+                Debug.Print("Could not find first light");
+
+                ErrorMessages.Clear();
+                ErrorMessages.Add("Could not find first light.");
+                errorList.ItemsSource = ErrorMessages;
+                errorPanel.Visibility = Visibility.Visible;
+                AlignmentButton.Visibility = Visibility.Visible;
+                AlignmentButton.Content = "Go home";
+                attemptNumber = 3;
+                barrelReplaced = true;
+                return;
+            }
+
+            Instruments.instance.FindCentroid(voltage * 0.90, 0.00025 * 5);
+
+            var voltageAfterAlignment = Instruments.instance.GetAerotechAnalogVoltage();
+            var currentAfterAlignment = voltageAfterAlignment / Instruments.instance.seriesResistance;
+            var responsivityAfterAlignment = currentAfterAlignment / output.Fiber_Power;
+
+            if (responsivityAfterAlignment < rosa.Resp_Min) // get min responsivity from device
+            {
+                ErrorMessages.Add($"Responsivity is too low: {responsivityAfterAlignment}");
+            }
+
+            if (ErrorMessages.Count == 0) 
+            {
+                output.Resp = responsivityAfterAlignment;
+                this.errorPanel.Visibility = Visibility.Collapsed;
+                this.failedMessage.Visibility = Visibility.Collapsed;
+                this.successMessage.Visibility = Visibility.Visible;
+
+                this.NextStepButton.Visibility = Visibility.Visible;
+                this.AlignmentButton.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                this.errorList.ItemsSource = ErrorMessages;
+                this.errorPanel.Visibility = Visibility.Visible;
+                this.failedMessage.Visibility = Visibility.Visible;
+                this.failedMessage.Text = $"Test attempt {attemptNumber} failed, check TO and lens";
+                this.successMessage.Visibility = Visibility.Collapsed;
+
+                this.NextStepButton.Visibility = Visibility.Collapsed;
+
+                if (attemptNumber > 3)
+                {
+                    this.AlignmentButton.Content = "Go home";
+                }
+                else
+                {
+                    if (attemptNumber == 3)
+                    {
+                        firstInstruction.Text = "(1) Remove lens barrel";
+                        this.failedMessage.Text = $"Test attempt {attemptNumber} failed\nReplace TO and try again.";
+                        secondInstruction.Visibility = Visibility.Collapsed;
+                        thirdInstruction.Visibility = Visibility.Collapsed;
+                    }
+
+                    this.AlignmentButton.Content = "Retry";
+                }
+            }
         }
 
         private void TosaStep2()
@@ -94,7 +181,7 @@ namespace AlignmentStation
                 return;
             }
 
-            Instruments.instance.FindCentroid();
+            Instruments.instance.FindCentroid(firstLightPower * 0.75, 0.00025);
 
             var powerAfterAlignment = Instruments.instance.GetThorlabsPower();
             Debug.Print("Power after alignment: {0}", powerAfterAlignment);

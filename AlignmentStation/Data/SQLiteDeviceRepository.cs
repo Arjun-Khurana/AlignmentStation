@@ -112,9 +112,33 @@ namespace AlignmentStation.Data
                 conn.Open();
 
                 int? num = conn.Query<int?>(
-                    @"select max(Unit_Number) from ROSAOutput where Job_Number = @jobNumber", new { jobNumber }).FirstOrDefault();
+                    @"select max(Unit_Number) from ROSAOutput where Job_Number = @jobNumber",
+                    new { jobNumber }).FirstOrDefault();
 
                 return (int)(num == null ? 0 : num);
+            }
+        }
+
+        public double? GetLatestROSAFiberPower(string jobNumber)
+        {
+            using (var conn = SimpleDbConnection())
+            {
+                conn.Open();
+
+                (DateTime? timestamp, double? power) n = conn.Query<(DateTime?, double?)>(
+                    @"select Timestamp, Fiber_Power from ROSAOutput where Job_Number = @jobNumber order by Timestamp desc limit 1",
+                    new { jobNumber }).FirstOrDefault();
+
+                if (n.timestamp != null && n.power != null)
+                {
+                    DateTime now = DateTime.Now;
+                    if (n.timestamp  > now.AddHours(-12) && n.timestamp <= now)
+                    {
+                        return n.power;
+                    }
+                }
+
+                return null;
             }
         }
 
@@ -125,12 +149,13 @@ namespace AlignmentStation.Data
                 conn.Open();
                 conn.Execute(
                 @"INSERT INTO ROSADevice
-                    ( Part_Number, VPD_RSSI )
+                    ( Part_Number, VPD_RSSI, Resp_Min )
                     values 
-                    ( @part_number, @vpd_rssi )", 
+                    ( @part_number, @vpd_rssi, @resp_min )", 
                 new {
                     part_number = device.Part_Number,
-                    vpd_rssi = device.VPD_RSSI
+                    vpd_rssi = device.VPD_RSSI,
+                    resp_Min = device.Resp_Min
                 });
             }
         }
@@ -146,7 +171,7 @@ namespace AlignmentStation.Data
                         Part_Number, 
                         I_Align,
                         I_Align_Tol,
-                        P_Min_TO, 
+                        P_Min_TO, Responsivity 
                         P_Min_FC, 
                         V_Max, 
                         POPCT_Min, 
@@ -189,13 +214,9 @@ namespace AlignmentStation.Data
                         Unit_Number,
                         Operator,
                         Timestamp,
-                        Repeat_Number,
-                        P_Optical,
-                        I_RSSI,
-                        I_VPD,
-                        I_Mon,
-                        POPCT,
-                        POPCT_Shift
+                        Resp_Shift,
+                        Resp,
+                        Fiber_Power
                     )
                     values 
                     ( 
@@ -204,13 +225,9 @@ namespace AlignmentStation.Data
                         @unit_number, 
                         @op,
                         @timestamp, 
-                        @repeat_number,
-                        @p_optical,
-                        @i_rssi,
-                        @i_vpd,
-                        @i_mon,
-                        @popct,
-                        @popct_shift
+                        @resp_shift,
+                        @resp,
+                        @fiber_power
                         )", 
                 new {
                     part_number = output.Part_Number, 
@@ -218,13 +235,9 @@ namespace AlignmentStation.Data
                     unit_number = output.Unit_Number, 
                     op = output.Operator,
                     timestamp = output.Timestamp, 
-                    repeat_number = output.Repeat_Number,
-                    p_optical = output.P_Optical, 
-                    i_rssi = output.I_RSSI,
-                    i_vpd = output.I_VPD,
-                    i_mon = output.I_Mon,
-                    popct = output.POPCT,
-                    popct_shift = output.POPCT_Shift
+                    resp_shift = output.Resp_Shift,
+                    resp = output.Resp,
+                    fiber_power = output.Fiber_Power
                 });
             }
         }
@@ -242,7 +255,6 @@ namespace AlignmentStation.Data
                         Unit_Number,
                         Operator,
                         Timestamp,
-                        Repeat_Number,
                         I_Align,
                         P_TO,
                         P_FC,
@@ -256,7 +268,6 @@ namespace AlignmentStation.Data
                         @unit_number, 
                         @op,
                         @timestamp, 
-                        @repeat_number,
                         @i_align, 
                         @p_to,
                         @p_fc,
@@ -269,7 +280,6 @@ namespace AlignmentStation.Data
                     unit_number = output.Unit_Number, 
                     op = output.Operator,
                     timestamp = output.Timestamp, 
-                    repeat_number = output.Repeat_Number,
                     i_align = output.I_Align, 
                     p_to = output.P_TO,
                     p_fc = output.P_FC,
@@ -321,7 +331,6 @@ namespace AlignmentStation.Data
                         Unit_Number integer not null,
                         Operator varchar(255) not null,
                         Timestamp datetime not null,
-                        Repeat_Number integer not null,
                         I_Align double not null,
                         P_TO double not null,
                         P_FC double not null,
@@ -334,12 +343,13 @@ namespace AlignmentStation.Data
                     (
                         Id integer primary key autoincrement,
                         Part_Number varchar(255) not null,
-                        VPD_RSSI varchar(4) not null
+                        VPD_RSSI varchar(4) not null,
+                        Resp_Min double not null
                     )");
 
-                conn.Execute(@"insert into ROSADevice (Part_Number, VPD_RSSI)
-                                values  ('r-10', 'vpd'),
-                                        ('r-11', 'rssi');");
+                conn.Execute(@"insert into ROSADevice (Part_Number, VPD_RSSI, Resp_Min)
+                                values  ('r-10', 'vpd', 0.2),
+                                        ('r-11', 'rssi', 0.2);");
                 
                 conn.Execute(
                     @"create table ROSAOutput 
@@ -350,13 +360,9 @@ namespace AlignmentStation.Data
                         Unit_Number integer not null,
                         Operator varchar(255) not null,
                         Timestamp datetime not null,
-                        Repeat_Number integer not null,
-                        P_Optical double not null,
-                        I_RSSI double not null,
-                        I_VPD double not null,
-                        I_Mon double not null,
-                        POPCT double not null,
-                        POPCT_Shift double not null
+                        Resp double not null,
+                        Resp_Shift double not null,
+                        Fiber_Power double not null
                     )");
 
             }

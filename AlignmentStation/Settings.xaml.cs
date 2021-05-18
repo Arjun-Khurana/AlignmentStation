@@ -41,6 +41,7 @@ namespace AlignmentStation
             newTOSAPanel.Visibility = Visibility.Visible;
             addNewROSAButton.Visibility = Visibility.Collapsed;
             addNewTOSAButton.Visibility = Visibility.Collapsed;
+            controlPanelContainer.Visibility = Visibility.Collapsed;
         }
 
         private void NewROSAButtonClick(object sender, RoutedEventArgs e)
@@ -48,6 +49,7 @@ namespace AlignmentStation
             newROSAPanel.Visibility = Visibility.Visible;
             addNewROSAButton.Visibility = Visibility.Collapsed;
             addNewTOSAButton.Visibility = Visibility.Collapsed;
+            controlPanelContainer.Visibility = Visibility.Collapsed;
         }
 
         private void CalibrateLimitsClick(object sender, RoutedEventArgs e)
@@ -67,10 +69,7 @@ namespace AlignmentStation
 
         private void SaveROSADeviceButtonClick(object sender, RoutedEventArgs e)
         {
-            double vpd;
-            var parsed = Double.TryParse(ROSA_VPD_RSSI_Input.Text, out vpd);
-
-            if (parsed && !String.IsNullOrEmpty(ROSAPartNumberInput.Text))
+            if (!String.IsNullOrEmpty(ROSAPartNumberInput.Text))
             {
                 var device = new Models.ROSADevice
                 {
@@ -83,6 +82,7 @@ namespace AlignmentStation
                 newROSAPanel.Visibility = Visibility.Collapsed;
                 addNewROSAButton.Visibility = Visibility.Visible;
                 addNewTOSAButton.Visibility = Visibility.Visible;
+                controlPanelContainer.Visibility = Visibility.Visible;
             }
         }
 
@@ -105,6 +105,7 @@ namespace AlignmentStation
             newTOSAPanel.Visibility = Visibility.Collapsed;
             addNewROSAButton.Visibility = Visibility.Visible;
             addNewTOSAButton.Visibility = Visibility.Visible;
+            controlPanelContainer.Visibility = Visibility.Visible;
         }
 
         private void CancelTOSAClick(object sender, RoutedEventArgs e)
@@ -130,6 +131,7 @@ namespace AlignmentStation
             newTOSAPanel.Visibility = Visibility.Collapsed;
             addNewROSAButton.Visibility = Visibility.Visible;
             addNewTOSAButton.Visibility = Visibility.Visible;
+            controlPanelContainer.Visibility = Visibility.Visible;
         }
 
         private void CancelROSAClick(object sender, RoutedEventArgs e)
@@ -143,6 +145,7 @@ namespace AlignmentStation
             newROSAPanel.Visibility = Visibility.Collapsed;
             addNewROSAButton.Visibility = Visibility.Visible;
             addNewTOSAButton.Visibility = Visibility.Visible;
+            controlPanelContainer.Visibility = Visibility.Visible;
         }
 
         private void String_Input_Text_Changed(object sender, TextChangedEventArgs e)
@@ -168,7 +171,6 @@ namespace AlignmentStation
             
             if (parsed)
             {
-
                 t.Style = (Style)Application.Current.Resources["RegularTextField"];
             } 
             else
@@ -184,7 +186,13 @@ namespace AlignmentStation
 
         private void FindCentroidClick(object sender, RoutedEventArgs e)
         {
-            Instruments.instance.FindCentroid();
+            var v = Instruments.instance.GetAerotechAnalogVoltage();
+            Instruments.instance.FindCentroid(v * 0.75, 0.00025);
+        }
+
+        private void AerotechVoltage_Button_Click(object sender, RoutedEventArgs e)
+        {
+            Instruments.instance.GetAerotechAnalogVoltage();
         }
     }
 }

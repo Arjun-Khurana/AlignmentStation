@@ -37,69 +37,86 @@
             FontSize="28"
             FontWeight="Light">Settings</Label>
 
-
         <StackPanel 
             Grid.Row="2"
             HorizontalAlignment="Center"
             MinWidth="250"
             Margin="0,25,0,0">
 
-            <StackPanel 
-                HorizontalAlignment="Center"
-                Margin="0,0,0,20" 
-                Orientation="Horizontal">
-                <Button
-                    Margin="0,0,0,20"
-                    Name="OpenRelayButton"
-                    Content="Open Relay" 
-                    Click="OpenRelayClick"
+            <StackPanel x:Name="controlPanelContainer">
+                <StackPanel 
                     HorizontalAlignment="Center"
-                    Style="{StaticResource UnderlineButton}"
-                    BorderThickness="1,1,1,1" 
-                    Padding="5,1,5,1" />
+                    Margin="0,0,0,0" 
+                    Orientation="Horizontal">
+                    <Button
+                        Margin="0,0,10,20"
+                        Name="OpenRelayButton"
+                        Content="Open Relay" 
+                        Click="OpenRelayClick"
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource UnderlineButton}"
+                        BorderThickness="1,1,1,1" 
+                        Padding="5,1,5,1" />
 
-                <Button
-                    Margin="0,0,0,20"
-                    Name="CloseRelayButton"
-                    Content="Close Relay" 
-                    Click="CloseRelayClick"
+                    <Button
+                        Margin="0,0,0,20"
+                        Name="CloseRelayButton"
+                        Content="Close Relay" 
+                        Click="CloseRelayClick"
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource UnderlineButton}"
+                        BorderThickness="1,1,1,1" 
+                        Padding="5,1,5,1" />
+
+                </StackPanel>
+
+                <StackPanel 
                     HorizontalAlignment="Center"
-                    Style="{StaticResource UnderlineButton}"
-                    BorderThickness="1,1,1,1" 
-                    Padding="5,1,5,1" />
+                    Margin="0,0,0,0" 
+                    Orientation="Horizontal">
+                    <Button
+                        Margin="0,0,10,20"
+                        Name="FindFirstLight_Button"
+                        Content="Find first light" 
+                        Click="FindFirstLightClick"
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource UnderlineButton}"
+                        BorderThickness="1,1,1,1" 
+                        Padding="5,1,5,1" />
 
+                    <Button
+                        Margin="0,0,0,20"
+                        Name="FindCentroidButton"
+                        Content="Find centroid" 
+                        Click="FindCentroidClick"
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource UnderlineButton}"
+                        BorderThickness="1,1,1,1" 
+                        Padding="5,1,5,1" />
+                </StackPanel>
+
+                <StackPanel>
+                    
+                    <Button
+                        Margin="0,0,0,20"
+                        Name="AerotechVoltage_Button"
+                        Content="Get Aerotech Voltage" 
+                        Click="AerotechVoltage_Button_Click"
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource UnderlineButton}"
+                        BorderThickness="1,1,1,1" 
+                        Padding="5,1,5,1" />
+                    <Button
+                        Margin="0,0,0,20"
+                        Name="Calibrate_Button"
+                        Content="Calibrate Limits" 
+                        Click="CalibrateLimitsClick"
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource UnderlineButton}"
+                        BorderThickness="1,1,1,1" 
+                        Padding="5,1,5,1" />
+                </StackPanel>
             </StackPanel>
-
-            <Button
-                Margin="0,0,0,20"
-                Name="FindFirstLight_Button"
-                Content="Find first light" 
-                Click="FindFirstLightClick"
-                HorizontalAlignment="Center"
-                Style="{StaticResource UnderlineButton}"
-                BorderThickness="1,1,1,1" 
-                Padding="5,1,5,1" />
-
-            <Button
-                Margin="0,0,0,20"
-                Name="FindCentroidButton"
-                Content="Find centroid" 
-                Click="FindCentroidClick"
-                HorizontalAlignment="Center"
-                Style="{StaticResource UnderlineButton}"
-                BorderThickness="1,1,1,1" 
-                Padding="5,1,5,1" />
-
-
-            <Button
-                Margin="0,0,0,20"
-                Name="Calibrate_Button"
-                Content="Calibrate Limits" 
-                Click="CalibrateLimitsClick"
-                HorizontalAlignment="Center"
-                Style="{StaticResource UnderlineButton}"
-                BorderThickness="1,1,1,1" 
-                Padding="5,1,5,1" />
 
             <StackPanel 
                 Visibility="Collapsed"
@@ -115,7 +132,7 @@
 
                     <StackPanel Margin="10,0,10,10" Orientation="Vertical">
                         <Label Padding="0,0,0,5" Content="VPD RSSI"></Label>
-                        <TextBox Width="100" TextChanged="Double_Input_Text_Changed" x:Name="ROSA_VPD_RSSI_Input"></TextBox>
+                        <TextBox Width="100" TextChanged="String_Input_Text_Changed" x:Name="ROSA_VPD_RSSI_Input"></TextBox>
                     </StackPanel>
                 </StackPanel>
 
@@ -219,7 +236,7 @@
 
                 
                 <Button
-                    Margin="10,0,10,20"
+                    Margin="0,0,10,20"
                     Content="New ROSA device" 
                     Click="NewROSAButtonClick"
                     HorizontalAlignment="Center"

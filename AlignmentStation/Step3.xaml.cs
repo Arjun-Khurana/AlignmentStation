@@ -21,7 +21,7 @@ namespace AlignmentStation
     /// </summary>
     public partial class Step3 : Page
     {
-        private List<string> ErrorMessages;
+        List<string> ErrorMessages = new();
         private bool testComplete = false;
 
         public Step3()
@@ -38,6 +38,54 @@ namespace AlignmentStation
             }
 
             var w = Window.GetWindow(this) as MainWindow;
+            if (w.output is ROSAOutput)
+            {
+                RosaStep3();
+            }
+            else
+            {
+                TosaStep3();
+            }
+        }
+
+        private void RosaStep3()
+        {
+            var w = Window.GetWindow(this) as MainWindow;
+            var o = w.output as ROSAOutput;
+            var d = w.device as ROSADevice;
+
+            var voltage = Instruments.instance.GetAerotechAnalogVoltage();
+            var current = voltage / Instruments.instance.seriesResistance;
+            var responsivity = current / o.Fiber_Power;
+
+            var resp_shift = 10 * Math.Log(o.Resp / responsivity);
+
+            o.Resp_Shift = resp_shift;
+            o.Timestamp = DateTime.Now;
+
+
+            if (resp_shift > 1 || responsivity < d.Resp_Min)
+            {
+                ErrorMessages.Add($"Responsivity: {responsivity}, shift: {resp_shift}");
+                successMessage.Visibility = Visibility.Collapsed;
+                errorList.ItemsSource = ErrorMessages;
+                errorPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                successMessage.Visibility = Visibility.Visible;
+                errorPanel.Visibility = Visibility.Collapsed;
+            }
+
+            MainWindow.Conn.SaveROSAOutput(o);
+
+            testComplete = true;
+            TestButton.Content = "Go home";
+        }
+
+        private void TosaStep3()
+        {
+            var w = Window.GetWindow(this) as MainWindow;
             var o = w.output as TOSAOutput;
 
             var pFC = Instruments.instance.GetThorlabsPower() / Instruments.instance.alignmentPowerCalibration;
@@ -50,7 +98,6 @@ namespace AlignmentStation
             {
                 successMessage.Visibility = Visibility.Visible;
                 errorPanel.Visibility = Visibility.Collapsed;
-                MainWindow.Conn.SaveTOSAOutput(o);
             }
             else
             {
@@ -60,8 +107,9 @@ namespace AlignmentStation
                 errorPanel.Visibility = Visibility.Visible;
                 errorList.ItemsSource = ErrorMessages;
 
-                MainWindow.Conn.SaveTOSAOutput(o);
             }
+
+            MainWindow.Conn.SaveTOSAOutput(o);
 
             testComplete = true;
             TestButton.Content = "Go home";

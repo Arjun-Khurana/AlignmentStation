@@ -50,6 +50,15 @@ namespace AlignmentStation
             var w = Window.GetWindow(this) as MainWindow;
             w.output.Operator = OperatorNameBox.Text;
 
+            if (w.device is ROSADevice)
+            {
+                if ((w.output as ROSAOutput).Fiber_Power == 0)
+                {
+                    NavigationService.Navigate(new RosaStep0());
+                    return;
+                }
+            }
+
             NavigationService.Navigate(new Step1()); 
         }
 
@@ -62,13 +71,12 @@ namespace AlignmentStation
                 return;
             }
 
+            var job = JobNumberBox.Text;
             MainWindow w = Window.GetWindow(this) as MainWindow;
 
             w.device = d;
             if (d is TOSADevice)
             {
-                var job = JobNumberBox.Text;
-
                 w.output = new TOSAOutput
                 {
                     Part_Number = d.Part_Number,
@@ -81,7 +89,12 @@ namespace AlignmentStation
             }
             else
             {
-                w.output = new ROSAOutput();
+                w.output = new ROSAOutput
+                {
+                    Part_Number = d.Part_Number,
+                    Job_Number = job,
+                    Unit_Number = MainWindow.Conn.GetMaxROSAUnitNumber(job) + 1,
+                };
                 var r = d as ROSADevice;
                 
                 if (r.VPD_RSSI == "vpd")
@@ -95,6 +108,13 @@ namespace AlignmentStation
                     Instruments.instance.CloseRelay(1);
                     Instruments.instance.OpenRelay(2);
                     Instruments.instance.OpenRelay(4);
+                }
+
+                var fiberPower = MainWindow.Conn.GetLatestROSAFiberPower(job);
+                
+                if (fiberPower != null)
+                {
+                    (w.output as ROSAOutput).Fiber_Power = (double)fiberPower;
                 }
             }
         }

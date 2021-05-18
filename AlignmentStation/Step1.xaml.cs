@@ -111,6 +111,26 @@ namespace AlignmentStation
 
             // step 1: turn on switches, get voltage going
             //          no measurement
+
+            // measuer power once for the rosa - get the latest job output
+            // with the same job number and use that
+            // if this is the first of this job,
+            // go to step 0 and measure power 
+
+            if (rosa.VPD_RSSI == "vpd")
+            {
+                Instruments.instance.OpenRelay(1);
+                Instruments.instance.OpenRelay(2);
+                Instruments.instance.OpenRelay(4);
+            } 
+            else
+            {
+                Instruments.instance.CloseRelay(1);
+                Instruments.instance.OpenRelay(2);
+                Instruments.instance.OpenRelay(4);
+            }
+
+            NavigationService.Navigate(new Step2());
             // step 2: do the alignment, get voltage from aerotech
             //          multiply by constant - get from jim
             //          this voltage gets converted to I_Mon

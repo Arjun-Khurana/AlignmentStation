@@ -1,13 +1,12 @@
-﻿<Page x:Class="AlignmentStation.Step1"
+﻿<Page x:Class="AlignmentStation.RosaStep0"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:AlignmentStation"
       mc:Ignorable="d" 
-      d:Background="{StaticResource DarkBg}"
       d:DesignHeight="450" d:DesignWidth="400"
-      Title="Step1">
+      Title="RosaStep0">
 
     <Grid Background="{StaticResource DarkBg}">
         <Grid.RowDefinitions>
@@ -19,7 +18,7 @@
                 FontSize="26"
                 FontWeight="Light"
                 Margin="0,0,0,15" 
-                Text="Step 1"></TextBlock>
+                Text="Step 0"></TextBlock>
 
             <Border 
                 Padding="10"
@@ -38,30 +37,25 @@
                         Margin="0,0,0,0"
                         TextWrapping="Wrap"
                         FontSize="17"
-                        Text="(1) Insert TO into Wand">
+                        Text="(1) Switch connector to power meter">
                     </TextBlock>
+
                 </StackPanel>
             </Border>
 
             <StackPanel
                 x:Name="measurementPanel" 
-                Visibility="Collapsed" 
                 Orientation="Vertical">
-                <TextBlock x:Name="currentText" Text="" TextWrapping="Wrap"/>
-                <TextBlock x:Name="voltageText" Text="" TextWrapping="Wrap"/>
-                <TextBlock x:Name="powerText" Text="" TextWrapping="Wrap"/>
 
                 <TextBlock 
-                    Margin="0,5,0,0"
-                    Visibility="Hidden"
-                    Foreground="OrangeRed"
-                    x:Name="failedMessage"
-                    FontSize="18"
-                    VerticalAlignment="Center"
-                    Text="Test Failed"></TextBlock>
+                    x:Name="powerText"
+                    Visibility="Collapsed"
+                    Text=""
+                    TextWrapping="Wrap"/>
+
                 <TextBlock 
                     Margin="0,15,0,0"
-                    Visibility="Hidden"
+                    Visibility="Collapsed"
                     Foreground="ForestGreen"
                     x:Name="successMessage"
                     FontSize="18"
@@ -92,8 +86,8 @@
                 <Button
                     x:Name="startButton"
                     HorizontalAlignment="Left"
-                    Click="Do_Task_Click"
-                    Content="Start test"
+                    Click="startButton_Click"
+                    Content="Measure power"
                     Margin="0,0,10,0" 
                     VerticalAlignment="Center"
                     >
@@ -114,5 +108,4 @@
 
         </StackPanel>
     </Grid>
-
 </Page>
