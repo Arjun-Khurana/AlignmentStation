@@ -47,12 +47,27 @@ namespace AlignmentStation
                 return;
             }
 
+            if (String.IsNullOrEmpty(JobNumberBox.Text))
+            {
+                Debug.Print("Enter job number");
+                return;
+            }
+
             var w = Window.GetWindow(this) as MainWindow;
             w.output.Operator = OperatorNameBox.Text;
+            w.output.Job_Number = JobNumberBox.Text.Trim();
+
 
             if (w.device is ROSADevice)
             {
-                if ((w.output as ROSAOutput).Fiber_Power == 0)
+                var fiberPower = MainWindow.Conn.GetLatestROSAFiberPower(JobNumberBox.Text.Trim());
+                
+                if (fiberPower != null)
+                {
+                    (w.output as ROSAOutput).Fiber_Power = (double)fiberPower;
+                    Debug.Print($"Using previous fiber power: {fiberPower}");
+                }
+                else
                 {
                     NavigationService.Navigate(new RosaStep0());
                     return;
@@ -110,12 +125,6 @@ namespace AlignmentStation
                     Instruments.instance.OpenRelay(4);
                 }
 
-                var fiberPower = MainWindow.Conn.GetLatestROSAFiberPower(job);
-                
-                if (fiberPower != null)
-                {
-                    (w.output as ROSAOutput).Fiber_Power = (double)fiberPower;
-                }
             }
         }
 

@@ -116,7 +116,7 @@
             </StackPanel> 
 
             <Button
-                Margin="0,50,0,0"
+                Margin="0,25,0,0"
                 Content="Start" 
                 HorizontalAlignment="Center"
                 BorderThickness="1,1,1,1" 
