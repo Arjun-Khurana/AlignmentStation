@@ -1,0 +1,48 @@
+﻿<Page x:Class="AlignmentStation.About"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:AlignmentStation"
+      mc:Ignorable="d" 
+      d:Background="{StaticResource DarkBg}"
+      d:DesignHeight="450" d:DesignWidth="400"
+      Title="About">
+
+    <Grid Background="{StaticResource DarkBg}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>       
+        
+        <Button 
+            Grid.Row="0"
+            Width="35"
+            Click="BackClick"
+            Style="{StaticResource MinimalButton}"
+            FontFamily="Segoe MDL2 Assets"
+            Content="&#xF0B0;"
+            FontSize="14"
+            HorizontalAlignment="Left"
+            />
+
+        <Label
+            Grid.Row="1"
+            FontSize="28"
+            FontWeight="Light">About</Label>
+
+        <StackPanel
+            Grid.Row="2"
+            Margin="0,20,0,0"
+            HorizontalAlignment="Center"
+            >
+            <TextBlock
+                TextAlignment="Center"
+                Margin="0,0,0,50"
+                FontSize="20"
+                >Alignment Station v1.0.0</TextBlock>
+            <TextBlock TextAlignment="Center">Created by Dallas Quantum Devices</TextBlock>
+        </StackPanel>
+    </Grid>
+</Page>

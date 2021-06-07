@@ -128,7 +128,7 @@
 
             <Button 
                 Style="{StaticResource UnderlineButton}"
-                Content="About" 
+                Content="About" Click="Button_Click" 
                 ></Button>
         </StackPanel>
 

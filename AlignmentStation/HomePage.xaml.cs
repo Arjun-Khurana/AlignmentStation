@@ -1,17 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Diagnostics;
 using AlignmentStation.Models;
 
@@ -93,6 +84,7 @@ namespace AlignmentStation
                 w.output = new TOSAOutput
                 {
                     Part_Number = d.Part_Number,
+                    Passed = false,
                     Unit_Number = MainWindow.Conn.GetMaxTOSAUnitNumber(job) + 1
                 };
 
@@ -104,6 +96,7 @@ namespace AlignmentStation
                 w.output = new ROSAOutput
                 {
                     Part_Number = d.Part_Number,
+                    Passed = false,
                     Unit_Number = MainWindow.Conn.GetMaxROSAUnitNumber(job) + 1,
                 };
                 var r = d as ROSADevice;
@@ -131,18 +124,23 @@ namespace AlignmentStation
 
         private void TOSA_Radio_Checked(object sender, RoutedEventArgs e)
         {
-                TosaDevices.Clear();
-                TosaDevices.AddRange(MainWindow.Conn.GetAllTOSADevices());
-                DeviceSelector.ItemsSource = new List<TOSADevice>();
-                DeviceSelector.ItemsSource = TosaDevices;
+            TosaDevices.Clear();
+            TosaDevices.AddRange(MainWindow.Conn.GetAllTOSADevices());
+            DeviceSelector.ItemsSource = new List<TOSADevice>();
+            DeviceSelector.ItemsSource = TosaDevices;
         }
 
         private void ROSA_Radio_Checked(object sender, RoutedEventArgs e)
         {
-                RosaDevices.Clear();
-                RosaDevices.AddRange(MainWindow.Conn.GetAllROSADevices());
-                DeviceSelector.ItemsSource = new List<ROSADevice>();
-                DeviceSelector.ItemsSource = RosaDevices;
+            RosaDevices.Clear();
+            RosaDevices.AddRange(MainWindow.Conn.GetAllROSADevices());
+            DeviceSelector.ItemsSource = new List<ROSADevice>();
+            DeviceSelector.ItemsSource = RosaDevices;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(new About());
         }
     }
 }

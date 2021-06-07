@@ -171,7 +171,7 @@ namespace AlignmentStation.Data
                         Part_Number, 
                         I_Align,
                         I_Align_Tol,
-                        P_Min_TO, Responsivity 
+                        P_Min_TO,
                         P_Min_FC, 
                         V_Max, 
                         POPCT_Min, 
@@ -216,7 +216,8 @@ namespace AlignmentStation.Data
                         Timestamp,
                         Resp_Shift,
                         Resp,
-                        Fiber_Power
+                        Fiber_Power,
+                        Passed
                     )
                     values 
                     ( 
@@ -227,17 +228,19 @@ namespace AlignmentStation.Data
                         @timestamp, 
                         @resp_shift,
                         @resp,
-                        @fiber_power
+                        @fiber_power,
+                        @passed
                         )", 
                 new {
                     part_number = output.Part_Number, 
                     job_number = output.Job_Number,
                     unit_number = output.Unit_Number, 
                     op = output.Operator,
-                    timestamp = output.Timestamp, 
+                    timestamp = DateTime.Now,
                     resp_shift = output.Resp_Shift,
                     resp = output.Resp,
-                    fiber_power = output.Fiber_Power
+                    fiber_power = output.Fiber_Power,
+                    passed = output.Passed
                 });
             }
         }
@@ -259,7 +262,8 @@ namespace AlignmentStation.Data
                         P_TO,
                         P_FC,
                         POPCT,
-                        POPCT_Shift
+                        POPCT_Shift,
+                        Passed
                     )
                     values 
                     ( 
@@ -272,20 +276,22 @@ namespace AlignmentStation.Data
                         @p_to,
                         @p_fc,
                         @popct,
-                        @popct_shift
-                        )", 
+                        @popct_shift,
+                        @passed
+                        )",
                 new {
-                    part_number = output.Part_Number, 
+                    part_number = output.Part_Number,
                     job_number = output.Job_Number,
-                    unit_number = output.Unit_Number, 
+                    unit_number = output.Unit_Number,
                     op = output.Operator,
-                    timestamp = output.Timestamp, 
-                    i_align = output.I_Align, 
+                    timestamp = DateTime.Now,
+                    i_align = output.I_Align,
                     p_to = output.P_TO,
                     p_fc = output.P_FC,
                     popct = output.POPCT,
-                    popct_shift = output.POPCT_Shift
-                });
+                    popct_shift = output.POPCT_Shift,
+                    passed = output.Passed
+                }) ;
             }
         }
 
@@ -335,7 +341,8 @@ namespace AlignmentStation.Data
                         P_TO double not null,
                         P_FC double not null,
                         POPCT double not null,
-                        POPCT_Shift double not null
+                        POPCT_Shift double not null,
+                        Passed boolean not null
                     )");
 
                 conn.Execute(
@@ -362,7 +369,8 @@ namespace AlignmentStation.Data
                         Timestamp datetime not null,
                         Resp double not null,
                         Resp_Shift double not null,
-                        Fiber_Power double not null
+                        Fiber_Power double not null,
+                        Passed boolean not null
                     )");
 
             }

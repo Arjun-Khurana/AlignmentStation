@@ -61,8 +61,6 @@ namespace AlignmentStation
             var resp_shift = 10 * Math.Log(o.Resp / responsivity);
 
             o.Resp_Shift = resp_shift;
-            o.Timestamp = DateTime.Now;
-
 
             if (resp_shift > 1 || responsivity < d.Resp_Min)
             {
@@ -73,6 +71,7 @@ namespace AlignmentStation
             }
             else
             {
+                o.Passed = true;
                 successMessage.Visibility = Visibility.Visible;
                 errorPanel.Visibility = Visibility.Collapsed;
             }
@@ -81,12 +80,14 @@ namespace AlignmentStation
 
             testComplete = true;
             TestButton.Content = "Go home";
+            nextDeviceButton.Visibility = Visibility.Visible;
         }
 
         private void TosaStep3()
         {
             var w = Window.GetWindow(this) as MainWindow;
             var o = w.output as TOSAOutput;
+            var d = w.device as TOSADevice;
 
             var pFC = Instruments.instance.GetThorlabsPower() / Instruments.instance.alignmentPowerCalibration;
             var popCT = pFC / o.P_TO;
@@ -94,8 +95,9 @@ namespace AlignmentStation
             var popCT_Shift = 10 * Math.Log(o.POPCT / popCT);
             o.POPCT_Shift = popCT_Shift;
 
-            if (popCT > 0.7)
+            if (popCT >= d.POPCT_Min) 
             {
+                o.Passed = true;
                 successMessage.Visibility = Visibility.Visible;
                 errorPanel.Visibility = Visibility.Collapsed;
             }
@@ -103,16 +105,55 @@ namespace AlignmentStation
             {
                 failedMessage.Visibility = Visibility.Visible;
 
-                ErrorMessages.Add("popCT <= 0.7");
+                ErrorMessages.Add($"popCT < {d.POPCT_Min}");
                 errorPanel.Visibility = Visibility.Visible;
                 errorList.ItemsSource = ErrorMessages;
-
             }
 
             MainWindow.Conn.SaveTOSAOutput(o);
 
             testComplete = true;
             TestButton.Content = "Go home";
+            nextDeviceButton.Visibility = Visibility.Visible;
+
+            Instruments.instance.SetArroyoLaserOff();
+        }
+
+        private void Next_Device_Click(object sender, RoutedEventArgs e)
+        {
+            var w = MainWindow.GetWindow(this) as MainWindow;
+            if (w.device is TOSADevice)
+            {
+                var d = w.device as TOSADevice;
+                var currentOutput = w.output as TOSAOutput;
+                var job = currentOutput.Job_Number;
+
+                w.output = new TOSAOutput
+                {
+                    Part_Number = d.Part_Number,
+                    Passed = false,
+                    Job_Number = job,
+                    Operator = currentOutput.Operator,
+                    Unit_Number = currentOutput.Unit_Number + 1
+                };
+            }
+            else
+            {
+                var d = w.device as ROSADevice;
+                var currentOutput = w.output as ROSAOutput;
+                var job = currentOutput.Job_Number;
+
+                w.output = new ROSAOutput 
+                {
+                    Part_Number = d.Part_Number,
+                    Passed = false,
+                    Job_Number = job,
+                    Operator = currentOutput.Operator,
+                    Unit_Number = currentOutput.Unit_Number + 1
+                };
+            }
+
+            NavigationService.Navigate(new Step1());
         }
 
         private void Quit_Button_Click(object sender, RoutedEventArgs e)

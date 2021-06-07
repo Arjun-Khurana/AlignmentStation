@@ -47,7 +47,15 @@
                         Margin="0,0,0,0"
                         TextWrapping="Wrap"
                         FontSize="17"
-                        Text="(1) Insert TO into Wand">
+                        Text="(1) Insert TO can into Wand">
+                    </TextBlock>
+
+                    <TextBlock
+                        x:Name="secondInstruction"
+                        Margin="0,0,0,0"
+                        TextWrapping="Wrap"
+                        FontSize="17"
+                        Text="(2) Insert TO into detector">
                     </TextBlock>
                 </StackPanel>
             </Border>
@@ -105,6 +113,17 @@
                     Content="Start test"
                     Margin="0,0,10,0" 
                     VerticalAlignment="Center"
+                    >
+                </Button>
+
+                <Button
+                    x:Name="nextDeviceButton"
+                    HorizontalAlignment="Left"
+                    Click="Next_Device_Click"
+                    Content="Next device"
+                    Margin="0,0,10,0" 
+                    VerticalAlignment="Center"
+                    Visibility="Collapsed"
                     >
                 </Button>
             </StackPanel>

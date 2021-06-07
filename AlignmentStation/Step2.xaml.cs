@@ -79,7 +79,7 @@ namespace AlignmentStation
             var voltage = Instruments.instance.GetAerotechAnalogVoltage();
             var current = voltage / Instruments.instance.seriesResistance;
 
-            if (voltage < 0.4)
+            if (voltage < 0.02)
             {
                 Debug.Print("Voltage is too low: {0}", voltage);
                 Debug.Print("Finding first light");
@@ -87,7 +87,7 @@ namespace AlignmentStation
                 voltage = Instruments.instance.GetAerotechAnalogVoltage();
             }
 
-            if (voltage < 0.4)
+            if (voltage < 0.02)
             {
                 Debug.Print("First light voltage: {0}", voltage);
                 Debug.Print("Could not find first light");
@@ -194,7 +194,7 @@ namespace AlignmentStation
 
             if (o.POPCT < d.POPCT_Min)
             {
-                ErrorMessages.Add("POPCT > POPCT_MIN");
+                ErrorMessages.Add("POPCT < POPCT_MIN");
                 this.failedMessage.Visibility = Visibility.Visible;
                 this.successMessage.Visibility = Visibility.Collapsed;
             }
@@ -220,7 +220,9 @@ namespace AlignmentStation
 
                 if (attemptNumber > 3)
                 {
+                    MainWindow.Conn.SaveTOSAOutput(o);
                     this.AlignmentButton.Content = "Go home";
+                    nextDeviceButton.Visibility = Visibility.Visible;
                 }
                 else
                 {
@@ -235,6 +237,40 @@ namespace AlignmentStation
                     this.AlignmentButton.Content = "Retry";
                 }
             }
+        }
+
+        private void Next_Device_Click(object sender, RoutedEventArgs e)
+        {
+            var w = MainWindow.GetWindow(this) as MainWindow;
+            var currentOutput = w.output;
+            var job = currentOutput.Job_Number;
+            var unitNumber = currentOutput.Unit_Number;
+            var op = currentOutput.Operator;
+
+            if (w.device is TOSADevice)
+            {
+                w.output = new TOSAOutput
+                {
+                    Part_Number = w.device.Part_Number,
+                    Passed = false,
+                    Job_Number = job,
+                    Operator = op,
+                    Unit_Number = unitNumber + 1
+                };
+            }
+            else
+            {
+                w.output = new ROSAOutput
+                {
+                    Part_Number = w.device.Part_Number,
+                    Passed = false,
+                    Job_Number = job,
+                    Operator = op,
+                    Unit_Number = unitNumber + 1
+                };
+            }
+
+            NavigationService.Navigate(new Step1());
         }
 
         private void Quit_Button_Click(object sender, RoutedEventArgs e)

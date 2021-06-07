@@ -44,36 +44,12 @@
             Margin="0,25,0,0">
 
             <StackPanel x:Name="controlPanelContainer">
-                <StackPanel 
-                    HorizontalAlignment="Center"
-                    Margin="0,0,0,0" 
-                    Orientation="Horizontal">
-                    <Button
-                        Margin="0,0,10,20"
-                        Name="OpenRelayButton"
-                        Content="Open Relay" 
-                        Click="OpenRelayClick"
-                        HorizontalAlignment="Center"
-                        Style="{StaticResource UnderlineButton}"
-                        BorderThickness="1,1,1,1" 
-                        Padding="5,1,5,1" />
-
-                    <Button
-                        Margin="0,0,0,20"
-                        Name="CloseRelayButton"
-                        Content="Close Relay" 
-                        Click="CloseRelayClick"
-                        HorizontalAlignment="Center"
-                        Style="{StaticResource UnderlineButton}"
-                        BorderThickness="1,1,1,1" 
-                        Padding="5,1,5,1" />
-
-                </StackPanel>
 
                 <StackPanel 
                     HorizontalAlignment="Center"
                     Margin="0,0,0,0" 
                     Orientation="Horizontal">
+
                     <Button
                         Margin="0,0,10,20"
                         Name="FindFirstLight_Button"

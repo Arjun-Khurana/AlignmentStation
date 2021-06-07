@@ -23,7 +23,6 @@ namespace AlignmentStation
     public partial class Settings : Page
     {
         public bool showNewPartForm = false;
-        public BooleanToVisibilityConverter btvc = new BooleanToVisibilityConverter();
         private Controller c;
 
         public Settings()
@@ -55,16 +54,6 @@ namespace AlignmentStation
         private void CalibrateLimitsClick(object sender, RoutedEventArgs e)
         {
             Instruments.instance.CalibrateAxes();
-        }
-
-        private void OpenRelayClick(object sender, RoutedEventArgs e)
-        {
-            Instruments.instance.OpenRelay(1);
-        }
-
-        private void CloseRelayClick(object sender, RoutedEventArgs e)
-        {
-            Instruments.instance.CloseRelay(1);
         }
 
         private void SaveROSADeviceButtonClick(object sender, RoutedEventArgs e)

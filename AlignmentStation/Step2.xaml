@@ -62,7 +62,15 @@
                         Margin="0,0,0,0"
                         TextWrapping="Wrap"
                         FontSize="15"
-                        Text="(3) Insert wand with TO into fixture">
+                        Text="(3) Insert wand with TO into alignment fixture">
+                    </TextBlock>
+
+                    <TextBlock
+                        x:Name="fourthInstruction"
+                        Margin="0,0,0,0"
+                        TextWrapping="Wrap"
+                        FontSize="15"
+                        Text="(4) Insert fiber into detector">
                     </TextBlock>
                 </StackPanel>
             </Border>
@@ -124,6 +132,17 @@
                     Content="Next step"
                     Margin="0,0,10,0" 
                     VerticalAlignment="Center"
+                    >
+                </Button>
+
+                <Button
+                    x:Name="nextDeviceButton"
+                    HorizontalAlignment="Left"
+                    Click="Next_Device_Click"
+                    Content="Next device"
+                    Margin="0,0,10,0" 
+                    VerticalAlignment="Center"
+                    Visibility="Collapsed"
                     >
                 </Button>
             </StackPanel>

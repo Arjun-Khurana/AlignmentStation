@@ -55,6 +55,7 @@ namespace AlignmentStation.Models
         public double P_FC { get; set; }
         public double POPCT { get; set; }
         public double POPCT_Shift { get; set; }
+        public bool Passed { get; set; }
     }
 
     public class ROSADevice : Device
@@ -69,5 +70,6 @@ namespace AlignmentStation.Models
         public double Resp { get; set; }
         public double Resp_Shift { get; set; } 
         public double Fiber_Power { get; set; }
+        public bool Passed { get; set; }
     }
 }

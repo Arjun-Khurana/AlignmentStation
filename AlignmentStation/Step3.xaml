@@ -99,6 +99,17 @@
                     VerticalAlignment="Center"
                     >
                 </Button>
+
+                <Button
+                    x:Name="nextDeviceButton"
+                    HorizontalAlignment="Left"
+                    Click="Next_Device_Click"
+                    Content="Next device"
+                    Margin="0,0,10,0" 
+                    VerticalAlignment="Center"
+                    Visibility="Collapsed"
+                    >
+                </Button>
             </StackPanel>
         </StackPanel>
 

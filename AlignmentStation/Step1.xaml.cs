@@ -149,6 +149,9 @@ namespace AlignmentStation
             Debug.Print($"Tosa I_Align: {tosa.I_Align}");
             Instruments.instance.SetArroyoCurrent(tosa.I_Align);
 
+            Instruments.instance.GetArroyoVoltage();
+            Instruments.instance.GetArroyoCurrent();
+
             var voltage = Instruments.instance.GetArroyoVoltage();
             var current = Instruments.instance.GetArroyoCurrent();
             var power = Instruments.instance.GetThorlabsPower();
@@ -211,8 +214,44 @@ namespace AlignmentStation
                 if (attemptNumber >= 3)
                 {
                     startButton.Content = "Go home";
+                    MainWindow.Conn.SaveTOSAOutput(output);
+                    nextDeviceButton.Visibility = Visibility.Visible;
                 }
             }
+        }
+
+        private void Next_Device_Click(object sender, RoutedEventArgs e)
+        {
+            var w = MainWindow.GetWindow(this) as MainWindow;
+            var currentOutput = w.output;
+            var job = currentOutput.Job_Number;
+            var unitNumber = currentOutput.Unit_Number;
+            var op = currentOutput.Operator;
+
+            if (w.device is TOSADevice)
+            {
+                w.output = new TOSAOutput
+                {
+                    Part_Number = w.device.Part_Number,
+                    Passed = false,
+                    Job_Number = job,
+                    Operator = op,
+                    Unit_Number = unitNumber + 1
+                };
+            }
+            else
+            {
+                w.output = new ROSAOutput
+                {
+                    Part_Number = w.device.Part_Number,
+                    Passed = false,
+                    Job_Number = job,
+                    Operator = op,
+                    Unit_Number = unitNumber + 1
+                };
+            }
+
+            NavigationService.Navigate(new Step1());
         }
 
         private void Quit_Button_Click(object sender, RoutedEventArgs e)

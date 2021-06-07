@@ -190,10 +190,9 @@ namespace AlignmentStation
             aerotechController.Commands.Axes["X"].Motion.Enable();
             aerotechController.Commands.Axes["Z"].Motion.Enable();
 
-            aerotechController.Commands.Motion.Linear("X", -10.3059);
-            aerotechController.Commands.Motion.Linear("Y", -13.5771);
-            // aerotechController.Commands.Motion.Linear("Z", 18.9341);
-            aerotechController.Commands.Motion.Linear("Z", 17.6605);
+            aerotechController.Commands.Motion.Linear("X", -10.1173);
+            aerotechController.Commands.Motion.Linear("Y", -13.4660);
+            aerotechController.Commands.Motion.Linear("Z", 18.3891);
         }
 
         public void FindFirstLight()
