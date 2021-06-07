@@ -11,10 +11,18 @@
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="25" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0">
+        <StackPanel Grid.Row="0" HorizontalAlignment="Right">
+            <Button
+                Click="Quit_Button_Click"
+                Content="Quit test" 
+                Style="{DynamicResource MinimalButton}"></Button> 
+        </StackPanel>
+
+        <StackPanel Grid.Row="1">
             <TextBlock 
                 FontSize="26"
                 FontWeight="Light"

@@ -214,5 +214,17 @@ namespace AlignmentStation
                 }
             }
         }
+
+        private void Quit_Button_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult messageBoxResult = 
+                MessageBox.Show("Are you sure?", "Quit Confirmation", MessageBoxButton.YesNo);
+
+            if (messageBoxResult == MessageBoxResult.Yes)
+            {
+                NavigationService.Navigate(new HomePage());
+            }
+
+        }
     }
  }
