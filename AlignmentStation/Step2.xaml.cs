@@ -25,6 +25,7 @@ namespace AlignmentStation
         List<string> ErrorMessages = new();
         int attemptNumber = 0;
         bool barrelReplaced = false;
+        bool firstLightFail = false;
 
         public Step2()
         {
@@ -100,6 +101,10 @@ namespace AlignmentStation
                 AlignmentButton.Content = "Go home";
                 attemptNumber = 3;
                 barrelReplaced = true;
+
+                nextDeviceButton.Visibility = Visibility.Visible;
+                firstLightFail = true;
+
                 return;
             }
 
@@ -136,7 +141,11 @@ namespace AlignmentStation
 
                 if (attemptNumber > 3)
                 {
-                    this.AlignmentButton.Content = "Go home";
+                    this.AlignmentButton.Content = "End job";
+
+                    MainWindow.Conn.SaveROSAOutput(output);
+                    this.AlignmentButton.Content = "End job";
+                    nextDeviceButton.Visibility = Visibility.Visible;
                 }
                 else
                 {
@@ -175,9 +184,13 @@ namespace AlignmentStation
                 errorList.ItemsSource = ErrorMessages;
                 errorPanel.Visibility = Visibility.Visible;
                 AlignmentButton.Visibility = Visibility.Visible;
-                AlignmentButton.Content = "Go home";
+                AlignmentButton.Content = "End job";
                 attemptNumber = 3;
                 barrelReplaced = true;
+
+                nextDeviceButton.Visibility = Visibility.Visible;
+                firstLightFail = true;
+
                 return;
             }
 
@@ -221,7 +234,7 @@ namespace AlignmentStation
                 if (attemptNumber > 3)
                 {
                     MainWindow.Conn.SaveTOSAOutput(o);
-                    this.AlignmentButton.Content = "Go home";
+                    this.AlignmentButton.Content = "End job";
                     nextDeviceButton.Visibility = Visibility.Visible;
                 }
                 else

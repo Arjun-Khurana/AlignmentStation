@@ -79,7 +79,7 @@ namespace AlignmentStation
             MainWindow.Conn.SaveROSAOutput(o);
 
             testComplete = true;
-            TestButton.Content = "Go home";
+            TestButton.Content = "End job";
             nextDeviceButton.Visibility = Visibility.Visible;
         }
 
@@ -113,7 +113,8 @@ namespace AlignmentStation
             MainWindow.Conn.SaveTOSAOutput(o);
 
             testComplete = true;
-            TestButton.Content = "Go home";
+            TestButton.Content = "End job";
+
             nextDeviceButton.Visibility = Visibility.Visible;
 
             Instruments.instance.SetArroyoLaserOff();

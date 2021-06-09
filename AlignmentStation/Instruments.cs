@@ -57,7 +57,7 @@ namespace AlignmentStation
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("fuck u bloody");
+                    Debug.WriteLine("Couldn't find Arroyo");
 
                 }
 
@@ -81,7 +81,7 @@ namespace AlignmentStation
                 }
                 catch(Exception ex)
                 {
-                    Debug.WriteLine("fokk");
+                    Debug.WriteLine("Couldn't find thorlabs");
                 }
 
                 UsbSession session2 = (UsbSession)rm.Open(myResource);
@@ -102,7 +102,7 @@ namespace AlignmentStation
         public void SetArroyoLaserOn()
         {
             arroyo.RawIO.Write("LAS:OUT 1\n");
-            Thread.Sleep(1000);
+            Thread.Sleep(5000);
         }
 
         public void SetArroyoLaserOff()

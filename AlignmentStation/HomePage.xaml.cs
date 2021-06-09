@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Navigation;
 using System.Diagnostics;
 using AlignmentStation.Models;
@@ -28,18 +29,23 @@ namespace AlignmentStation
             if (DeviceSelector.SelectedItem == null)
             {
                 Debug.Print("Pick one.");
+                ErrorText.Text = "Pick a device";
                 return;
             }
 
             if (String.IsNullOrEmpty(OperatorNameBox.Text))
             {
                 Debug.Print("Enter operator name");
+                OperatorNameBox.Style = (Style)Application.Current.Resources["ErrorTextField"];
+                ErrorText.Text = "Fill out all info";
                 return;
             }
 
             if (String.IsNullOrEmpty(JobNumberBox.Text))
             {
                 Debug.Print("Enter job number");
+                JobNumberBox.Style = (Style)Application.Current.Resources["ErrorTextField"];
+                ErrorText.Text = "Fill out all info";
                 return;
             }
 
@@ -68,39 +74,29 @@ namespace AlignmentStation
 
         private void DeviceSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Device d = (sender as ComboBox).SelectedItem as Device;
+            UpdateRelays();
+            UpdateOutputAndDevice();
+        }
+
+        private void UpdateRelays()
+        {
+
+            Device d = DeviceSelector.SelectedItem as Device;
 
             if (d == null)
             {
                 return;
             }
 
-            var job = JobNumberBox.Text;
-            MainWindow w = Window.GetWindow(this) as MainWindow;
-
-            w.device = d;
+            Mouse.OverrideCursor = Cursors.Wait;
             if (d is TOSADevice)
             {
-                w.output = new TOSAOutput
-                {
-                    Part_Number = d.Part_Number,
-                    Passed = false,
-                    Unit_Number = MainWindow.Conn.GetMaxTOSAUnitNumber(job) + 1
-                };
-
                 Instruments.instance.CloseRelay(2);
                 Instruments.instance.CloseRelay(4);
             }
-            else
-            {
-                w.output = new ROSAOutput
-                {
-                    Part_Number = d.Part_Number,
-                    Passed = false,
-                    Unit_Number = MainWindow.Conn.GetMaxROSAUnitNumber(job) + 1,
-                };
+            else {
                 var r = d as ROSADevice;
-                
+
                 if (r.VPD_RSSI == "vpd")
                 {
                     Instruments.instance.OpenRelay(1);
@@ -113,10 +109,55 @@ namespace AlignmentStation
                     Instruments.instance.OpenRelay(2);
                     Instruments.instance.OpenRelay(4);
                 }
-
             }
+
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
+        private void UpdateOutputAndDevice()
+        {
+
+            Device d = DeviceSelector.SelectedItem as Device;
+
+            if (d == null)
+            {
+                return;
+            }
+
+            var job = JobNumberBox.Text;
+            int unit;
+
+            MainWindow w = Window.GetWindow(this) as MainWindow;
+
+            w.device = d;
+            if (d is TOSADevice)
+            {
+                unit = MainWindow.Conn.GetMaxTOSAUnitNumber(job) + 1;
+                w.output = new TOSAOutput
+                {
+                    Part_Number = d.Part_Number,
+                    Passed = false,
+                    Unit_Number = unit 
+                };
+            }
+            else
+            {
+                unit = MainWindow.Conn.GetMaxROSAUnitNumber(job) + 1;
+                w.output = new ROSAOutput
+                {
+                    Part_Number = d.Part_Number,
+                    Passed = false,
+                    Unit_Number = unit
+                };
+            }
+
+            if (!String.IsNullOrEmpty(job))
+            {
+                NextNumberLabel.Text = $"Next unit number: {unit}";
+                w.output.Job_Number = job;
+            }
+        }
+        
         private void Settings_Button_Click(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(new Settings());
@@ -141,6 +182,32 @@ namespace AlignmentStation
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(new About());
+        }
+
+        private void JobNumberBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            UpdateOutputAndDevice();
+
+            var t = sender as TextBox;
+            if (String.IsNullOrEmpty(t.Text))
+            {
+                t.Style = (Style)Application.Current.Resources["ErrorTextField"];
+            } else
+            {
+                t.Style = (Style)Application.Current.Resources["RegularTextField"];
+            }
+        }
+
+        private void OperatorNameBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var t = sender as TextBox;
+            if (String.IsNullOrEmpty(t.Text))
+            {
+                t.Style = (Style)Application.Current.Resources["ErrorTextField"];
+            } else
+            {
+                t.Style = (Style)Application.Current.Resources["RegularTextField"];
+            }
         }
     }
 }

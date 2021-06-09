@@ -213,7 +213,7 @@ namespace AlignmentStation
                 
                 if (attemptNumber >= 3)
                 {
-                    startButton.Content = "Go home";
+                    startButton.Content = "End job";
                     MainWindow.Conn.SaveTOSAOutput(output);
                     nextDeviceButton.Visibility = Visibility.Visible;
                 }

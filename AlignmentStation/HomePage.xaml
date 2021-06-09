@@ -98,6 +98,7 @@
                     VerticalAlignment="Center"
                     Padding="5,3,5,3"
                     x:Name="OperatorNameBox"
+                    TextChanged="OperatorNameBox_TextChanged"
                     Width="120"></TextBox>
             </StackPanel> 
                 
@@ -108,12 +109,20 @@
                 HorizontalAlignment="Center">
                 <Label Width="100" FontSize="14">Job Number</Label>
                 <TextBox
+                    TextChanged="JobNumberBox_TextChanged"
                     Style="{StaticResource RegularTextField}"
                     VerticalAlignment="Center"
                     Padding="5,3,5,3"
                     x:Name="JobNumberBox"
                     Width="120"></TextBox>
-            </StackPanel> 
+            </StackPanel>
+
+            <StackPanel>
+                <TextBlock 
+                    x:Name="NextNumberLabel"
+                    HorizontalAlignment="Center">
+                </TextBlock>
+            </StackPanel>
 
             <Button
                 Margin="0,25,0,0"
@@ -121,6 +130,13 @@
                 HorizontalAlignment="Center"
                 BorderThickness="1,1,1,1" 
                 Padding="5,1,5,1" Click="StartButton"/>
+
+            <TextBlock 
+                Margin="0,10,0,0"
+                Foreground="DarkOrange"
+                x:Name="ErrorText" 
+                HorizontalAlignment="Center" 
+                Text=""></TextBlock>
             
             </StackPanel>
 
