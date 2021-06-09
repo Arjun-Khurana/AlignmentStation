@@ -31,6 +31,7 @@ namespace AlignmentStation
         public MainWindow()
         {
             InitializeComponent();
+            this.DataContext = this;
             _mainFrame.Navigate(new HomePage());
         }
     }

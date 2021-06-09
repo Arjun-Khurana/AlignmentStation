@@ -6,6 +6,7 @@
       xmlns:local="clr-namespace:AlignmentStation"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="400"
+      Loaded="OnLoad"
       Title="RosaStep0">
 
     <Grid Background="{StaticResource DarkBg}">
@@ -37,11 +38,17 @@
                         Margin="0,0,0,0"
                         TextWrapping="Wrap"
                         FontSize="17"
-                        Text="(1) Switch connector to power meter">
+                        Text="(1) Connect fiber from alignment interface to detector">
                     </TextBlock>
 
                 </StackPanel>
             </Border>
+
+            <StackPanel>
+                <TextBlock 
+                    x:Name="UnitNumberText"
+                    Text=""></TextBlock>
+            </StackPanel>
 
             <StackPanel
                 x:Name="measurementPanel" 

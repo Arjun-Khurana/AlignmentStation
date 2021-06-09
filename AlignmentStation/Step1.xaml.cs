@@ -38,6 +38,18 @@ namespace AlignmentStation
             InitializeComponent();
         }
 
+        void OnLoad(object sender, RoutedEventArgs e)
+        {
+            var w = MainWindow.GetWindow(this) as MainWindow;
+            UnitNumberText.Text = $"Unit number: {w.output.Unit_Number}";
+
+            if (w.device is ROSADevice)
+            {
+                thirdInstruction.Text = "(1) Connect alignment fiber to alignment station";
+                thirdInstruction.Visibility = Visibility.Visible;
+            }
+        }
+
         private void ShowErrorPanels()
         {
             startButton.Content = "Retry test";
@@ -202,7 +214,7 @@ namespace AlignmentStation
             {
                 HideErrorPanels();
 
-                output.P_TO = power / 500.0;
+                output.P_TO = power / Instruments.instance.alignmentPowerCalibration;
                 output.I_Align = current;
 
                 Debug.Print("OK! Go to next step.");

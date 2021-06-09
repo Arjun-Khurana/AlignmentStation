@@ -27,6 +27,12 @@ namespace AlignmentStation
             InitializeComponent();
         }
 
+        void OnLoad(object sender, RoutedEventArgs e)
+        {
+            var w = MainWindow.GetWindow(this) as MainWindow;
+            UnitNumberText.Text = $"Unit number: {w.output.Unit_Number}";
+        }
+
         private void startButton_Click(object sender, RoutedEventArgs e)
         {
             var w = Window.GetWindow(this) as MainWindow;

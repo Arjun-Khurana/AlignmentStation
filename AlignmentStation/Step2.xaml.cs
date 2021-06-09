@@ -166,7 +166,7 @@ namespace AlignmentStation
         {
             var w = Window.GetWindow(this) as MainWindow;
             var firstLightPower = Instruments.instance.GetThorlabsPower();
-            if (firstLightPower < 0.3)
+            if (firstLightPower < 0.01)
             {
                 Debug.Print("Power is too low: {0}", firstLightPower);
                 Debug.Print("Finding first light");
@@ -174,7 +174,7 @@ namespace AlignmentStation
                 firstLightPower = Instruments.instance.GetThorlabsPower();
             }
 
-            if (firstLightPower < 0.3)
+            if (firstLightPower < 0.01)
             {
                 Debug.Print("First light power: {0}", firstLightPower);
                 Debug.Print("Could not find first light");
@@ -194,16 +194,31 @@ namespace AlignmentStation
                 return;
             }
 
-            Instruments.instance.FindCentroid(firstLightPower * 0.75, 0.00025);
-
-            var powerAfterAlignment = Instruments.instance.GetThorlabsPower();
-            Debug.Print("Power after alignment: {0}", powerAfterAlignment);
-
             var o = w.output as TOSAOutput;
             var d = w.device as TOSADevice;
 
-            o.P_FC = powerAfterAlignment / Instruments.instance.alignmentPowerCalibration;
-            o.POPCT = o.P_FC / o.P_TO;
+            double popCt = 0;
+            double pFC = 0;
+            int iterCount = 0;
+            while (iterCount < 3 && popCt < 0.7)
+            {
+                firstLightPower = Instruments.instance.GetThorlabsPower();
+                Debug.Print($"First light power: {firstLightPower}");
+
+                Instruments.instance.FindCentroid(firstLightPower * 0.85, 0.00025);
+
+                var powerAfterAlignment = Instruments.instance.GetThorlabsPower();
+                Debug.Print("Power after alignment: {0}", powerAfterAlignment);
+
+                pFC = powerAfterAlignment / Instruments.instance.alignmentPowerCalibration; 
+                popCt = pFC / o.P_TO;
+
+                Debug.Print($"Iteration {iterCount} popCT: {popCt}");
+                iterCount++;
+            }
+
+            o.P_FC = pFC;
+            o.POPCT = popCt;
 
             if (o.POPCT < d.POPCT_Min)
             {

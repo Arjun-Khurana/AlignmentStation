@@ -25,7 +25,7 @@ namespace AlignmentStation
 
         private string RelaySerial = "QAAMZ";
 
-        public double alignmentPowerCalibration = 500.0;
+        public double alignmentPowerCalibration = 250.0;
         public double seriesResistance = 4700;
 
         private Instruments()
@@ -93,7 +93,7 @@ namespace AlignmentStation
 
                 r = session2.RawIO.ReadString();
 
-                session2.RawIO.Write("SENS:CORR 27\n");
+                session2.RawIO.Write("SENS:CORR 24\n");
 
                 powerMeter = session2;
             }
@@ -190,8 +190,8 @@ namespace AlignmentStation
             aerotechController.Commands.Axes["X"].Motion.Enable();
             aerotechController.Commands.Axes["Z"].Motion.Enable();
 
-            aerotechController.Commands.Motion.Linear("X", -10.1173);
-            aerotechController.Commands.Motion.Linear("Y", -13.4660);
+            aerotechController.Commands.Motion.Linear("X", -10.2149);
+            aerotechController.Commands.Motion.Linear("Y", -13.5285);
             aerotechController.Commands.Motion.Linear("Z", 18.3891);
         }
 
@@ -199,7 +199,8 @@ namespace AlignmentStation
         {
             this.SetArroyoLaserOn();
 
-            Thread.Sleep(3200);
+            aerotechController.Commands.Axes["Z"].Motion.Enable();
+            aerotechController.Commands.Motion.Linear("Z", -0.1);
 
             aerotechController.Commands.Execute("WAIT MODE INPOS");
 
@@ -207,9 +208,9 @@ namespace AlignmentStation
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.SpiralFine.SFAxis2.Value = 2;
 
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.SpiralFine.SFMotionType.Value = 0;
-            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.SpiralFine.SFEndRadius.Value = 0.2;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.SpiralFine.SFEndRadius.Value = 0.1;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.SpiralFine.SFNumSpirals.Value = 20;
-            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.SpiralFine.SFSegmentLength.Value = 0.05;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.SpiralFine.SFSegmentLength.Value = 0.025;
             aerotechController.Commands.Motion.Fiber.SpiralFine();
         }
 
@@ -225,7 +226,9 @@ namespace AlignmentStation
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement2.Value = 1;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement3.Value = 1;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CReturnToCenter.Value = 1;
-
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis1.Value = 0;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis2.Value = 2;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis3.Value = 1;
             aerotechController.Commands.Motion.Fiber.Centroid3D();
         }
 
