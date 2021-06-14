@@ -142,6 +142,7 @@ namespace AlignmentStation
                 Instruments.instance.OpenRelay(4);
             }
 
+
             NavigationService.Navigate(new Step2());
             // step 2: do the alignment, get voltage from aerotech
             //          multiply by constant - get from jim

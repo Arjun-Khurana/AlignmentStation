@@ -78,7 +78,9 @@ namespace AlignmentStation
             var output = w.output as ROSAOutput;
 
             var voltage = Instruments.instance.GetAerotechAnalogVoltage();
-            var current = voltage / Instruments.instance.seriesResistance;
+
+            firstLightInfoPanel.Visibility = Visibility.Visible;
+            firstLightVoltage.Text = $"First light voltage: {voltage}";
 
             if (voltage < 0.02)
             {
@@ -87,6 +89,8 @@ namespace AlignmentStation
                 Instruments.instance.FindFirstLight();
                 voltage = Instruments.instance.GetAerotechAnalogVoltage();
             }
+
+            firstLightVoltage.Text = $"First light voltage: {voltage}";
 
             if (voltage < 0.02)
             {
@@ -105,12 +109,16 @@ namespace AlignmentStation
                 nextDeviceButton.Visibility = Visibility.Visible;
                 firstLightFail = true;
 
+                retryPanel.Visibility = Visibility.Visible;
+
                 return;
             }
 
             Instruments.instance.FindCentroid(voltage * 0.90, 0.00025 * 5);
 
             var voltageAfterAlignment = Instruments.instance.GetAerotechAnalogVoltage();
+            firstLightVoltage.Text = $"Voltage after alignment: {voltageAfterAlignment}";
+
             var currentAfterAlignment = voltageAfterAlignment / Instruments.instance.seriesResistance;
             var responsivityAfterAlignment = currentAfterAlignment / output.Fiber_Power;
 
@@ -166,6 +174,9 @@ namespace AlignmentStation
         {
             var w = Window.GetWindow(this) as MainWindow;
             var firstLightPower = Instruments.instance.GetThorlabsPower();
+            firstLightInfoPanel.Visibility = Visibility.Visible;
+            firstLightVoltage.Text = $"First light power: {firstLightPower}";
+
             if (firstLightPower < 0.01)
             {
                 Debug.Print("Power is too low: {0}", firstLightPower);
@@ -174,6 +185,7 @@ namespace AlignmentStation
                 firstLightPower = Instruments.instance.GetThorlabsPower();
             }
 
+            firstLightVoltage.Text = $"First light power: {firstLightPower}";
             if (firstLightPower < 0.01)
             {
                 Debug.Print("First light power: {0}", firstLightPower);
@@ -191,6 +203,8 @@ namespace AlignmentStation
                 nextDeviceButton.Visibility = Visibility.Visible;
                 firstLightFail = true;
 
+                retryPanel.Visibility = Visibility.Visible;
+
                 return;
             }
 
@@ -200,7 +214,7 @@ namespace AlignmentStation
             double popCt = 0;
             double pFC = 0;
             int iterCount = 0;
-            while (iterCount < 3 && popCt < 0.7)
+            while (iterCount < 3 && popCt < 0.75)
             {
                 firstLightPower = Instruments.instance.GetThorlabsPower();
                 Debug.Print($"First light power: {firstLightPower}");
@@ -209,6 +223,8 @@ namespace AlignmentStation
 
                 var powerAfterAlignment = Instruments.instance.GetThorlabsPower();
                 Debug.Print("Power after alignment: {0}", powerAfterAlignment);
+
+                firstLightVoltage.Text = $"Power after alignment: {powerAfterAlignment}";
 
                 pFC = powerAfterAlignment / Instruments.instance.alignmentPowerCalibration; 
                 popCt = pFC / o.P_TO;
@@ -311,6 +327,29 @@ namespace AlignmentStation
                 NavigationService.Navigate(new HomePage());
             }
 
+        }
+
+        private void retryFirstLightButton_Click(object sender, RoutedEventArgs e)
+        {
+            firstLightInfoPanel.Visibility = Visibility.Visible;
+            firstLightVoltage.Text = $"Finding first light";
+
+            Instruments.instance.FindFirstLight();
+            var w = Window.GetWindow(this) as MainWindow;
+            var d = w.device;
+
+            if (d is TOSADevice)
+            {
+                var firstLightPower = Instruments.instance.GetThorlabsPower();
+
+                firstLightVoltage.Text = $"First light power: {firstLightPower}";
+            }
+            else
+            {
+                var voltage = Instruments.instance.GetAerotechAnalogVoltage();
+
+                firstLightVoltage.Text = $"First light voltage: {voltage}";
+            }
         }
     }
 }

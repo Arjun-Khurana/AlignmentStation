@@ -69,6 +69,8 @@ namespace AlignmentStation
                 }
             }
 
+            Instruments.instance.SetPowerMeterWavelength(850);
+
             NavigationService.Navigate(new Step1()); 
         }
 

@@ -93,6 +93,7 @@ namespace AlignmentStation
             var popCT = pFC / o.P_TO;
 
             var popCT_Shift = 10 * Math.Log(o.POPCT / popCT);
+            o.POPCT_Post_Cure = popCT;
             o.POPCT_Shift = popCT_Shift;
 
             if (popCT >= d.POPCT_Min) 
@@ -142,6 +143,7 @@ namespace AlignmentStation
             {
                 var d = w.device as ROSADevice;
                 var currentOutput = w.output as ROSAOutput;
+                var fib = currentOutput.Fiber_Power;
                 var job = currentOutput.Job_Number;
 
                 w.output = new ROSAOutput 
@@ -150,7 +152,8 @@ namespace AlignmentStation
                     Passed = false,
                     Job_Number = job,
                     Operator = currentOutput.Operator,
-                    Unit_Number = currentOutput.Unit_Number + 1
+                    Unit_Number = currentOutput.Unit_Number + 1,
+                    Fiber_Power = fib
                 };
             }
 

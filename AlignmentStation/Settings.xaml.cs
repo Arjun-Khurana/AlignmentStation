@@ -56,6 +56,11 @@ namespace AlignmentStation
             Instruments.instance.CalibrateAxes();
         }
 
+        private void SetWavelengthClick(object sender, RoutedEventArgs e)
+        {
+            Instruments.instance.SetPowerMeterWavelength(850);
+        }
+
         private void SaveROSADeviceButtonClick(object sender, RoutedEventArgs e)
         {
             if (!String.IsNullOrEmpty(ROSAPartNumberInput.Text))

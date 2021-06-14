@@ -54,6 +54,7 @@ namespace AlignmentStation.Models
         public double P_TO { get; set; }
         public double P_FC { get; set; }
         public double POPCT { get; set; }
+        public double POPCT_Post_Cure { get; set; }
         public double POPCT_Shift { get; set; }
         public bool Passed { get; set; }
     }

@@ -262,6 +262,7 @@ namespace AlignmentStation.Data
                         P_TO,
                         P_FC,
                         POPCT,
+                        POPCT_Post_Cure,
                         POPCT_Shift,
                         Passed
                     )
@@ -276,6 +277,7 @@ namespace AlignmentStation.Data
                         @p_to,
                         @p_fc,
                         @popct,
+                        @popct_post_cure,
                         @popct_shift,
                         @passed
                         )",
@@ -289,6 +291,7 @@ namespace AlignmentStation.Data
                     p_to = output.P_TO,
                     p_fc = output.P_FC,
                     popct = output.POPCT,
+                    popct_post_cure = output.POPCT_Post_Cure,
                     popct_shift = output.POPCT_Shift,
                     passed = output.Passed
                 }) ;
@@ -341,6 +344,7 @@ namespace AlignmentStation.Data
                         P_TO double not null,
                         P_FC double not null,
                         POPCT double not null,
+                        POPCT_Post_Cure double not null,
                         POPCT_Shift double not null,
                         Passed boolean not null
                     )");

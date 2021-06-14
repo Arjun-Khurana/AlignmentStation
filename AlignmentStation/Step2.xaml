@@ -110,6 +110,39 @@
                     />
             </StackPanel>
 
+            <StackPanel 
+                x:Name="retryPanel"
+                Visibility="Collapsed"
+                Margin="0,20,0,10"
+                Orientation="Horizontal">
+                <Button
+                    x:Name="retryFirstLightButton"
+                    HorizontalAlignment="Left"
+                    Click="retryFirstLightButton_Click"
+                    Content="Retry first light"
+                    Margin="0,0,10,0" 
+                    VerticalAlignment="Center"
+                    >
+                </Button>
+
+                <Button
+                    x:Name="retryAlignmentButton"
+                    HorizontalAlignment="Left"
+                    Click="AlignmentButtonClick"
+                    Content="Retry alignment"
+                    Margin="0,0,10,0" 
+                    VerticalAlignment="Center"
+                    Visibility="Collapsed"
+                    >
+                </Button>
+            </StackPanel>
+
+            <StackPanel 
+                Visibility="Collapsed"
+                Margin="0,10,0,15"
+                x:Name="firstLightInfoPanel">
+                <TextBlock x:Name="firstLightVoltage"></TextBlock>
+            </StackPanel>
 
             <StackPanel 
                 Margin="0,20,0,0"
@@ -146,6 +179,7 @@
                     >
                 </Button>
             </StackPanel>
+
         </StackPanel>
 
     </Grid>
