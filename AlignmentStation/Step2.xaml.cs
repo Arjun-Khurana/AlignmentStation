@@ -26,6 +26,8 @@ namespace AlignmentStation
         int attemptNumber = 0;
         bool barrelReplaced = false;
         bool firstLightFail = false;
+        double tosaFirstLightThreshold = 0.01;
+        double rosaFirstLightThreshold = 0.02;
 
         public Step2()
         {
@@ -52,7 +54,6 @@ namespace AlignmentStation
                 barrelReplaced = true;
             }
 
-            attemptNumber++;
 
             Mouse.OverrideCursor = Cursors.Wait;
 
@@ -82,7 +83,7 @@ namespace AlignmentStation
             firstLightInfoPanel.Visibility = Visibility.Visible;
             firstLightVoltage.Text = $"First light voltage: {voltage}";
 
-            if (voltage < 0.02)
+            if (voltage < rosaFirstLightThreshold)
             {
                 Debug.Print("Voltage is too low: {0}", voltage);
                 Debug.Print("Finding first light");
@@ -92,7 +93,7 @@ namespace AlignmentStation
 
             firstLightVoltage.Text = $"First light voltage: {voltage}";
 
-            if (voltage < 0.02)
+            if (voltage < rosaFirstLightThreshold)
             {
                 Debug.Print("First light voltage: {0}", voltage);
                 Debug.Print("Could not find first light");
@@ -102,10 +103,9 @@ namespace AlignmentStation
                 errorList.ItemsSource = ErrorMessages;
                 errorPanel.Visibility = Visibility.Visible;
                 AlignmentButton.Visibility = Visibility.Visible;
-                AlignmentButton.Content = "Go home";
-                attemptNumber = 3;
-                barrelReplaced = true;
+                endJobButton.Visibility = Visibility.Visible;
 
+                AlignmentButton.Visibility = Visibility.Collapsed;
                 nextDeviceButton.Visibility = Visibility.Visible;
                 firstLightFail = true;
 
@@ -114,6 +114,7 @@ namespace AlignmentStation
                 return;
             }
 
+            attemptNumber++;
             Instruments.instance.FindCentroid(voltage * 0.90, 0.00025 * 5);
 
             var voltageAfterAlignment = Instruments.instance.GetAerotechAnalogVoltage();
@@ -149,10 +150,8 @@ namespace AlignmentStation
 
                 if (attemptNumber > 3)
                 {
-                    this.AlignmentButton.Content = "End job";
-
                     MainWindow.Conn.SaveROSAOutput(output);
-                    this.AlignmentButton.Content = "End job";
+                    endJobButton.Visibility = Visibility.Visible;
                     nextDeviceButton.Visibility = Visibility.Visible;
                 }
                 else
@@ -165,7 +164,7 @@ namespace AlignmentStation
                         thirdInstruction.Visibility = Visibility.Collapsed;
                     }
 
-                    this.AlignmentButton.Content = "Retry";
+                    this.AlignmentButton.Content = "Retry alignment";
                 }
             }
         }
@@ -173,11 +172,13 @@ namespace AlignmentStation
         private void TosaStep2()
         {
             var w = Window.GetWindow(this) as MainWindow;
+
             var firstLightPower = Instruments.instance.GetThorlabsPower();
-            firstLightInfoPanel.Visibility = Visibility.Visible;
+            firstLightVoltage.Visibility = Visibility.Visible;
+            firstLightVoltage.Text = " ";
             firstLightVoltage.Text = $"First light power: {firstLightPower}";
 
-            if (firstLightPower < 0.01)
+            if (firstLightPower < tosaFirstLightThreshold)
             {
                 Debug.Print("Power is too low: {0}", firstLightPower);
                 Debug.Print("Finding first light");
@@ -186,7 +187,7 @@ namespace AlignmentStation
             }
 
             firstLightVoltage.Text = $"First light power: {firstLightPower}";
-            if (firstLightPower < 0.01)
+            if (firstLightPower < tosaFirstLightThreshold)
             {
                 Debug.Print("First light power: {0}", firstLightPower);
                 Debug.Print("Could not find first light");
@@ -195,11 +196,9 @@ namespace AlignmentStation
                 ErrorMessages.Add("Could not find first light.");
                 errorList.ItemsSource = ErrorMessages;
                 errorPanel.Visibility = Visibility.Visible;
-                AlignmentButton.Visibility = Visibility.Visible;
-                AlignmentButton.Content = "End job";
-                attemptNumber = 3;
-                barrelReplaced = true;
+                AlignmentButton.Visibility = Visibility.Collapsed;
 
+                endJobButton.Visibility = Visibility.Visible;
                 nextDeviceButton.Visibility = Visibility.Visible;
                 firstLightFail = true;
 
@@ -207,6 +206,8 @@ namespace AlignmentStation
 
                 return;
             }
+
+            attemptNumber++;
 
             var o = w.output as TOSAOutput;
             var d = w.device as TOSADevice;
@@ -265,7 +266,7 @@ namespace AlignmentStation
                 if (attemptNumber > 3)
                 {
                     MainWindow.Conn.SaveTOSAOutput(o);
-                    this.AlignmentButton.Content = "End job";
+                    endJobButton.Visibility = Visibility.Visible;
                     nextDeviceButton.Visibility = Visibility.Visible;
                 }
                 else
@@ -278,7 +279,7 @@ namespace AlignmentStation
                         thirdInstruction.Visibility = Visibility.Collapsed;
                     }
 
-                    this.AlignmentButton.Content = "Retry";
+                    this.AlignmentButton.Content = "Retry alignment";
                 }
             }
         }
@@ -331,25 +332,74 @@ namespace AlignmentStation
 
         private void retryFirstLightButton_Click(object sender, RoutedEventArgs e)
         {
-            firstLightInfoPanel.Visibility = Visibility.Visible;
-            firstLightVoltage.Text = $"Finding first light";
+            Mouse.OverrideCursor = Cursors.Wait;
+            firstLightVoltage.Text = "Finding first light";
 
-            Instruments.instance.FindFirstLight();
+            Instruments.instance.FindFirstLight(false);
+            Mouse.OverrideCursor = Cursors.Arrow;
+
             var w = Window.GetWindow(this) as MainWindow;
             var d = w.device;
+
+            // check wheterh the threshold is met before running
+            // show next step button if threshold is met
 
             if (d is TOSADevice)
             {
                 var firstLightPower = Instruments.instance.GetThorlabsPower();
 
                 firstLightVoltage.Text = $"First light power: {firstLightPower}";
+
+                if (firstLightPower < tosaFirstLightThreshold)
+                {
+                    errorList.Visibility = Visibility.Collapsed;
+                    ErrorMessages.Clear();
+                    ErrorMessages.Add("Retry first light failed.");
+                    errorList.ItemsSource = ErrorMessages;
+                    errorList.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    AlignmentButton.Visibility = Visibility.Visible;
+                    firstLightVoltage.Text = $"Found first light power: ${firstLightPower}";
+                    retryPanel.Visibility = Visibility.Collapsed;
+                    nextDeviceButton.Visibility = Visibility.Collapsed;
+                    endJobButton.Visibility = Visibility.Collapsed;
+                    errorPanel.Visibility = Visibility.Collapsed;
+                }
             }
             else
             {
                 var voltage = Instruments.instance.GetAerotechAnalogVoltage();
 
                 firstLightVoltage.Text = $"First light voltage: {voltage}";
+
+                if (voltage < rosaFirstLightThreshold)
+                {
+                    errorList.Visibility = Visibility.Collapsed;
+                    ErrorMessages.Clear();
+                    ErrorMessages.Add("Retry first light failed.");
+                    errorList.ItemsSource = ErrorMessages;
+                    errorList.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    AlignmentButton.Visibility = Visibility.Visible;
+                    firstLightVoltage.Text = $"Found first light power: ${voltage}";
+                    retryPanel.Visibility = Visibility.Collapsed;
+                    nextDeviceButton.Visibility = Visibility.Collapsed;
+                    endJobButton.Visibility = Visibility.Collapsed;
+                    errorPanel.Visibility = Visibility.Collapsed;
+                }
             }
+        }
+
+        private void endJobButton_Click(object sender, RoutedEventArgs e)
+        {
+            attemptNumber = 3;
+            barrelReplaced = true;
+
+            NavigationService.Navigate(new HomePage());
         }
     }
 }

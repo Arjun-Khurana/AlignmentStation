@@ -90,6 +90,7 @@ namespace AlignmentStation
             var d = w.device as TOSADevice;
 
             var pFC = Instruments.instance.GetThorlabsPower();
+            pFC = pFC / Instruments.instance.alignmentPowerCalibration;
             var popCT = pFC / o.P_TO;
 
             var popCT_Shift = 10 * Math.Log(o.POPCT / popCT);
