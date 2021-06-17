@@ -84,7 +84,7 @@ namespace AlignmentStation
             var voltage = Instruments.instance.GetAerotechAnalogVoltage();
 
             firstLightInfoPanel.Visibility = Visibility.Visible;
-            firstLightVoltage.Text = $"First light voltage: {voltage}";
+            firstLightVoltage.Text = $"Input voltage: {voltage}";
 
             if (voltage < rosaFirstLightThreshold)
             {
@@ -94,11 +94,11 @@ namespace AlignmentStation
                 voltage = Instruments.instance.GetAerotechAnalogVoltage();
             }
 
-            firstLightVoltage.Text = $"First light voltage: {voltage}";
+            firstLightVoltage.Text = $"Input voltage: {voltage}";
 
             if (voltage < rosaFirstLightThreshold)
             {
-                Debug.Print("First light voltage: {0}", voltage);
+                Debug.Print("Input voltage: {0}", voltage);
                 Debug.Print("Could not find first light");
 
                 ErrorMessages.Clear();
@@ -179,8 +179,7 @@ namespace AlignmentStation
 
             var firstLightPower = Instruments.instance.GetThorlabsPower();
             firstLightVoltage.Visibility = Visibility.Visible;
-            firstLightVoltage.Text = " ";
-            firstLightVoltage.Text = $"First light power: {firstLightPower}";
+            firstLightVoltage.Text = $"Input voltage: {firstLightPower}";
 
             if (firstLightPower < tosaFirstLightThreshold)
             {
@@ -190,10 +189,10 @@ namespace AlignmentStation
                 firstLightPower = Instruments.instance.GetThorlabsPower();
             }
 
-            firstLightVoltage.Text = $"First light power: {firstLightPower}";
+            firstLightVoltage.Text = $"Input voltage: {firstLightPower}";
             if (firstLightPower < tosaFirstLightThreshold)
             {
-                Debug.Print("First light power: {0}", firstLightPower);
+                Debug.Print("Input voltage: {0}", firstLightPower);
                 Debug.Print("Could not find first light");
 
                 ErrorMessages.Clear();
@@ -232,7 +231,7 @@ namespace AlignmentStation
                 while (iterCount < 3 && popCt < 0.75)
                 {
                     firstLightPower = Instruments.instance.GetThorlabsPower();
-                    Debug.Print($"First light power: {firstLightPower}");
+                    Debug.Print($"Input voltage: {firstLightPower}");
 
                     Instruments.instance.FindCentroid(firstLightPower * 0.85, 0.00025);
 
@@ -379,7 +378,7 @@ namespace AlignmentStation
             {
                 var firstLightPower = Instruments.instance.GetThorlabsPower();
 
-                firstLightVoltage.Text = $"First light power: {firstLightPower}";
+                firstLightVoltage.Text = $"Input voltage: {firstLightPower}";
 
                 if (firstLightPower < tosaFirstLightThreshold)
                 {
@@ -403,7 +402,7 @@ namespace AlignmentStation
             {
                 var voltage = Instruments.instance.GetAerotechAnalogVoltage();
 
-                firstLightVoltage.Text = $"First light voltage: {voltage}";
+                firstLightVoltage.Text = $"Input voltage: {voltage}";
 
                 if (voltage < rosaFirstLightThreshold)
                 {

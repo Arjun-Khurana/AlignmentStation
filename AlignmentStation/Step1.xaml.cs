@@ -182,7 +182,7 @@ namespace AlignmentStation
 
             currentText.Text = "Current: " + current + " mA";
             voltageText.Text = "Voltage: " + voltage + " V";
-            powerText.Text = "Power: " + power * 1000 + " mW";
+            powerText.Text = "Power: " + power / Instruments.instance.alignmentPowerCalibration + "W";
 
             //TODO: Compare these values to the ones retrieved from test config
             //      and either accept/reject
