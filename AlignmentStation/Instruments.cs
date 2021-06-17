@@ -299,5 +299,12 @@ namespace AlignmentStation
 
             return v;
         }
+
+        public void AerotechAbort()
+        {
+            aerotechController.Commands.Axes["X"].Motion.Abort();
+            aerotechController.Commands.Axes["Y"].Motion.Abort();
+            aerotechController.Commands.Axes["Z"].Motion.Abort();
+        }
     }
 }

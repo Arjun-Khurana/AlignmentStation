@@ -14,6 +14,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
 using AlignmentStation.Models;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace AlignmentStation
 {
@@ -28,6 +30,7 @@ namespace AlignmentStation
         bool firstLightFail = false;
         double tosaFirstLightThreshold = 0.01;
         double rosaFirstLightThreshold = 0.02;
+        CancellationTokenSource tokenSource2 = new CancellationTokenSource();
 
         public Step2()
         {
@@ -169,9 +172,10 @@ namespace AlignmentStation
             }
         }
 
-        private void TosaStep2()
+        private async Task TosaStep2()
         {
             var w = Window.GetWindow(this) as MainWindow;
+
 
             var firstLightPower = Instruments.instance.GetThorlabsPower();
             firstLightVoltage.Visibility = Visibility.Visible;
@@ -215,24 +219,51 @@ namespace AlignmentStation
             double popCt = 0;
             double pFC = 0;
             int iterCount = 0;
-            while (iterCount < 3 && popCt < 0.75)
+
+            CancellationToken ct = tokenSource2.Token;
+
+            AlignmentButton.Visibility = Visibility.Collapsed;
+            progressPanel.Visibility = Visibility.Visible;
+
+            var task = Task.Run(() =>
             {
-                firstLightPower = Instruments.instance.GetThorlabsPower();
-                Debug.Print($"First light power: {firstLightPower}");
+                ct.ThrowIfCancellationRequested();
 
-                Instruments.instance.FindCentroid(firstLightPower * 0.85, 0.00025);
+                while (iterCount < 3 && popCt < 0.75)
+                {
+                    firstLightPower = Instruments.instance.GetThorlabsPower();
+                    Debug.Print($"First light power: {firstLightPower}");
 
-                var powerAfterAlignment = Instruments.instance.GetThorlabsPower();
-                Debug.Print("Power after alignment: {0}", powerAfterAlignment);
+                    Instruments.instance.FindCentroid(firstLightPower * 0.85, 0.00025);
 
-                firstLightVoltage.Text = $"Power after alignment: {powerAfterAlignment}";
+                    var powerAfterAlignment = Instruments.instance.GetThorlabsPower();
+                    Debug.Print("Power after alignment: {0}", powerAfterAlignment);
 
-                pFC = powerAfterAlignment / Instruments.instance.alignmentPowerCalibration; 
-                popCt = pFC / o.P_TO;
+                    pFC = powerAfterAlignment / Instruments.instance.alignmentPowerCalibration;
+                    popCt = pFC / o.P_TO;
 
-                Debug.Print($"Iteration {iterCount} popCT: {popCt}");
-                iterCount++;
+                    Debug.Print($"Iteration {iterCount} popCT: {popCt}");
+                    iterCount++;
+
+                    if (ct.IsCancellationRequested)
+                    {
+                        Instruments.instance.AerotechAbort();
+                        ct.ThrowIfCancellationRequested();
+                    }
+                }
+            }, tokenSource2.Token);
+
+            try
+            {
+                await task;
             }
+            catch(OperationCanceledException e)
+            {
+                Debug.Print($"{nameof(OperationCanceledException)} thrown with message: {e.Message}");
+            }
+
+            progressPanel.Visibility = Visibility.Collapsed;
+            AlignmentButton.Visibility = Visibility.Visible;
 
             o.P_FC = pFC;
             o.POPCT = popCt;
@@ -400,6 +431,12 @@ namespace AlignmentStation
             barrelReplaced = true;
 
             NavigationService.Navigate(new HomePage());
+        }
+
+        private void cancelAlignmentButton_Click(object sender, RoutedEventArgs e)
+        {
+            Instruments.instance.AerotechAbort();
+            tokenSource2.Cancel();
         }
     }
 }
