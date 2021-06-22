@@ -56,7 +56,7 @@
                         Margin="0,0,0,0"
                         TextWrapping="Wrap"
                         FontSize="17"
-                        Text="(2) Insert TO into detector">
+                        Text="(2) Insert TO Holder in the Detector Fixture">
                     </TextBlock>
 
                     <TextBlock
@@ -64,8 +64,7 @@
                         Margin="0,0,0,0"
                         TextWrapping="Wrap"
                         FontSize="17"
-                        Visibility="Collapsed"
-                        Text="(2) Insert TO into detector">
+                        Text="(3) Hold Wand with TO in the TO Holder">
                     </TextBlock>
                 </StackPanel>
             </Border>

@@ -38,7 +38,7 @@
                         Margin="0,0,0,0"
                         TextWrapping="Wrap"
                         FontSize="17"
-                        Text="(1) Connect fiber from alignment interface to detector">
+                        Text="(1) Connect fiber from Alignment Interface Box to Detector Fixture">
                     </TextBlock>
 
                 </StackPanel>

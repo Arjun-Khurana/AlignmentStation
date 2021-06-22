@@ -297,12 +297,114 @@ namespace AlignmentStation.Data
                 }) ;
             }
         }
+        
+        public ReferenceUnits GetTOSAReferenceUnits(TOSAOutput output)
+        {
+            var part = output.Part_Number;
+            var job = output.Job_Number;
+
+            using (var conn = SimpleDbConnection())
+            {
+                conn.Open();
+
+                ReferenceUnits units = conn.Query<ReferenceUnits>(
+                    @"SELECT X, Y, Z, Part_Number, Job_Number
+                        from TOSAReferenceUnits where 
+                        Part_Number = @part and Job_Number = @job;", new { part, job }).FirstOrDefault();
+
+                return units;
+            }
+        }
+
+        public ReferenceUnits GetROSAReferenceUnits(ROSAOutput output)
+        {
+            var part = output.Part_Number;
+            var job = output.Job_Number;
+
+            using (var conn = SimpleDbConnection())
+            {
+                conn.Open();
+
+                ReferenceUnits units = conn.Query<ReferenceUnits>(
+                    @"SELECT X, Y, Z, Part_Number, Job_Number
+                        from ROSAReferenceUnits where 
+                        Part_Number = @part and Job_Number = @job;", new { part, job }).FirstOrDefault();
+
+                return units;
+            }
+        }
+
+        public void SaveTOSAReferenceUnits(ReferenceUnits units)
+        {
+            using (var conn = SimpleDbConnection())
+            {
+                conn.Open();
+
+                conn.Execute(@"
+                    INSERT OR REPLACE INTO TOSAReferenceUnits
+                    (X, Y, Z, Part_Number, Job_Number)
+                    values 
+                    (@X, @Y, @Z, @Part_Number, @Job_Number);
+                ",
+                new
+                {
+                    X = units.X,
+                    Y = units.Y,
+                    Z = units.Z,
+                    Part_Number = units.Part_Number,
+                    Job_Number = units.Job_Number
+                });
+            }
+        }
+
+        public void SaveROSAReferenceUnits(ReferenceUnits units)
+        {
+            using (var conn = SimpleDbConnection())
+            {
+                conn.Open();
+
+                conn.Execute(@"
+                    INSERT OR REPLACE INTO ROSAReferenceUnits
+                    (X, Y, Z, Part_Number, Job_Number)
+                    values 
+                    (@X, @Y, @Z, @Part_Number, @Job_Number);
+                ",
+                new
+                {
+                    X = units.X,
+                    Y = units.Y,
+                    Z = units.Z,
+                    Part_Number = units.Part_Number,
+                    Job_Number = units.Job_Number
+                });
+            }
+        }
 
         private static void CreateDatabase()
         {
             using (var conn = SimpleDbConnection())
             {
                 conn.Open();
+
+                conn.Execute(
+                    @"create table ROSAReferenceUnits (
+                        X double not null,
+                        Y double not null,
+                        Z double not null,
+                        Part_Number varchar(255) not null, 
+                        Job_Number varchar(255) not null,
+                        primary key (Part_Number, Job_Number)
+                    ");
+
+                conn.Execute(
+                    @"create table TOSAReferenceUnits (
+                        X double not null,
+                        Y double not null,
+                        Z double not null,
+                        Part_Number varchar(255) not null, 
+                        Job_Number varchar(255) not null,
+                        primary key (Part_Number, Job_Number)
+                    ");
 
                 conn.Execute(
                     @"create table TOSADevice 

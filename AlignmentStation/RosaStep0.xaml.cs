@@ -55,7 +55,7 @@ namespace AlignmentStation
 
             var power = Instruments.instance.GetThorlabsPower();
             Debug.Print($"Fiber power: {power}");
-            output.Fiber_Power = power / Instruments.instance.alignmentPowerCalibration;
+            output.Fiber_Power = 1000 * power / Instruments.instance.alignmentPowerCalibration;
 
             powerText.Text = $"Fiber power: {power}";
             successMessage.Visibility = Visibility.Visible;

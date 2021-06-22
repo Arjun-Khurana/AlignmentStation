@@ -28,6 +28,9 @@ namespace AlignmentStation
         public Device device;
         public TestOutput output;
 
+        public bool ReferenceMode = false;
+        public ReferenceUnits ReferenceUnits;
+
         public MainWindow()
         {
             InitializeComponent();

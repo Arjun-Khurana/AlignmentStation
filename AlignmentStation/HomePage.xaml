@@ -131,6 +131,14 @@
                 BorderThickness="1,1,1,1" 
                 Padding="5,1,5,1" Click="StartButton"/>
 
+            <Button
+                Style="{StaticResource UnderlineButton}"
+                Margin="0,25,0,0"
+                Content="Reference Units mode" 
+                HorizontalAlignment="Center"
+                BorderThickness="1,1,1,1" 
+                Padding="5,1,5,1" Click="ReferenceStartButton"/>
+
             <TextBlock 
                 Margin="0,10,0,0"
                 Foreground="DarkOrange"

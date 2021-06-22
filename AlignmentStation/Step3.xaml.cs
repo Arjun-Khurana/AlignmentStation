@@ -55,7 +55,7 @@ namespace AlignmentStation
             var d = w.device as ROSADevice;
 
             var voltage = Instruments.instance.GetAerotechAnalogVoltage();
-            var current = voltage / Instruments.instance.seriesResistance;
+            var current = (voltage * 0.596) - 0.006;
             var responsivity = current / o.Fiber_Power;
 
             var resp_shift = 10 * Math.Log(o.Resp / responsivity);
@@ -77,6 +77,8 @@ namespace AlignmentStation
             }
 
             MainWindow.Conn.SaveROSAOutput(o);
+
+            //TODO: Query aerotech position and save reference position
 
             testComplete = true;
             TestButton.Content = "End job";
@@ -113,6 +115,8 @@ namespace AlignmentStation
             }
 
             MainWindow.Conn.SaveTOSAOutput(o);
+
+            //TODO: Query aerotech position and save in reference units
 
             testComplete = true;
             TestButton.Content = "End job";

@@ -26,6 +26,22 @@ namespace AlignmentStation
 
         private void StartButton(object sender, RoutedEventArgs e)
         {
+            var w = Window.GetWindow(this) as MainWindow;
+            w.ReferenceMode = true;
+
+            this.Start();
+        }
+
+        private void ReferenceStartButton(object sender, RoutedEventArgs e)
+        {
+            var w = Window.GetWindow(this) as MainWindow;
+            w.ReferenceMode = true;
+
+            this.Start();
+        }
+
+        private void Start()
+        {
             if (DeviceSelector.SelectedItem == null)
             {
                 Debug.Print("Pick one.");

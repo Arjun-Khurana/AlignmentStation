@@ -45,9 +45,12 @@ namespace AlignmentStation
 
             if (w.device is ROSADevice)
             {
-                thirdInstruction.Text = "(1) Connect alignment fiber to alignment station";
-                thirdInstruction.Visibility = Visibility.Visible;
+                secondInstruction.Text = "(2) Connect fiber from Alignment Interface Box to Alignent Tower Fiber";
+                secondInstruction.Visibility = Visibility.Visible;
+                thirdInstruction.Visibility = Visibility.Collapsed;
             }
+
+            Instruments.instance.
         }
 
         private void ShowErrorPanels()

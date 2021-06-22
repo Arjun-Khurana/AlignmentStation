@@ -14,6 +14,10 @@ namespace AlignmentStation.Data
         TOSADevice GetTOSADevice(int id);
         void SaveROSAOutput(ROSAOutput output);
         void SaveTOSAOutput(TOSAOutput output);
+        ReferenceUnits GetTOSAReferenceUnits(TOSAOutput output);
+        ReferenceUnits GetROSAReferenceUnits(ROSAOutput output);
+        void SaveTOSAReferenceUnits(ReferenceUnits units);
+        void SaveROSAReferenceUnits(ReferenceUnits units);
     }
 
 }

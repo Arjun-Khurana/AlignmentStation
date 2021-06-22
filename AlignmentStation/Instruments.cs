@@ -25,11 +25,13 @@ namespace AlignmentStation
 
         private string RelaySerial = "QAAMZ";
 
-        public double alignmentPowerCalibration = 250.0;
-        public double seriesResistance = 4700;
+        public double powerAttenuation = 24.0;
+        public double alignmentPowerCalibration = 0;
 
         private Instruments()
         {
+            alignmentPowerCalibration = Math.Pow(10, powerAttenuation / 10);
+
             try
             {
                 aerotechController = Controller.Connect();
@@ -93,7 +95,7 @@ namespace AlignmentStation
 
                 r = session2.RawIO.ReadString();
 
-                session2.RawIO.Write("SENS:CORR 24\n");
+                session2.RawIO.Write($"SENS:CORR {powerAttenuation}\n");
 
                 powerMeter = session2;
             }
@@ -101,7 +103,7 @@ namespace AlignmentStation
 
         public void SetPowerMeterWavelength(int wavelength)
         {
-            this.powerMeter.RawIO.Write($"SENS:CORR:WAV {wavelength}");
+            this.powerMeter.RawIO.Write($"SENS:CORR:WAV {wavelength}\n");
         }
 
         public void SetArroyoLaserOn()
@@ -233,7 +235,7 @@ namespace AlignmentStation
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement1.Value = 0.2;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement2.Value = 0.2;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement3.Value = 0.2;
-            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CReturnToCenter.Value = 1;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CReturnToCenter.Value = 0;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis1.Value = 0;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis2.Value = 2;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis3.Value = 1;
@@ -252,7 +254,7 @@ namespace AlignmentStation
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement1.Value = 0.2;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement2.Value = 0.2;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement3.Value = 0.2;
-            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CReturnToCenter.Value = 1;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CReturnToCenter.Value = 0;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis1.Value = 0;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis2.Value = 2;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis3.Value = 1;
@@ -302,9 +304,12 @@ namespace AlignmentStation
 
         public void AerotechAbort()
         {
-            aerotechController.Commands.Axes["X"].Motion.Abort();
-            aerotechController.Commands.Axes["Y"].Motion.Abort();
-            aerotechController.Commands.Axes["Z"].Motion.Abort();
+            aerotechController.Tasks[TaskId.TLibrary].Program.Stop();
+        }
+
+        public void PrintAerotechPosition()
+        {
+            // TODO: print / return the aerotech position 
         }
     }
 }

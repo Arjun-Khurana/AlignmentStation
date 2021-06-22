@@ -37,12 +37,22 @@ namespace AlignmentStation
             InitializeComponent();
         }
 
+        void OnLoad(object sender, RoutedEventArgs e)
+        {
+            var w = MainWindow.GetWindow(this) as MainWindow;
+
+            if (w.device is ROSADevice)
+            {
+                fifthInstruction.Visibility = Visibility.Collapsed;
+            }
+        }
+
         private void Next_Step_Click(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(new Step3());
         }
 
-        private void AlignmentButtonClick(object sender, RoutedEventArgs e)
+        private async void AlignmentButtonClick(object sender, RoutedEventArgs e)
         {
             if (barrelReplaced)
             {
@@ -65,10 +75,16 @@ namespace AlignmentStation
             var w = Window.GetWindow(this) as MainWindow;
             if (w.device is TOSADevice)
             {
-                TosaStep2();
+                // TODO: query reference position for this device,
+                // move aerotech there if it exists.
+
+                await TosaStep2();
             }
             else
             {
+                // TODO: query reference position for this device,
+                // move aerotech there if it exists.
+
                 RosaStep2();
             }
 
@@ -123,7 +139,7 @@ namespace AlignmentStation
             var voltageAfterAlignment = Instruments.instance.GetAerotechAnalogVoltage();
             firstLightVoltage.Text = $"Voltage after alignment: {voltageAfterAlignment}";
 
-            var currentAfterAlignment = voltageAfterAlignment / Instruments.instance.seriesResistance;
+            var currentAfterAlignment = (voltageAfterAlignment * 0.596) -0.006;
             var responsivityAfterAlignment = currentAfterAlignment / output.Fiber_Power;
 
             if (responsivityAfterAlignment < rosa.Resp_Min) // get min responsivity from device
@@ -172,10 +188,9 @@ namespace AlignmentStation
             }
         }
 
-        private async Task TosaStep2()
+        private async void TosaStep2()
         {
             var w = Window.GetWindow(this) as MainWindow;
-
 
             var firstLightPower = Instruments.instance.GetThorlabsPower();
             firstLightVoltage.Visibility = Visibility.Visible;
@@ -228,7 +243,7 @@ namespace AlignmentStation
             {
                 ct.ThrowIfCancellationRequested();
 
-                while (iterCount < 3 && popCt < 0.75)
+                while (iterCount < 3 && popCt < 0.72)
                 {
                     firstLightPower = Instruments.instance.GetThorlabsPower();
                     Debug.Print($"Input voltage: {firstLightPower}");
