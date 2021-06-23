@@ -69,6 +69,7 @@ namespace AlignmentStation.Models
     {
         // 10 * log( pre-alignment resp / post-alignment resp )
         public double Resp { get; set; }
+        public double Resp_Post_Cure { get; set; }
         public double Resp_Shift { get; set; } 
         public double Fiber_Power { get; set; }
         public bool Passed { get; set; }

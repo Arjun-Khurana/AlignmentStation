@@ -60,6 +60,7 @@ namespace AlignmentStation
 
             var resp_shift = 10 * Math.Log(o.Resp / responsivity);
 
+            o.Resp_Post_Cure = responsivity;
             o.Resp_Shift = resp_shift;
 
             if (resp_shift > 1 || responsivity < d.Resp_Min)

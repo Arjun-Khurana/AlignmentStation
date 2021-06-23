@@ -216,6 +216,7 @@ namespace AlignmentStation.Data
                         Timestamp,
                         Resp_Shift,
                         Resp,
+                        Resp_Post_Cure,
                         Fiber_Power,
                         Passed
                     )
@@ -228,6 +229,7 @@ namespace AlignmentStation.Data
                         @timestamp, 
                         @resp_shift,
                         @resp,
+                        @resp_post_cure,
                         @fiber_power,
                         @passed
                         )", 
@@ -239,6 +241,7 @@ namespace AlignmentStation.Data
                     timestamp = DateTime.Now,
                     resp_shift = output.Resp_Shift,
                     resp = output.Resp,
+                    resp_post_cure = output.Resp_Post_Cure,
                     fiber_power = output.Fiber_Power,
                     passed = output.Passed
                 });
@@ -394,6 +397,7 @@ namespace AlignmentStation.Data
                         Part_Number varchar(255) not null, 
                         Job_Number varchar(255) not null,
                         primary key (Part_Number, Job_Number)
+                        )
                     ");
 
                 conn.Execute(
@@ -404,6 +408,7 @@ namespace AlignmentStation.Data
                         Part_Number varchar(255) not null, 
                         Job_Number varchar(255) not null,
                         primary key (Part_Number, Job_Number)
+                       )
                     ");
 
                 conn.Execute(
@@ -474,6 +479,7 @@ namespace AlignmentStation.Data
                         Operator varchar(255) not null,
                         Timestamp datetime not null,
                         Resp double not null,
+                        Resp_Post_Cure double not null,
                         Resp_Shift double not null,
                         Fiber_Power double not null,
                         Passed boolean not null
