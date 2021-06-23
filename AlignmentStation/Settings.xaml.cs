@@ -181,7 +181,7 @@ namespace AlignmentStation
         private void FindCentroidClick(object sender, RoutedEventArgs e)
         {
             var v = Instruments.instance.GetAerotechAnalogVoltage();
-            Instruments.instance.FindCentroid(v * 0.75, 0.00025);
+            Instruments.instance.FindCentroid(v * 0.9, 0.00025);
         }
 
         private void AerotechVoltage_Button_Click(object sender, RoutedEventArgs e)

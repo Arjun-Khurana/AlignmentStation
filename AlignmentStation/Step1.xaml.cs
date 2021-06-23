@@ -50,7 +50,6 @@ namespace AlignmentStation
                 thirdInstruction.Visibility = Visibility.Collapsed;
             }
 
-            Instruments.instance.
         }
 
         private void ShowErrorPanels()

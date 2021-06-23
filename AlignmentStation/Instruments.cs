@@ -158,48 +158,11 @@ namespace AlignmentStation
             aerotechController.Commands.Axes["X"].Motion.Enable();
             aerotechController.Commands.Axes["Z"].Motion.Enable();
 
-            try
-            {
-                aerotechController.Commands.Motion.Linear("Z", -100);
-            }
-            catch (A3200Exception ex)
-            {
-                Console.WriteLine("Error: {0}", ex.Message);
-                aerotechController.Parameters.Axes["Z"].Limits.LimitDebounceDistance.Value = 0;
-                aerotechController.Commands.Axes["Z"].Motion.FaultAck();
-            }
+            aerotechController.Commands.Axes.Select("X", "Y", "Z").Motion.Home();
 
-            try
-            {
-                aerotechController.Commands.Motion.Linear("Y", 100);
-            }
-            catch (A3200Exception ex)
-            {
-                Console.WriteLine("Error: {0}", ex.Message);
-                aerotechController.Parameters.Axes["Y"].Limits.LimitDebounceDistance.Value = 0;
-                aerotechController.Commands.Axes["Y"].Motion.FaultAck();
-            }
-
-            try
-            {
-                aerotechController.Commands.Motion.Linear("X", 100);
-            }
-            catch (A3200Exception ex)
-            {
-                Console.WriteLine("Error: {0}", ex.Message);
-                aerotechController.Parameters.Axes["X"].Limits.LimitDebounceDistance.Value = 0;
-                aerotechController.Commands.Axes["X"].Motion.FaultAck();
-            }
-
-            aerotechController.Reset();
-
-            aerotechController.Commands.Axes["Y"].Motion.Enable();
-            aerotechController.Commands.Axes["X"].Motion.Enable();
-            aerotechController.Commands.Axes["Z"].Motion.Enable();
-
-            aerotechController.Commands.Motion.Linear("X", -10.2149);
-            aerotechController.Commands.Motion.Linear("Y", -13.5285);
-            aerotechController.Commands.Motion.Linear("Z", 18.3891);
+            aerotechController.Commands.Motion.Linear("X", 1.9964);
+            aerotechController.Commands.Motion.Linear("Y", -2.1939);
+            aerotechController.Commands.Motion.Linear("Z", 4.7878);
         }
 
         public void FindFirstLight(bool moveBack = true)
@@ -234,8 +197,8 @@ namespace AlignmentStation
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CScanIncrement.Value = stepSize;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement1.Value = 0.2;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement2.Value = 0.2;
-            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement3.Value = 0.2;
-            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CReturnToCenter.Value = 0;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement3.Value = 1.0;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CReturnToCenter.Value = 1;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis1.Value = 0;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis2.Value = 2;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis3.Value = 1;

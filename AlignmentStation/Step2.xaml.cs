@@ -91,6 +91,56 @@ namespace AlignmentStation
             Mouse.OverrideCursor = Cursors.Arrow;
         }
 
+        private void stepSuccessUiUpdate()
+        {
+            errorPanel.Visibility = Visibility.Collapsed;
+            failedMessage.Visibility = Visibility.Collapsed;
+            successMessage.Visibility = Visibility.Visible;
+
+            NextStepButton.Visibility = Visibility.Visible;
+            AlignmentButton.Visibility = Visibility.Collapsed;
+        }
+
+        private void stepErrorUiUpdate()
+        {
+            var w = Window.GetWindow(this) as MainWindow;
+            var output = w.output;
+
+            errorList.ItemsSource = ErrorMessages;
+            errorPanel.Visibility = Visibility.Visible;
+            failedMessage.Visibility = Visibility.Visible;
+            failedMessage.Text = $"Test attempt {attemptNumber} failed, check TO and lens";
+            successMessage.Visibility = Visibility.Collapsed;
+            NextStepButton.Visibility = Visibility.Collapsed;
+
+            if (attemptNumber > 3)
+            {
+                if (output is ROSAOutput)
+                {
+
+                    MainWindow.Conn.SaveROSAOutput(output as ROSAOutput);
+                }
+                else
+                {
+                    MainWindow.Conn.SaveTOSAOutput(output as TOSAOutput);
+                }
+                endJobButton.Visibility = Visibility.Visible;
+                nextDeviceButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                if (attemptNumber == 3)
+                {
+                    firstInstruction.Text = "(1) Remove lens barrel";
+                    this.failedMessage.Text = $"Test attempt {attemptNumber} failed\nReplace TO and try again.";
+                    secondInstruction.Visibility = Visibility.Collapsed;
+                    thirdInstruction.Visibility = Visibility.Collapsed;
+                }
+
+                this.AlignmentButton.Content = "Retry alignment";
+            }
+        }
+
         private void RosaStep2()
         {
             var w = Window.GetWindow(this) as MainWindow;
@@ -150,49 +200,29 @@ namespace AlignmentStation
             if (ErrorMessages.Count == 0) 
             {
                 output.Resp = responsivityAfterAlignment;
-                this.errorPanel.Visibility = Visibility.Collapsed;
-                this.failedMessage.Visibility = Visibility.Collapsed;
-                this.successMessage.Visibility = Visibility.Visible;
-
-                this.NextStepButton.Visibility = Visibility.Visible;
-                this.AlignmentButton.Visibility = Visibility.Collapsed;
+                stepSuccessUiUpdate();
             }
             else
             {
-                this.errorList.ItemsSource = ErrorMessages;
-                this.errorPanel.Visibility = Visibility.Visible;
-                this.failedMessage.Visibility = Visibility.Visible;
-                this.failedMessage.Text = $"Test attempt {attemptNumber} failed, check TO and lens";
-                this.successMessage.Visibility = Visibility.Collapsed;
-
-                this.NextStepButton.Visibility = Visibility.Collapsed;
-
-                if (attemptNumber > 3)
-                {
-                    MainWindow.Conn.SaveROSAOutput(output);
-                    endJobButton.Visibility = Visibility.Visible;
-                    nextDeviceButton.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    if (attemptNumber == 3)
-                    {
-                        firstInstruction.Text = "(1) Remove lens barrel";
-                        this.failedMessage.Text = $"Test attempt {attemptNumber} failed\nReplace TO and try again.";
-                        secondInstruction.Visibility = Visibility.Collapsed;
-                        thirdInstruction.Visibility = Visibility.Collapsed;
-                    }
-
-                    this.AlignmentButton.Content = "Retry alignment";
-                }
+                stepErrorUiUpdate();
             }
         }
 
-        private async void TosaStep2()
+        private async Task TosaStep2()
         {
             var w = Window.GetWindow(this) as MainWindow;
+            var o = w.output as TOSAOutput;
+            var d = w.device as TOSADevice;
 
             var firstLightPower = Instruments.instance.GetThorlabsPower();
+
+            double pFC = 0;
+            double popCt = 0;
+            int iterCount = 0;
+
+            pFC = firstLightPower / Instruments.instance.alignmentPowerCalibration;
+            popCt = pFC / o.P_TO;
+
             firstLightVoltage.Visibility = Visibility.Visible;
             firstLightVoltage.Text = $"Input voltage: {firstLightPower}";
 
@@ -201,10 +231,11 @@ namespace AlignmentStation
                 Debug.Print("Power is too low: {0}", firstLightPower);
                 Debug.Print("Finding first light");
                 Instruments.instance.FindFirstLight();
-                firstLightPower = Instruments.instance.GetThorlabsPower();
             }
 
+            firstLightPower = Instruments.instance.GetThorlabsPower();
             firstLightVoltage.Text = $"Input voltage: {firstLightPower}";
+
             if (firstLightPower < tosaFirstLightThreshold)
             {
                 Debug.Print("Input voltage: {0}", firstLightPower);
@@ -225,113 +256,81 @@ namespace AlignmentStation
                 return;
             }
 
-            attemptNumber++;
+            ErrorMessages.Clear();
 
-            var o = w.output as TOSAOutput;
-            var d = w.device as TOSADevice;
-
-            double popCt = 0;
-            double pFC = 0;
-            int iterCount = 0;
-
-            CancellationToken ct = tokenSource2.Token;
-
-            AlignmentButton.Visibility = Visibility.Collapsed;
-            progressPanel.Visibility = Visibility.Visible;
-
-            var task = Task.Run(() =>
+            firstLightVoltage.Text = $"popCT: {popCt}";
+            if (popCt < d.POPCT_Min)
             {
-                ct.ThrowIfCancellationRequested();
+                attemptNumber++;
 
-                while (iterCount < 3 && popCt < 0.72)
+                CancellationToken ct = tokenSource2.Token;
+
+                AlignmentButton.Visibility = Visibility.Collapsed;
+                progressPanel.Visibility = Visibility.Visible;
+
+                var task = Task.Run(() =>
                 {
-                    firstLightPower = Instruments.instance.GetThorlabsPower();
-                    Debug.Print($"Input voltage: {firstLightPower}");
+                    ct.ThrowIfCancellationRequested();
 
-                    Instruments.instance.FindCentroid(firstLightPower * 0.85, 0.00025);
-
-                    var powerAfterAlignment = Instruments.instance.GetThorlabsPower();
-                    Debug.Print("Power after alignment: {0}", powerAfterAlignment);
-
-                    pFC = powerAfterAlignment / Instruments.instance.alignmentPowerCalibration;
-                    popCt = pFC / o.P_TO;
-
-                    Debug.Print($"Iteration {iterCount} popCT: {popCt}");
-                    iterCount++;
-
-                    if (ct.IsCancellationRequested)
+                    while (iterCount < 3 && popCt < 0.72)
                     {
-                        Instruments.instance.AerotechAbort();
-                        ct.ThrowIfCancellationRequested();
+                        firstLightPower = Instruments.instance.GetThorlabsPower();
+                        Debug.Print($"Input voltage: {firstLightPower}");
+
+                        Instruments.instance.FindCentroid(firstLightPower * 0.85, 0.00025);
+
+                        var powerAfterAlignment = Instruments.instance.GetThorlabsPower();
+                        Debug.Print("Power after alignment: {0}", powerAfterAlignment);
+
+                        pFC = powerAfterAlignment / Instruments.instance.alignmentPowerCalibration;
+                        popCt = pFC / o.P_TO;
+
+                        Debug.Print($"Iteration {iterCount} popCT: {popCt}");
+                        iterCount++;
+
+                        if (ct.IsCancellationRequested)
+                        {
+                            ct.ThrowIfCancellationRequested();
+                        }
                     }
+                }, tokenSource2.Token);
+
+                try
+                {
+                    await task;
                 }
-            }, tokenSource2.Token);
+                catch(OperationCanceledException e)
+                {
+                    Debug.Print($"{nameof(OperationCanceledException)} thrown with message: {e.Message}");
+                }
 
-            try
-            {
-                await task;
-            }
-            catch(OperationCanceledException e)
-            {
-                Debug.Print($"{nameof(OperationCanceledException)} thrown with message: {e.Message}");
-            }
+                progressPanel.Visibility = Visibility.Collapsed;
+                AlignmentButton.Visibility = Visibility.Visible;
 
-            progressPanel.Visibility = Visibility.Collapsed;
-            AlignmentButton.Visibility = Visibility.Visible;
+                o.P_FC = pFC;
+                o.POPCT = popCt;
 
-            o.P_FC = pFC;
-            o.POPCT = popCt;
-
-            if (o.POPCT < d.POPCT_Min)
-            {
-                ErrorMessages.Add("POPCT < POPCT_MIN");
-                this.failedMessage.Visibility = Visibility.Visible;
-                this.successMessage.Visibility = Visibility.Collapsed;
+                if (o.POPCT < d.POPCT_Min)
+                {
+                    ErrorMessages.Add("POPCT < POPCT_MIN");
+                    failedMessage.Visibility = Visibility.Visible;
+                    successMessage.Visibility = Visibility.Collapsed;
+                }
             }
 
             if (ErrorMessages.Count == 0) 
             {
-                this.errorPanel.Visibility = Visibility.Collapsed;
-                this.failedMessage.Visibility = Visibility.Collapsed;
-                this.successMessage.Visibility = Visibility.Visible;
-
-                this.NextStepButton.Visibility = Visibility.Visible;
-                this.AlignmentButton.Visibility = Visibility.Collapsed;
+                stepSuccessUiUpdate();
             }
             else
             {
-                this.errorList.ItemsSource = ErrorMessages;
-                this.errorPanel.Visibility = Visibility.Visible;
-                this.failedMessage.Visibility = Visibility.Visible;
-                this.failedMessage.Text = $"Test attempt {attemptNumber} failed, check TO and lens";
-                this.successMessage.Visibility = Visibility.Collapsed;
-
-                this.NextStepButton.Visibility = Visibility.Collapsed;
-
-                if (attemptNumber > 3)
-                {
-                    MainWindow.Conn.SaveTOSAOutput(o);
-                    endJobButton.Visibility = Visibility.Visible;
-                    nextDeviceButton.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    if (attemptNumber == 3)
-                    {
-                        firstInstruction.Text = "(1) Remove lens barrel";
-                        this.failedMessage.Text = $"Test attempt {attemptNumber} failed\nReplace TO and try again.";
-                        secondInstruction.Visibility = Visibility.Collapsed;
-                        thirdInstruction.Visibility = Visibility.Collapsed;
-                    }
-
-                    this.AlignmentButton.Content = "Retry alignment";
-                }
+                stepErrorUiUpdate();
             }
         }
 
         private void Next_Device_Click(object sender, RoutedEventArgs e)
         {
-            var w = MainWindow.GetWindow(this) as MainWindow;
+            var w = Window.GetWindow(this) as MainWindow;
             var currentOutput = w.output;
             var job = currentOutput.Job_Number;
             var unitNumber = currentOutput.Unit_Number;
@@ -377,65 +376,79 @@ namespace AlignmentStation
 
         private void retryFirstLightButton_Click(object sender, RoutedEventArgs e)
         {
+            var w = Window.GetWindow(this) as MainWindow;
+            var d = w.device;
+
+            var pow = 0.0;
+            var found = false;
+
+            if (d is TOSADevice)
+            {
+                pow = Instruments.instance.GetThorlabsPower();
+                found = displayFirstLightErrors(pow, tosaFirstLightThreshold);
+            }
+            else
+            {
+                pow = Instruments.instance.GetAerotechAnalogVoltage();
+                found = displayFirstLightErrors(pow, rosaFirstLightThreshold);
+            }
+
+            if (found) return;
+
             Mouse.OverrideCursor = Cursors.Wait;
             firstLightVoltage.Text = "Finding first light";
 
             Instruments.instance.FindFirstLight(false);
             Mouse.OverrideCursor = Cursors.Arrow;
 
-            var w = Window.GetWindow(this) as MainWindow;
-            var d = w.device;
-
-            // check wheterh the threshold is met before running
-            // show next step button if threshold is met
-
             if (d is TOSADevice)
             {
                 var firstLightPower = Instruments.instance.GetThorlabsPower();
-
-                firstLightVoltage.Text = $"Input voltage: {firstLightPower}";
-
-                if (firstLightPower < tosaFirstLightThreshold)
-                {
-                    errorList.Visibility = Visibility.Collapsed;
-                    ErrorMessages.Clear();
-                    ErrorMessages.Add("Retry first light failed.");
-                    errorList.ItemsSource = ErrorMessages;
-                    errorList.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    AlignmentButton.Visibility = Visibility.Visible;
-                    firstLightVoltage.Text = $"Found first light power: ${firstLightPower}";
-                    retryPanel.Visibility = Visibility.Collapsed;
-                    nextDeviceButton.Visibility = Visibility.Collapsed;
-                    endJobButton.Visibility = Visibility.Collapsed;
-                    errorPanel.Visibility = Visibility.Collapsed;
-                }
+                displayFirstLightErrors(firstLightPower, tosaFirstLightThreshold);
             }
             else
             {
                 var voltage = Instruments.instance.GetAerotechAnalogVoltage();
+                displayFirstLightErrors(voltage, rosaFirstLightThreshold);
+            }
+        }
 
-                firstLightVoltage.Text = $"Input voltage: {voltage}";
+        private double getTosaPopCT()
+        {
+            var w = Window.GetWindow(this) as MainWindow;
+            var output = w.output as TOSAOutput;
 
-                if (voltage < rosaFirstLightThreshold)
-                {
-                    errorList.Visibility = Visibility.Collapsed;
-                    ErrorMessages.Clear();
-                    ErrorMessages.Add("Retry first light failed.");
-                    errorList.ItemsSource = ErrorMessages;
-                    errorList.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    AlignmentButton.Visibility = Visibility.Visible;
-                    firstLightVoltage.Text = $"Found first light power: ${voltage}";
-                    retryPanel.Visibility = Visibility.Collapsed;
-                    nextDeviceButton.Visibility = Visibility.Collapsed;
-                    endJobButton.Visibility = Visibility.Collapsed;
-                    errorPanel.Visibility = Visibility.Collapsed;
-                }
+             
+            double pow = Instruments.instance.GetThorlabsPower();
+            double pFC = pow / Instruments.instance.alignmentPowerCalibration;
+
+            return pFC / output.P_TO;
+        }
+
+        private bool displayFirstLightErrors(double voltage, double threshold)
+        {
+            firstLightVoltage.Text = $"Input voltage: {voltage}";
+
+            if (voltage < threshold)
+            {
+                errorList.Visibility = Visibility.Collapsed;
+                ErrorMessages.Clear();
+                ErrorMessages.Add("Retry first light failed.");
+                errorList.ItemsSource = ErrorMessages;
+                errorList.Visibility = Visibility.Visible;
+
+                return false;
+            }
+            else
+            {
+                AlignmentButton.Visibility = Visibility.Visible;
+                firstLightVoltage.Text = $"Found first light power: ${voltage}";
+                retryPanel.Visibility = Visibility.Collapsed;
+                nextDeviceButton.Visibility = Visibility.Collapsed;
+                endJobButton.Visibility = Visibility.Collapsed;
+                errorPanel.Visibility = Visibility.Collapsed;
+
+                return true;
             }
         }
 
