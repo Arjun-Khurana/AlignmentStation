@@ -222,7 +222,6 @@ namespace AlignmentStation
             var o = w.output as TOSAOutput;
             var d = w.device as TOSADevice;
 
-            // get ref units and go there if they exist
             var refUnits = MainWindow.Conn.GetTOSAReferenceUnits(o);
             if (refUnits != null)
             {
