@@ -111,6 +111,13 @@
                     >
                 </Button>
             </StackPanel>
+
+            <StackPanel
+                x:Name="RefUnitPanel"
+                Visibility="Collapsed"
+                Margin="0,20,0,0">
+                <TextBlock x:Name="RefUnitText"></TextBlock>
+            </StackPanel>
         </StackPanel>
 
     </Grid>

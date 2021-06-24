@@ -79,7 +79,10 @@ namespace AlignmentStation
 
             MainWindow.Conn.SaveROSAOutput(o);
 
-            //TODO: Query aerotech position and save reference position
+            if (w.ReferenceMode)
+            {
+                SaveRefUnits();
+            }
 
             testComplete = true;
             TestButton.Content = "End job";
@@ -93,7 +96,7 @@ namespace AlignmentStation
             var d = w.device as TOSADevice;
 
             var pFC = Instruments.instance.GetThorlabsPower();
-            pFC = pFC / Instruments.instance.alignmentPowerCalibration;
+            pFC /= Instruments.instance.alignmentPowerCalibration;
             var popCT = pFC / o.P_TO;
 
             var popCT_Shift = 10 * Math.Log(o.POPCT / popCT);
@@ -118,6 +121,10 @@ namespace AlignmentStation
             MainWindow.Conn.SaveTOSAOutput(o);
 
             //TODO: Query aerotech position and save in reference units
+            if (w.ReferenceMode)
+            {
+                SaveRefUnits();
+            }
 
             testComplete = true;
             TestButton.Content = "End job";
@@ -166,6 +173,39 @@ namespace AlignmentStation
             NavigationService.Navigate(new Step1());
         }
 
+        private void SaveRefUnits()
+        {
+            var w = Window.GetWindow(this) as MainWindow;
+            var o = w.output;
+            
+            var position = Instruments.instance.GetAerotechPosition();
+            (string X, string Y, string Z) formatted = (
+                String.Format("{0:0.000}", position.X),
+                String.Format("{0:0.000}", position.Y),
+                String.Format("{0:0.000}", position.Z)
+                );
+
+            RefUnitPanel.Visibility = Visibility.Visible;
+            RefUnitText.Text = $"Saving reference units: ({formatted.X}, {formatted.Y}, {formatted.Z}";
+
+            var refUnits = new ReferenceUnits {
+                X = position.X,
+                Y = position.Y,
+                Z = position.Z,
+                Job_Number = o.Job_Number,
+                Part_Number = o.Part_Number
+            };
+
+            if (o is TOSAOutput)
+            {
+                MainWindow.Conn.SaveTOSAReferenceUnits(refUnits);
+            }
+            else
+            {
+                MainWindow.Conn.SaveROSAReferenceUnits(refUnits);
+            }
+
+        }
         private void Quit_Button_Click(object sender, RoutedEventArgs e)
         {
             MessageBoxResult messageBoxResult = 

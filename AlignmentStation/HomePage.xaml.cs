@@ -27,7 +27,7 @@ namespace AlignmentStation
         private void StartButton(object sender, RoutedEventArgs e)
         {
             var w = Window.GetWindow(this) as MainWindow;
-            w.ReferenceMode = true;
+            w.ReferenceMode = false;
 
             this.Start();
         }
@@ -71,6 +71,8 @@ namespace AlignmentStation
 
             if (w.device is ROSADevice)
             {
+                Instruments.instance.SetArroyoLaserOff();
+
                 var fiberPower = MainWindow.Conn.GetLatestROSAFiberPower(JobNumberBox.Text.Trim());
                 
                 if (fiberPower != null)

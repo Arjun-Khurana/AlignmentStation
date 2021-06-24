@@ -154,15 +154,15 @@ namespace AlignmentStation
 
         public void CalibrateAxes()
         {
+            aerotechController.Commands.Motion.Setup.Absolute();
+
             aerotechController.Commands.Axes["Y"].Motion.Enable();
             aerotechController.Commands.Axes["X"].Motion.Enable();
             aerotechController.Commands.Axes["Z"].Motion.Enable();
 
             aerotechController.Commands.Axes.Select("X", "Y", "Z").Motion.Home();
 
-            aerotechController.Commands.Motion.Linear("X", 1.9964);
-            aerotechController.Commands.Motion.Linear("Y", -2.1939);
-            aerotechController.Commands.Motion.Linear("Z", 4.7878);
+            SetAerotechPosition(1.9964, -2.1939, 4.7878);
         }
 
         public void FindFirstLight(bool moveBack = true)
@@ -171,8 +171,10 @@ namespace AlignmentStation
 
             if (moveBack)
             {
+                var pos = GetAerotechPosition();
+
                 aerotechController.Commands.Axes["Z"].Motion.Enable();
-                aerotechController.Commands.Motion.Linear("Z", -0.1);
+                aerotechController.Commands.Motion.Linear("Z", pos.Z - 0.1);
             }
 
             aerotechController.Commands.Execute("WAIT MODE INPOS");
@@ -270,9 +272,30 @@ namespace AlignmentStation
             aerotechController.Tasks[TaskId.TLibrary].Program.Stop();
         }
 
-        public void PrintAerotechPosition()
+        public void SetAerotechPosition(double x, double y, double z)
         {
-            // TODO: print / return the aerotech position 
+            aerotechController.Commands.Motion.Setup.Absolute();
+
+            aerotechController.Commands.Axes["X"].Motion.Enable();
+            aerotechController.Commands.Axes["Y"].Motion.Enable();
+            aerotechController.Commands.Axes["Z"].Motion.Enable();
+
+            aerotechController.Commands.Motion.Linear("X", x);
+            aerotechController.Commands.Motion.Linear("Y", y);
+            aerotechController.Commands.Motion.Linear("Z", z);
+        }
+
+        public (double X, double Y, double Z) GetAerotechPosition()
+        {
+            var x = aerotechController.Commands.Status.AxisStatus(0, AxisStatusSignal.PositionFeedback);
+            var y = aerotechController.Commands.Status.AxisStatus(2, AxisStatusSignal.PositionFeedback);
+            var z = aerotechController.Commands.Status.AxisStatus(1, AxisStatusSignal.PositionFeedback);
+
+            Debug.Print($"X position: {x}");
+            Debug.Print($"Y position: {y}");
+            Debug.Print($"Z position: {z}");
+
+            return (x, y, z);
         }
     }
 }

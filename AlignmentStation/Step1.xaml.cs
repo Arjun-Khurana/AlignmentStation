@@ -201,7 +201,7 @@ namespace AlignmentStation
                 ErrorMessages.Add("Current drop across Arroyo is greater than threshold");
             }
 
-            if (power * 1000 < tosa.P_Min_TO)
+            if (power / Instruments.instance.alignmentPowerCalibration * 1000 < tosa.P_Min_TO)
             {
                 Debug.Print($"Power {power*1000} is below the acceptable value {tosa.P_Min_TO}.");
                 ErrorMessages.Add($"Power is below the acceptable value: {tosa.P_Min_TO} mW.");

@@ -60,15 +60,6 @@
                         BorderThickness="1,1,1,1" 
                         Padding="5,1,5,1" />
 
-                    <Button
-                        Margin="0,0,0,20"
-                        Name="FindCentroidHillClimbVersion"
-                        Content="Find centroid Hill Climb" 
-                        Click="FindCentroidHillClimbVersion_Click"
-                        HorizontalAlignment="Center"
-                        Style="{StaticResource UnderlineButton}"
-                        BorderThickness="1,1,1,1" 
-                        Padding="5,1,5,1" />
 
                     <Button
                         Margin="0,0,0,20"
@@ -243,6 +234,22 @@
                     Padding="5,1,5,1" />
 
             </StackPanel>
+
+            <StackPanel 
+                Orientation="Horizontal"
+                HorizontalAlignment="Center">
+                <Button
+                    Margin="0,0,10,0"
+                    Style="{StaticResource UnderlineButton}" Click="PositionButton_Click"
+                    >Get positions</Button>
+
+                <Button
+                    Margin="0,0,0,0"
+                    Style="{StaticResource UnderlineButton}" 
+                    Click="GoHome_Click"
+                    >Go to calibrated home</Button>
+            </StackPanel>
+        
         </StackPanel>
 
         <StackPanel 

@@ -194,5 +194,15 @@ namespace AlignmentStation
             var v = Instruments.instance.GetAerotechAnalogVoltage();
             Instruments.instance.FindCentroidHillClimb(v * 0.75, 0.00025);
         }
+
+        private void PositionButton_Click(object sender, RoutedEventArgs e)
+        {
+            Instruments.instance.GetAerotechPosition();
+        }
+
+        private void GoHome_Click(object sender, RoutedEventArgs e)
+        {
+            Instruments.instance.SetAerotechPosition(1.9964, -2.1939, 4.7878);
+        }
     }
 }

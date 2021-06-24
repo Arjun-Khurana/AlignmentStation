@@ -147,6 +147,14 @@ namespace AlignmentStation
             var rosa = w.device as ROSADevice;
             var output = w.output as ROSAOutput;
 
+            // get ref units and go there if they exist
+            var refUnits = MainWindow.Conn.GetROSAReferenceUnits(output);
+            if (refUnits != null)
+            {
+                Instruments.instance.SetAerotechPosition(refUnits.X, refUnits.Y, refUnits.Z);
+            }
+
+
             var voltage = Instruments.instance.GetAerotechAnalogVoltage();
 
             firstLightInfoPanel.Visibility = Visibility.Visible;
@@ -214,6 +222,13 @@ namespace AlignmentStation
             var o = w.output as TOSAOutput;
             var d = w.device as TOSADevice;
 
+            // get ref units and go there if they exist
+            var refUnits = MainWindow.Conn.GetTOSAReferenceUnits(o);
+            if (refUnits != null)
+            {
+                Instruments.instance.SetAerotechPosition(refUnits.X, refUnits.Y, refUnits.Z);
+            }
+            
             var firstLightPower = Instruments.instance.GetThorlabsPower();
 
             double pFC = 0;
@@ -224,7 +239,7 @@ namespace AlignmentStation
             popCt = pFC / o.P_TO;
 
             firstLightVoltage.Visibility = Visibility.Visible;
-            firstLightVoltage.Text = $"Input voltage: {firstLightPower}";
+            firstLightVoltage.Text = $"Fiber Coupled Power: {pFC}";
 
             if (firstLightPower < tosaFirstLightThreshold)
             {
@@ -258,7 +273,8 @@ namespace AlignmentStation
 
             ErrorMessages.Clear();
 
-            firstLightVoltage.Text = $"popCT: {popCt}";
+            firstLightVoltage.Text = $"Initial popCT: {String.Format("{0:0.00}", popCt * 100)}%";
+
             if (popCt < d.POPCT_Min)
             {
                 attemptNumber++;
@@ -326,6 +342,8 @@ namespace AlignmentStation
             {
                 stepErrorUiUpdate();
             }
+
+            firstLightVoltage.Text = $"Final popCT = {String.Format("{0:0.00}", getTosaPopCT() * 100)}%";
         }
 
         private void Next_Device_Click(object sender, RoutedEventArgs e)
@@ -353,6 +371,7 @@ namespace AlignmentStation
                 {
                     Part_Number = w.device.Part_Number,
                     Passed = false,
+            //TODO: Query aerotech position and save reference position
                     Job_Number = job,
                     Operator = op,
                     Unit_Number = unitNumber + 1
@@ -377,6 +396,7 @@ namespace AlignmentStation
         private void retryFirstLightButton_Click(object sender, RoutedEventArgs e)
         {
             var w = Window.GetWindow(this) as MainWindow;
+            //TODO: Query aerotech position and save reference position
             var d = w.device;
 
             var pow = 0.0;
@@ -401,6 +421,7 @@ namespace AlignmentStation
             Instruments.instance.FindFirstLight(false);
             Mouse.OverrideCursor = Cursors.Arrow;
 
+            //TODO: Query aerotech position and save reference position
             if (d is TOSADevice)
             {
                 var firstLightPower = Instruments.instance.GetThorlabsPower();
@@ -442,7 +463,7 @@ namespace AlignmentStation
             else
             {
                 AlignmentButton.Visibility = Visibility.Visible;
-                firstLightVoltage.Text = $"Found first light power: ${voltage}";
+                firstLightVoltage.Text = $"Found first light power: {voltage}";
                 retryPanel.Visibility = Visibility.Collapsed;
                 nextDeviceButton.Visibility = Visibility.Collapsed;
                 endJobButton.Visibility = Visibility.Collapsed;
