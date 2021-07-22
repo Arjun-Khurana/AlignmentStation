@@ -1,4 +1,4 @@
-﻿<Page x:Class="AlignmentStation.Step1"
+﻿<Page x:Class="AlignmentStation.RosaStep3"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,11 +7,9 @@
       mc:Ignorable="d" 
       d:Background="{StaticResource DarkBg}"
       d:DesignHeight="500" d:DesignWidth="450"
-      Loaded="OnLoad"
-      Title="Step1">
+      Title="Step3">
 
-    <Grid Background="{StaticResource DarkBg}">
-
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25" />
             <RowDefinition Height="*" />
@@ -29,7 +27,7 @@
                 FontSize="26"
                 FontWeight="Light"
                 Margin="0,0,0,15" 
-                Text="TOSA Step 1 - Measure TO Power"></TextBlock>
+                Text="ROSA Step 3 - Test Post UV Cure"></TextBlock>
 
             <Border 
                 Padding="10"
@@ -47,53 +45,24 @@
                         x:Name="firstInstruction"
                         Margin="0,0,0,0"
                         TextWrapping="Wrap"
-                        FontSize="17"
-                        Text="(1) Insert TO can into Wand">
-                    </TextBlock>
-
-                    <TextBlock
-                        x:Name="secondInstruction"
-                        Margin="0,0,0,0"
-                        TextWrapping="Wrap"
-                        FontSize="17"
-                        Text="(2) Insert TO Holder in the Detector Fixture">
-                    </TextBlock>
-
-                    <TextBlock
-                        x:Name="thirdInstruction"
-                        Margin="0,0,0,0"
-                        TextWrapping="Wrap"
-                        FontSize="17"
-                        Text="(3) Hold Wand with TO in the TO Holder">
+                        FontSize="15"
+                        Text="(1) Cure epoxy with UV pedal">
                     </TextBlock>
                 </StackPanel>
             </Border>
 
-            <StackPanel>
+            <StackPanel x:Name="Messages">
                 <TextBlock 
-                    x:Name="UnitNumberText"
-                    Text=""></TextBlock>
-            </StackPanel>
-
-            <StackPanel
-                x:Name="measurementPanel" 
-                Visibility="Collapsed" 
-                Orientation="Vertical">
-                <TextBlock x:Name="currentText" Text="" TextWrapping="Wrap"/>
-                <TextBlock x:Name="voltageText" Text="" TextWrapping="Wrap"/>
-                <TextBlock x:Name="powerText" Text="" TextWrapping="Wrap"/>
-
-                <TextBlock 
-                    Margin="0,5,0,0"
-                    Visibility="Hidden"
+                    Margin="0,10,0,0"
+                    Visibility="Collapsed"
                     Foreground="OrangeRed"
                     x:Name="failedMessage"
                     FontSize="18"
                     VerticalAlignment="Center"
                     Text="Test Failed"></TextBlock>
                 <TextBlock 
-                    Margin="0,15,0,0"
-                    Visibility="Hidden"
+                    Margin="0,10,0,0"
+                    Visibility="Collapsed"
                     Foreground="ForestGreen"
                     x:Name="successMessage"
                     FontSize="18"
@@ -109,10 +78,27 @@
                     Margin="0,15,0,0" 
                     FontSize="14"
                     FontWeight="Normal"
-                    Text="Errors"></TextBlock>
+                    Text="Failed Post Cure Test"></TextBlock>
                 <ListBox
                     HorizontalAlignment="Left"
                     x:Name="errorList"
+                    Background="{StaticResource DarkBg}"
+                    Margin="0,10,0,0"
+                    />
+            </StackPanel>
+
+            <StackPanel
+                x:Name="successPanel"
+                Visibility="Collapsed"
+                Orientation="Vertical">
+                <TextBlock
+                    Margin="0,15,0,0" 
+                    FontSize="14"
+                    FontWeight="Normal"
+                    Text="Passed Post Cure Test"></TextBlock>
+                <ListBox
+                    HorizontalAlignment="Left"
+                    x:Name="successList"
                     Background="{StaticResource DarkBg}"
                     Margin="0,10,0,0"
                     />
@@ -122,10 +108,10 @@
                 Margin="0,20,0,0"
                 Orientation="Horizontal">
                 <Button
-                    x:Name="startButton"
+                    x:Name="TestButton"
                     HorizontalAlignment="Left"
-                    Click="Do_Task_Click"
-                    Content="Start Test"
+                    Click="TestButton_Click"
+                    Content="Begin test"
                     Margin="0,0,10,0" 
                     VerticalAlignment="Center"
                     >
@@ -141,22 +127,15 @@
                     Visibility="Collapsed"
                     >
                 </Button>
-                
             </StackPanel>
 
-            <Button
-                x:Name="nextStepButton"
-                HorizontalAlignment="Left"
-                Visibility="Hidden"
-                Click="Next_Step_Click"
-                Content="Next step"
-                Margin="0,0,0,0" 
-                VerticalAlignment="Center"
-                >
-                
-            </Button>
-
+            <StackPanel
+                x:Name="RefUnitPanel"
+                Visibility="Collapsed"
+                Margin="0,20,0,0">
+                <TextBlock x:Name="RefUnitText"></TextBlock>
+            </StackPanel>
         </StackPanel>
-    </Grid>
 
+    </Grid>
 </Page>

@@ -162,7 +162,20 @@ namespace AlignmentStation
 
             aerotechController.Commands.Axes.Select("X", "Y", "Z").Motion.Home();
 
-            SetAerotechPosition(1.9964, -2.1939, 4.7878);
+            var calloc = MainWindow.Conn.GetCalibrationLocation(1);
+           
+            if (calloc != null)
+            {
+                
+                Instruments.instance.SetAerotechPosition(calloc.X, calloc.Y, calloc.Z);
+                
+            }
+
+ //           else
+ //           {
+//                SetAerotechPosition(1.9964, -2.1939, 4.7878);
+ //           }
+            
         }
 
         public void FindFirstLight(bool moveBack = true)
@@ -189,7 +202,51 @@ namespace AlignmentStation
             aerotechController.Commands.Motion.Fiber.SpiralFine();
         }
 
-        public void FindCentroid(double edgeValue, double stepSize)
+        public void FindFirstLightROSA(bool moveBack = true)
+        {
+     //       this.SetArroyoLaserOn();
+
+            if (moveBack)
+            {
+                var pos = GetAerotechPosition();
+
+                aerotechController.Commands.Axes["Z"].Motion.Enable();
+                aerotechController.Commands.Motion.Linear("Z", pos.Z - 0.2);
+            }
+
+            aerotechController.Commands.Execute("WAIT MODE INPOS");
+
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.SpiralFine.SFAxis1.Value = 0;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.SpiralFine.SFAxis2.Value = 2;
+
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.SpiralFine.SFMotionType.Value = 0;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.SpiralFine.SFEndRadius.Value = 0.1;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.SpiralFine.SFNumSpirals.Value = 20;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.SpiralFine.SFSegmentLength.Value = 0.025;
+            aerotechController.Commands.Motion.Fiber.SpiralFine();
+        }
+
+
+     //   public void FindCentroid(double edgeValue, double stepSize)
+     //   {
+     //       Debug.Print("Using edge value: {0}", edgeValue);
+
+     //       aerotechController.Commands.Execute("WAIT MODE INPOS");
+     //       aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CInputMode.Value = 0;
+     //       aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CEdgeValue.Value = edgeValue;
+     //       aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CScanIncrement.Value = stepSize;
+     //       aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement1.Value = 0.3;
+     //       aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement2.Value = 0.3;
+     //       aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement3.Value = 2;
+    //        aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CReturnToCenter.Value = 1;
+     //       aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis1.Value = 0;
+     //       aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis2.Value = 2;
+     //       aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis3.Value = 1;
+
+    //        aerotechController.Commands.Motion.Fiber.Centroid3D();
+    //    }
+
+        public void FindCentroidRosa1(double edgeValue, double stepSize)
         {
             Debug.Print("Using edge value: {0}", edgeValue);
 
@@ -197,9 +254,9 @@ namespace AlignmentStation
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CInputMode.Value = 0;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CEdgeValue.Value = edgeValue;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CScanIncrement.Value = stepSize;
-            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement1.Value = 0.2;
-            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement2.Value = 0.2;
-            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement3.Value = 1.0;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement1.Value = 0.3;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement2.Value = 0.3;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement3.Value = 3;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CReturnToCenter.Value = 1;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis1.Value = 0;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis2.Value = 2;
@@ -208,8 +265,48 @@ namespace AlignmentStation
             aerotechController.Commands.Motion.Fiber.Centroid3D();
         }
 
-        public void FindCentroidHillClimb(double edgeValue, double stepSize)
+        public void FindCentroidRosa2(double edgeValue, double stepSize)
         {
+            Debug.Print("Using edge value: {0}", edgeValue);
+
+            aerotechController.Commands.Execute("WAIT MODE INPOS");
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CInputMode.Value = 0;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CEdgeValue.Value = edgeValue;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CScanIncrement.Value = stepSize;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement1.Value = 0.3;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement2.Value = 0.3;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement3.Value = 2;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CReturnToCenter.Value = 1;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis1.Value = 0;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis2.Value = 2;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis3.Value = 1;
+
+            aerotechController.Commands.Motion.Fiber.Centroid3D();
+        }
+
+        public void FindCentroidRosa3(double edgeValue, double stepSize)
+        {
+            Debug.Print("Using edge value: {0}", edgeValue);
+
+            aerotechController.Commands.Execute("WAIT MODE INPOS");
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CInputMode.Value = 0;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CEdgeValue.Value = edgeValue;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CScanIncrement.Value = stepSize;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement1.Value = 0.3;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement2.Value = 0.3;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement3.Value = 2;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CReturnToCenter.Value = 1;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis1.Value = 0;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis2.Value = 2;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis3.Value = 1;
+
+            aerotechController.Commands.Motion.Fiber.Centroid3D();
+        }
+
+        public void FindCentroid1(double edgeValue, double stepSize)
+        {
+            this.SetArroyoLaserOn();
+
             Debug.Print("Using edge value: {0}", edgeValue);
 
             aerotechController.Commands.Execute("WAIT MODE INPOS");
@@ -218,24 +315,85 @@ namespace AlignmentStation
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CScanIncrement.Value = stepSize;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement1.Value = 0.2;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement2.Value = 0.2;
-            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement3.Value = 0.2;
-            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CReturnToCenter.Value = 0;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement3.Value = 1.5;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CReturnToCenter.Value = 1;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis1.Value = 0;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis2.Value = 2;
             aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis3.Value = 1;
 
-            aerotechController.Commands.Motion.Fiber.Centroid2D();
-            Debug.Print("Completed Centroid 2d; Running Hill Climb");
+            aerotechController.Commands.Motion.Fiber.Centroid3D();
+        }
+
+         public void FindCentroid2(double edgeValue, double stepSize)
+        {
+            this.SetArroyoLaserOn();
+
+            Debug.Print("Using edge value: {0}", edgeValue);
 
             aerotechController.Commands.Execute("WAIT MODE INPOS");
-            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.HillClimb.HCAxis.Value = 1;
-            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.HillClimb.HCInputMode.Value = 0;
-            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.HillClimb.HCScanIncrement.Value = 0.0025;
-            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.HillClimb.HCMaxDisplacement.Value = 0.4;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CInputMode.Value = 0;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CEdgeValue.Value = edgeValue;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CScanIncrement.Value = stepSize;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement1.Value = 0.2;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement2.Value = 0.2;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement3.Value = 1.5;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CReturnToCenter.Value = 1;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis1.Value = 0;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis2.Value = 2;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis3.Value = 1;
 
-            aerotechController.Commands.Motion.Fiber.HillClimb();
-            Debug.Print("Completed hill climb");
+            aerotechController.Commands.Motion.Fiber.Centroid3D();
         }
+
+         public void FindCentroid3(double edgeValue, double stepSize)
+        {
+            this.SetArroyoLaserOn();
+
+            Debug.Print("Using edge value: {0}", edgeValue);
+
+            aerotechController.Commands.Execute("WAIT MODE INPOS");
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CInputMode.Value = 0;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CEdgeValue.Value = edgeValue;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CScanIncrement.Value = stepSize;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement1.Value = 0.2;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement2.Value = 0.2;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement3.Value = 1.5;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CReturnToCenter.Value = 1;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis1.Value = 0;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis2.Value = 2;
+            aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis3.Value = 1;
+
+            aerotechController.Commands.Motion.Fiber.Centroid3D();
+        }
+
+       // public void FindCentroidHillClimb(double edgeValue, double stepSize)
+     //   {
+      //      Debug.Print("Using edge value: {0}", edgeValue);
+
+       //     aerotechController.Commands.Execute("WAIT MODE INPOS");
+        //    aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CInputMode.Value = 0;
+        //    aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CEdgeValue.Value = edgeValue;
+       //     aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CScanIncrement.Value = stepSize;
+       //     aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement1.Value = 0.2;
+      //      aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement2.Value = 0.2;
+       //     aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CMaxDisplacement3.Value = 0.2;
+       //     aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CReturnToCenter.Value = 0;
+       //     aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis1.Value = 0;
+        //    aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis2.Value = 2;
+        //    aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.Centroid.CAxis3.Value = 1;
+
+        //    aerotechController.Commands.Motion.Fiber.Centroid2D();
+        //    Debug.Print("Completed Centroid 2d; Running Hill Climb");
+
+        //    aerotechController.Commands.Execute("WAIT MODE INPOS");
+        //    aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.HillClimb.HCAxis.Value = 1;
+       //     aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.HillClimb.HCInputMode.Value = 0;
+         //   aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.HillClimb.HCScanIncrement.Value = 0.0025;
+       //     aerotechController.Parameters.Tasks[TaskId.TLibrary].Fiber.HillClimb.HCMaxDisplacement.Value = 0.4;
+//
+        //    aerotechController.Commands.Motion.Fiber.HillClimb();
+     //       Debug.Print("Completed hill climb");
+     //   }
 
         public double GetThorlabsPower()
         {

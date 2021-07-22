@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:AlignmentStation"
       mc:Ignorable="d" 
       d:Background="{StaticResource DarkBg}"
-      d:DesignHeight="450" d:DesignWidth="400"
+      d:DesignHeight="500" d:DesignWidth="450"
       Title="Step3">
 
     <Grid>
@@ -27,7 +27,7 @@
                 FontSize="26"
                 FontWeight="Light"
                 Margin="0,0,0,15" 
-                Text="Step 3"></TextBlock>
+                Text="TOSA Step 3 - Test Post UV Cure"></TextBlock>
 
             <Border 
                 Padding="10"
@@ -75,7 +75,7 @@
                 Visibility="Collapsed"
                 Orientation="Vertical">
                 <TextBlock
-                    Margin="0,15,0,0" 
+                    Margin="0,25,0,0" 
                     FontSize="14"
                     FontWeight="Normal"
                     Text="Errors"></TextBlock>
@@ -86,9 +86,18 @@
                     Margin="0,10,0,0"
                     />
             </StackPanel>
-
+            
+            <StackPanel
+                x:Name="Finalresult"
+                Visibility="Collapsed"
+                Margin="0,0,10,0">
+                <TextBlock x:Name="Finalresulttext">
+                </TextBlock>
+                <TextBlock x:Name="Finalresulttext2"></TextBlock>
+            </StackPanel>
+            
             <StackPanel 
-                Margin="0,20,0,0"
+                Margin="0,30,0,0"
                 Orientation="Horizontal">
                 <Button
                     x:Name="TestButton"
@@ -105,17 +114,19 @@
                     HorizontalAlignment="Left"
                     Click="Next_Device_Click"
                     Content="Next device"
-                    Margin="0,0,10,0" 
+                    Margin="0,0,20,0" 
                     VerticalAlignment="Center"
                     Visibility="Collapsed"
                     >
                 </Button>
             </StackPanel>
 
+
+
             <StackPanel
                 x:Name="RefUnitPanel"
                 Visibility="Collapsed"
-                Margin="0,20,0,0">
+                Margin="0,40,0,0">
                 <TextBlock x:Name="RefUnitText"></TextBlock>
             </StackPanel>
         </StackPanel>

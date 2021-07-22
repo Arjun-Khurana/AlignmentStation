@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:AlignmentStation"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="400"
+      d:DesignHeight="600" d:DesignWidth="600"
       DataContext="{Binding RelativeSource={RelativeSource self}}"
       Title="Settings">
 
@@ -40,8 +40,8 @@
         <StackPanel 
             Grid.Row="2"
             HorizontalAlignment="Center"
-            MinWidth="250"
-            Margin="0,25,0,0">
+            MinWidth="550"
+            Margin="0,15,0,0">
 
             <StackPanel x:Name="controlPanelContainer">
 
@@ -52,28 +52,78 @@
 
                     <Button
                         Margin="0,0,10,20"
-                        Name="FindFirstLight_Button"
-                        Content="Find first light" 
+                        Name="FindFirstLightTOSA_Button"
+                        Content="Find first light (TOSA)" 
                         Click="FindFirstLightClick"
                         HorizontalAlignment="Center"
                         Style="{StaticResource UnderlineButton}"
                         BorderThickness="1,1,1,1" 
                         Padding="5,1,5,1" />
 
+                    <Button
+                        Margin="0,0,10,20"
+                        Name="FindFirstLightROSAVPD_Button"
+                        Content="Find first light (ROSA VPD)" 
+                        Click="FindFirstLightROSAVPDClick"
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource UnderlineButton}"
+                        BorderThickness="1,1,1,1" 
+                        Padding="5,1,5,1" />
 
                     <Button
-                        Margin="0,0,0,20"
-                        Name="FindCentroidButton"
-                        Content="Find centroid" 
+                        Margin="0,0,10,20"
+                        Name="FindFirstLightROSARSSI_Button"
+                        Content="Find first light (ROSA RSSI)" 
+                        Click="FindFirstLightROSARSSIClick"
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource UnderlineButton}"
+                        BorderThickness="1,1,1,1" 
+                        Padding="5,1,5,1" />
+
+                </StackPanel>
+                                                  
+                
+                <StackPanel
+
+                    HorizontalAlignment="Center"
+                    Margin="0,0,0,0" 
+                    Orientation="Horizontal">
+                
+                
+                    <Button
+                        Margin="0,0,15,20"
+                        Name="FindCentroidTOSAButton"
+                        Content="Find TOSA centroid" 
                         Click="FindCentroidClick"
                         HorizontalAlignment="Center"
                         Style="{StaticResource UnderlineButton}"
                         BorderThickness="1,1,1,1" 
                         Padding="5,1,5,1" />
+
+                    <Button
+                        Margin="0,0,15,20"
+                        Name="FindCentroidROSAVPDButton"
+                        Content="Find VPD ROSA centroid" 
+                        Click="FindCentroidROSAVPDClick"
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource UnderlineButton}"
+                        BorderThickness="1,1,1,1" 
+                        Padding="5,1,5,1" />
+
+                    <Button
+                        Margin="0,0,15,20"
+                        Name="FindCentroidROSARSSIButton"
+                        Content="Find RSSI ROSA centroid" 
+                        Click="FindCentroidROSARSSIClick"
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource UnderlineButton}"
+                        BorderThickness="1,1,1,1" 
+                        Padding="5,1,5,1" />
+
                 </StackPanel>
 
                 <StackPanel>
-                    
+
                     <Button
                         Margin="0,0,0,20"
                         Name="AerotechVoltage_Button"
@@ -87,7 +137,7 @@
                     <Button
                         Margin="0,0,0,20"
                         Name="Calibrate_Button"
-                        Content="Calibrate Limits" 
+                        Content="Calibrate XYZ Axes" 
                         Click="CalibrateLimitsClick"
                         HorizontalAlignment="Center"
                         Style="{StaticResource UnderlineButton}"
@@ -97,7 +147,7 @@
                     <Button
                         Margin="0,0,0,20"
                         Name="Wavelength_Button"
-                        Content="Set Wavelength" 
+                        Content="Set Thorlabs Detector Wavelength to 850nm" 
                         Click="SetWavelengthClick"
                         HorizontalAlignment="Center"
                         Style="{StaticResource UnderlineButton}"
@@ -152,31 +202,31 @@
                     </StackPanel>
 
                     <StackPanel Margin="10,0,10,10" Orientation="Vertical">
-                        <Label Padding="0,0,0,5" Content="I Align"></Label>
+                        <Label Padding="0,0,0,5" Content="I Align mA"></Label>
                         <TextBox Width="100" TextChanged="Double_Input_Text_Changed" x:Name="TOSA_I_Align_Input"></TextBox>
                     </StackPanel>
                 </StackPanel>
                 
                 <StackPanel Orientation="Horizontal">
                     <StackPanel Margin="10,0,10,10" Orientation="Vertical">
-                        <Label Padding="0,0,0,5" Content="I Align Tolerance"></Label>
+                        <Label Padding="0,0,0,5" Content="I Align Tolerance mA"></Label>
                         <TextBox Width="100" TextChanged="Double_Input_Text_Changed" x:Name="TOSA_I_Align_Tol_Input"></TextBox>
                     </StackPanel>
 
                     <StackPanel Margin="10,0,10,10" Orientation="Vertical">
-                        <Label Padding="0,0,0,5" Content="TO Min Power"></Label>
+                        <Label Padding="0,0,0,5" Content="TO Min Power mW"></Label>
                         <TextBox Width="100" TextChanged="Double_Input_Text_Changed" x:Name="TOSA_P_Min_TO_Input"></TextBox>
                     </StackPanel>
                 </StackPanel>
                 
                 <StackPanel Orientation="Horizontal">
                     <StackPanel Margin="10,0,10,10" Orientation="Vertical">
-                        <Label Padding="0,0,0,5" Content="FC Min Power"></Label>
+                        <Label Padding="0,0,0,5" Content="FC Min Power mW"></Label>
                         <TextBox Width="100" TextChanged="Double_Input_Text_Changed" x:Name="TOSA_P_Min_FC_Input"></TextBox>
                     </StackPanel>
 
                     <StackPanel Margin="10,0,10,10" Orientation="Vertical">
-                        <Label Padding="0,0,0,5" Content="Max Voltage"></Label>
+                        <Label Padding="0,0,0,5" Content="Max Voltage V"></Label>
                         <TextBox Width="100" TextChanged="Double_Input_Text_Changed" x:Name="TOSA_V_Max_Input"></TextBox>
                     </StackPanel>
                 </StackPanel>
@@ -213,7 +263,7 @@
 
             <StackPanel Orientation="Horizontal">
                 <Button
-                    Margin="10,0,10,20"
+                    Margin="130,20,50,20"
                     Content="New TOSA device" 
                     Click="NewTOSAButtonClick"
                     HorizontalAlignment="Center"
@@ -224,7 +274,7 @@
 
                 
                 <Button
-                    Margin="0,0,10,20"
+                    Margin="0,20,10,20"
                     Content="New ROSA device" 
                     Click="NewROSAButtonClick"
                     HorizontalAlignment="Center"
@@ -238,18 +288,16 @@
             <StackPanel 
                 Orientation="Horizontal"
                 HorizontalAlignment="Center">
-                <Button
-                    Margin="0,0,10,0"
-                    Style="{StaticResource UnderlineButton}" Click="PositionButton_Click"
-                    >Get positions</Button>
-
-                <Button
-                    Margin="0,0,0,0"
-                    Style="{StaticResource UnderlineButton}" 
-                    Click="GoHome_Click"
-                    >Go to calibrated home</Button>
+                <TextBlock
+                    x:Name="Results"                    
+                    Margin = "0,60,0,0"
+                    FontSize="25"
+                    Visibility="Collapsed"
+                    Text="Results"></TextBlock>
+                   
             </StackPanel>
-        
+            
+
         </StackPanel>
 
         <StackPanel 

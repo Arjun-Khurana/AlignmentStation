@@ -43,12 +43,12 @@ namespace AlignmentStation
             var w = MainWindow.GetWindow(this) as MainWindow;
             UnitNumberText.Text = $"Unit number: {w.output.Unit_Number}";
 
-            if (w.device is ROSADevice)
-            {
-                secondInstruction.Text = "(2) Connect fiber from Alignment Interface Box to Alignent Tower Fiber";
-                secondInstruction.Visibility = Visibility.Visible;
-                thirdInstruction.Visibility = Visibility.Collapsed;
-            }
+         //   if (w.device is ROSADevice)
+         //   {
+         //       secondInstruction.Text = "(2) Connect fiber from Alignment Interface Box to Alignent Tower Fiber";
+         //       secondInstruction.Visibility = Visibility.Visible;
+         //       thirdInstruction.Visibility = Visibility.Collapsed;
+         //   }
 
         }
 
@@ -68,7 +68,7 @@ namespace AlignmentStation
 
         private void HideErrorPanels()
         {
-            startButton.Content = "Start test";
+            startButton.Content = "Start Test";
             failedMessage.Visibility = Visibility.Collapsed;
             errorPanel.Visibility = Visibility.Collapsed;
             errorList.Visibility = Visibility.Collapsed;
@@ -98,10 +98,10 @@ namespace AlignmentStation
             {
                 TosaStep1();
             }
-            else
-            {
-                RosaStep1();
-            }
+           // else
+          //  {
+           //     RosaStep1();
+          //  }
 
             Mouse.OverrideCursor = Cursors.Arrow;
         }
@@ -111,12 +111,12 @@ namespace AlignmentStation
             NavigationService.Navigate(new Step2());
         }
 
-        private void RosaStep1()
-        {
-            var w = Window.GetWindow(this) as MainWindow;
+    //    private void RosaStep1()
+     //   {
+     //       var w = Window.GetWindow(this) as MainWindow;
 
-            ROSADevice rosa = w.device as ROSADevice;
-            ROSAOutput output = w.output as ROSAOutput;
+     //       ROSADevice rosa = w.device as ROSADevice;
+     //       ROSAOutput output = w.output as ROSAOutput;
 
             // use switches to set voltage
 
@@ -131,27 +131,26 @@ namespace AlignmentStation
             // if this is the first of this job,
             // go to step 0 and measure power 
 
-            if (rosa.VPD_RSSI == "vpd")
-            {
-                Instruments.instance.OpenRelay(1);
-                Instruments.instance.OpenRelay(2);
-                Instruments.instance.OpenRelay(4);
-            } 
-            else
-            {
-                Instruments.instance.CloseRelay(1);
-                Instruments.instance.OpenRelay(2);
-                Instruments.instance.OpenRelay(4);
-            }
+      //      if (rosa.VPD_RSSI == "vpd")
+      //      {
+     //           Instruments.instance.OpenRelay(1);
+      //          Instruments.instance.OpenRelay(2);
+       //         Instruments.instance.OpenRelay(4);
+      //      } 
+      //      else
+      //      {
+       //         Instruments.instance.CloseRelay(1);
+       //         Instruments.instance.OpenRelay(2);
+      //          Instruments.instance.OpenRelay(4);
+       //     }
 
-
-            NavigationService.Navigate(new Step2());
+      //      NavigationService.Navigate(new Step2());
             // step 2: do the alignment, get voltage from aerotech
             //          multiply by constant - get from jim
             //          this voltage gets converted to I_Mon
             // step 3: cure the epoxy, retest voltage
 
-        }
+     //   }
         
         private void TosaStep1()
         {
@@ -184,7 +183,7 @@ namespace AlignmentStation
 
             currentText.Text = "Current: " + current + " mA";
             voltageText.Text = "Voltage: " + voltage + " V";
-            powerText.Text = "Power: " + power / Instruments.instance.alignmentPowerCalibration + "W";
+            powerText.Text = "Power: " + (String.Format("{0:0.00}", (power * 1000) / Instruments.instance.alignmentPowerCalibration)) + "mW";
 
             //TODO: Compare these values to the ones retrieved from test config
             //      and either accept/reject
@@ -254,17 +253,17 @@ namespace AlignmentStation
                     Unit_Number = unitNumber + 1
                 };
             }
-            else
-            {
-                w.output = new ROSAOutput
-                {
-                    Part_Number = w.device.Part_Number,
-                    Passed = false,
-                    Job_Number = job,
-                    Operator = op,
-                    Unit_Number = unitNumber + 1
-                };
-            }
+         //   else
+         //   {
+         //       w.output = new ROSAOutput
+         //       {
+          //          Part_Number = w.device.Part_Number,
+          //          Passed = false,
+           //         Job_Number = job,
+           //         Operator = op,
+           //         Unit_Number = unitNumber + 1
+           //     };
+          //  }
 
             NavigationService.Navigate(new Step1());
         }

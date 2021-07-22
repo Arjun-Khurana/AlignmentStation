@@ -1,4 +1,5 @@
-﻿<Page x:Class="AlignmentStation.Step1"
+﻿    
+<Page x:Class="AlignmentStation.RosaStep1"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,7 +9,8 @@
       d:Background="{StaticResource DarkBg}"
       d:DesignHeight="500" d:DesignWidth="450"
       Loaded="OnLoad"
-      Title="Step1">
+      Title="RosaStep1">
+    
 
     <Grid Background="{StaticResource DarkBg}">
 
@@ -29,7 +31,7 @@
                 FontSize="26"
                 FontWeight="Light"
                 Margin="0,0,0,15" 
-                Text="TOSA Step 1 - Measure TO Power"></TextBlock>
+                Text="ROSA Step 1 - Change Fiber Connection"></TextBlock>
 
             <Border 
                 Padding="10"
@@ -56,7 +58,7 @@
                         Margin="0,0,0,0"
                         TextWrapping="Wrap"
                         FontSize="17"
-                        Text="(2) Insert TO Holder in the Detector Fixture">
+                        Text="(2) Detach Alignment Interface Box Fiber from Rosa Fiber Holder and connect to Alignment Tower Fiber ">
                     </TextBlock>
 
                     <TextBlock
@@ -64,7 +66,7 @@
                         Margin="0,0,0,0"
                         TextWrapping="Wrap"
                         FontSize="17"
-                        Text="(3) Hold Wand with TO in the TO Holder">
+                        Text="(3) Hold Wand with TO in the TO Holder. Click Next Step to test and move to Step 2">
                     </TextBlock>
                 </StackPanel>
             </Border>
@@ -125,7 +127,7 @@
                     x:Name="startButton"
                     HorizontalAlignment="Left"
                     Click="Do_Task_Click"
-                    Content="Start Test"
+                    Content="Next Step"
                     Margin="0,0,10,0" 
                     VerticalAlignment="Center"
                     >

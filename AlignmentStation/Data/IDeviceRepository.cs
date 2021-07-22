@@ -18,6 +18,7 @@ namespace AlignmentStation.Data
         ReferenceUnits GetROSAReferenceUnits(ROSAOutput output);
         void SaveTOSAReferenceUnits(ReferenceUnits units);
         void SaveROSAReferenceUnits(ReferenceUnits units);
+        CalibrationLocation GetCalibrationLocation(int Id);
     }
 
 }

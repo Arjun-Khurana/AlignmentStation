@@ -175,34 +175,160 @@ namespace AlignmentStation
 
         private void FindFirstLightClick(object sender, RoutedEventArgs e)
         {
+
+            Results.Visibility = Visibility.Collapsed;
+            Instruments.instance.CloseRelay(2);
+            Instruments.instance.CloseRelay(4);
+            var calloc = MainWindow.Conn.GetCalibrationLocation(2);
+            if (calloc != null)
+            {
+
+                Instruments.instance.SetAerotechPosition(calloc.X, calloc.Y, calloc.Z);
+
+            }
             Instruments.instance.FindFirstLight();
+
+            double pFC;
+            pFC = Instruments.instance.GetThorlabsPower() / Instruments.instance.alignmentPowerCalibration;
+            Results.Visibility = Visibility.Visible;
+            Results.Text = $"Fiber Coupled Power: {String.Format("{0:0.00}", pFC * 1000)}mW";
+
+        }
+
+        private void FindFirstLightROSAVPDClick(object sender, RoutedEventArgs e)
+        {
+            Results.Visibility = Visibility.Collapsed;
+            Instruments.instance.OpenRelay(1);
+            Instruments.instance.OpenRelay(2);
+            Instruments.instance.OpenRelay(4);
+            var calloc = MainWindow.Conn.GetCalibrationLocation(3);
+           
+            if (calloc != null)
+            {
+                
+                Instruments.instance.SetAerotechPosition(calloc.X, calloc.Y, calloc.Z);
+                
+            }
+            Instruments.instance.FindFirstLightROSA();
+
+            var voltage = Instruments.instance.GetAerotechAnalogVoltage();
+            Results.Visibility = Visibility.Visible;
+            Results.Text = $"PD Current: {String.Format("{0:0.00}",(voltage * 0.596) - 0.006)}mA";
+
+
+        }
+
+        private void FindFirstLightROSARSSIClick(object sender, RoutedEventArgs e)
+        {
+            Results.Visibility = Visibility.Collapsed;
+            Instruments.instance.CloseRelay(1);
+            Instruments.instance.OpenRelay(2);
+            Instruments.instance.OpenRelay(4);
+            var calloc = MainWindow.Conn.GetCalibrationLocation(4);
+
+            if (calloc != null)
+            {
+
+                Instruments.instance.SetAerotechPosition(calloc.X, calloc.Y, calloc.Z);
+
+            }
+            Instruments.instance.FindFirstLightROSA();
+            var voltage = Instruments.instance.GetAerotechAnalogVoltage();
+            Results.Visibility = Visibility.Visible;
+            Results.Text = $"PD Current: {String.Format("{0:0.00}",(voltage * 0.596) - 0.006)}mA";
         }
 
         private void FindCentroidClick(object sender, RoutedEventArgs e)
         {
+
+            Results.Visibility = Visibility.Collapsed;
+            Instruments.instance.CloseRelay(2);
+            Instruments.instance.CloseRelay(4);
+            var calloc = MainWindow.Conn.GetCalibrationLocation(2);
             var v = Instruments.instance.GetAerotechAnalogVoltage();
-            Instruments.instance.FindCentroid(v * 0.9, 0.00025);
+            if (calloc != null && v < 0.06)
+            {
+
+                Instruments.instance.SetAerotechPosition(calloc.X, calloc.Y, calloc.Z);
+
+            }
+            
+            Instruments.instance.FindCentroid1(v * 0.85, 0.001);
+
+            double pFC;
+            pFC = Instruments.instance.GetThorlabsPower() / Instruments.instance.alignmentPowerCalibration;
+            Results.Visibility = Visibility.Visible;
+            Results.Text = $"Fiber Coupled Power: {String.Format("{0:0.00}", pFC * 1000)}mW";
+
+        }
+
+        private void FindCentroidROSAVPDClick(object sender, RoutedEventArgs e)
+        {
+            Results.Visibility = Visibility.Collapsed;
+            Instruments.instance.OpenRelay(1);
+            Instruments.instance.OpenRelay(2);
+            Instruments.instance.OpenRelay(4);
+            var calloc = MainWindow.Conn.GetCalibrationLocation(3);
+            var v = Instruments.instance.GetAerotechAnalogVoltage();
+            if (calloc != null && v < 0.06)
+            {
+
+                Instruments.instance.SetAerotechPosition(calloc.X, calloc.Y, calloc.Z);
+
+            }
+          
+            Instruments.instance.FindCentroidRosa1(v * 0.90, 0.0015);
+            var voltage = Instruments.instance.GetAerotechAnalogVoltage();
+            Results.Visibility = Visibility.Visible;
+            Results.Text = $"PD Current: {String.Format("{0:0.00}",(voltage * 0.596) - 0.006)}mA";
+        }
+
+        private void FindCentroidROSARSSIClick(object sender, RoutedEventArgs e)
+        {
+            Results.Visibility = Visibility.Collapsed;
+            Instruments.instance.CloseRelay(1);
+            Instruments.instance.OpenRelay(2);
+            Instruments.instance.OpenRelay(4);
+            var calloc = MainWindow.Conn.GetCalibrationLocation(4);
+            var v = Instruments.instance.GetAerotechAnalogVoltage();
+            if (calloc != null && v<0.06)
+            {
+
+                Instruments.instance.SetAerotechPosition(calloc.X, calloc.Y, calloc.Z);
+
+            }
+         
+            Instruments.instance.FindCentroidRosa1(v * 0.90, 0.0015);
+            var voltage = Instruments.instance.GetAerotechAnalogVoltage();
+            Results.Visibility = Visibility.Visible;
+            Results.Text = $"PD Current: {String.Format("{0:0.00}",(voltage * 0.596) - 0.006)}mA";
         }
 
         private void AerotechVoltage_Button_Click(object sender, RoutedEventArgs e)
         {
-            Instruments.instance.GetAerotechAnalogVoltage();
+            Results.Visibility = Visibility.Collapsed;
+            var voltage = Instruments.instance.GetAerotechAnalogVoltage();
+            Results.Visibility = Visibility.Visible;
+            Results.Text = $"Aerotech Voltage: {String.Format("{0:0.00}", voltage)}V";
         }
 
-        private void FindCentroidHillClimbVersion_Click(object sender, RoutedEventArgs e)
-        {
-            var v = Instruments.instance.GetAerotechAnalogVoltage();
-            Instruments.instance.FindCentroidHillClimb(v * 0.75, 0.00025);
-        }
+     //   private void FindCentroidHillClimbVersion_Click(object sender, RoutedEventArgs e)
+     //   {
+     //       var v = Instruments.instance.GetAerotechAnalogVoltage();
+     //       Instruments.instance.FindCentroidHillClimb(v * 0.75, 0.00025);
+     //   }
 
-        private void PositionButton_Click(object sender, RoutedEventArgs e)
-        {
-            Instruments.instance.GetAerotechPosition();
-        }
+ //       private void PositionButton_Click(object sender, RoutedEventArgs e)
+  //      {
+  //          Results.Visibility = Visibility.Collapsed;
+ //           Instruments.instance.GetAerotechPosition();
+  //          Results.Visibility = Visibility.Visible;
+            
+  //      }
 
-        private void GoHome_Click(object sender, RoutedEventArgs e)
-        {
-            Instruments.instance.SetAerotechPosition(1.9964, -2.1939, 4.7878);
-        }
+  //      private void GoHome_Click(object sender, RoutedEventArgs e)
+  //      {
+  //          Instruments.instance.SetAerotechPosition(1.9964, -2.1939, 4.7878);
+ //       }
     }
 }

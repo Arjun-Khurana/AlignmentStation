@@ -74,7 +74,7 @@ namespace AlignmentStation
                 Instruments.instance.SetArroyoLaserOff();
 
                 var fiberPower = MainWindow.Conn.GetLatestROSAFiberPower(JobNumberBox.Text.Trim());
-                
+
                 if (fiberPower != null)
                 {
                     (w.output as ROSAOutput).Fiber_Power = (double)fiberPower;
@@ -85,11 +85,20 @@ namespace AlignmentStation
                     NavigationService.Navigate(new RosaStep0());
                     return;
                 }
+
+
+                Instruments.instance.SetPowerMeterWavelength(850);
+
+                NavigationService.Navigate(new RosaStep1());
+
+            }
+            else
+            {
+                Instruments.instance.SetPowerMeterWavelength(850);
+
+                NavigationService.Navigate(new Step1());
             }
 
-            Instruments.instance.SetPowerMeterWavelength(850);
-
-            NavigationService.Navigate(new Step1()); 
         }
 
         private void DeviceSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)

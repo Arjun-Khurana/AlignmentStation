@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:AlignmentStation"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="400"
+      d:DesignHeight="500" d:DesignWidth="450"
       Loaded="OnLoad"
       Title="RosaStep0">
 
@@ -18,8 +18,8 @@
             <TextBlock 
                 FontSize="26"
                 FontWeight="Light"
-                Margin="0,0,0,15" 
-                Text="Step 0"></TextBlock>
+                Margin="0,15,0,15" 
+                Text="ROSA Step 0 - Measure Laser Power"></TextBlock>
 
             <Border 
                 Padding="10"
@@ -38,7 +38,7 @@
                         Margin="0,0,0,0"
                         TextWrapping="Wrap"
                         FontSize="17"
-                        Text="(1) Connect fiber from Alignment Interface Box to Detector Fixture">
+                        Text="(1) Connect Alignment Interface Box Fiber to ROSA Fiber Holder and place in Detector Fixture">
                     </TextBlock>
 
                 </StackPanel>

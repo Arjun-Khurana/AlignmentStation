@@ -54,6 +54,23 @@ namespace AlignmentStation.Data
             }
         }
 
+        public CalibrationLocation GetCalibrationLocation(int Id)
+        {
+            if (!File.Exists(DbFile)) return null;
+
+            using (var conn = SimpleDbConnection())
+            {
+                conn.Open();
+                CalibrationLocation units = conn.Query<CalibrationLocation>(
+                                    @"SELECT X, Y, Z, Id
+                        from CalibrationLocation where 
+                        Id == @Id", new { Id }).FirstOrDefault();
+
+                return units;
+            }
+        }
+
+
         public List<TOSADevice> GetAllTOSADevices()
         {
             if (!File.Exists(DbFile)) return null;
@@ -304,16 +321,16 @@ namespace AlignmentStation.Data
         public ReferenceUnits GetTOSAReferenceUnits(TOSAOutput output)
         {
             var part = output.Part_Number;
-            var job = output.Job_Number;
+         //   var job = output.Job_Number;
 
             using (var conn = SimpleDbConnection())
             {
                 conn.Open();
 
                 ReferenceUnits units = conn.Query<ReferenceUnits>(
-                    @"SELECT X, Y, Z, Part_Number, Job_Number
+                    @"SELECT X, Y, Z, Part_Number
                         from TOSAReferenceUnits where 
-                        Part_Number = @part and Job_Number = @job;", new { part, job }).FirstOrDefault();
+                        Part_Number = @part ;", new { part }).FirstOrDefault();
 
                 return units;
             }
@@ -322,16 +339,16 @@ namespace AlignmentStation.Data
         public ReferenceUnits GetROSAReferenceUnits(ROSAOutput output)
         {
             var part = output.Part_Number;
-            var job = output.Job_Number;
+         //   var job = output.Job_Number;
 
             using (var conn = SimpleDbConnection())
             {
                 conn.Open();
 
                 ReferenceUnits units = conn.Query<ReferenceUnits>(
-                    @"SELECT X, Y, Z, Part_Number, Job_Number
+                    @"SELECT X, Y, Z, Part_Number
                         from ROSAReferenceUnits where 
-                        Part_Number = @part and Job_Number = @job;", new { part, job }).FirstOrDefault();
+                        Part_Number = @part ;", new { part }).FirstOrDefault();
 
                 return units;
             }
@@ -345,9 +362,9 @@ namespace AlignmentStation.Data
 
                 conn.Execute(@"
                     INSERT OR REPLACE INTO TOSAReferenceUnits
-                    (X, Y, Z, Part_Number, Job_Number)
+                    (X, Y, Z, Part_Number)
                     values 
-                    (@X, @Y, @Z, @Part_Number, @Job_Number);
+                    (@X, @Y, @Z, @Part_Number);
                 ",
                 new
                 {
@@ -355,7 +372,7 @@ namespace AlignmentStation.Data
                     Y = units.Y,
                     Z = units.Z,
                     Part_Number = units.Part_Number,
-                    Job_Number = units.Job_Number
+            //        Job_Number = units.Job_Number
                 });
             }
         }
@@ -368,9 +385,9 @@ namespace AlignmentStation.Data
 
                 conn.Execute(@"
                     INSERT OR REPLACE INTO ROSAReferenceUnits
-                    (X, Y, Z, Part_Number, Job_Number)
+                    (X, Y, Z, Part_Number)
                     values 
-                    (@X, @Y, @Z, @Part_Number, @Job_Number);
+                    (@X, @Y, @Z, @Part_Number);
                 ",
                 new
                 {
@@ -378,7 +395,7 @@ namespace AlignmentStation.Data
                     Y = units.Y,
                     Z = units.Z,
                     Part_Number = units.Part_Number,
-                    Job_Number = units.Job_Number
+             //       Job_Number = units.Job_Number
                 });
             }
         }
@@ -395,8 +412,7 @@ namespace AlignmentStation.Data
                         Y double not null,
                         Z double not null,
                         Part_Number varchar(255) not null, 
-                        Job_Number varchar(255) not null,
-                        primary key (Part_Number, Job_Number)
+                        primary key (Part_Number)
                         )
                     ");
 
@@ -406,8 +422,16 @@ namespace AlignmentStation.Data
                         Y double not null,
                         Z double not null,
                         Part_Number varchar(255) not null, 
-                        Job_Number varchar(255) not null,
-                        primary key (Part_Number, Job_Number)
+                        primary key (Part_Number)
+                       )
+                    ");
+
+                conn.Execute(
+                   @"create table CalibrationLocation (
+                        X double not null,
+                        Y double not null,
+                        Z double not null,
+                        Id integer primary key
                        )
                     ");
 

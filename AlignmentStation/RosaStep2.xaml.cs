@@ -21,15 +21,12 @@ namespace AlignmentStation
     /// <summary>
     /// Interaction logic for Step2.xaml
     /// </summary>
-    public partial class Step2 : Page
+    public partial class RosaStep2 : Page
     {
         List<string> ErrorMessages = new();
-        bool barrelReplaced = false;
-        bool firstLightFail = false;
-        double tosaFirstLightThreshold = 0.06;
-        CancellationTokenSource tokenSource2 = new CancellationTokenSource();
+        double rosaFirstLightThreshold = 0.06;
 
-        public Step2()
+        public RosaStep2()
         {
             InitializeComponent();
         }
@@ -38,19 +35,25 @@ namespace AlignmentStation
         {
             var w = MainWindow.GetWindow(this) as MainWindow;
         }
-
+       
         private void Next_Step_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService.Navigate(new Step3());
+            NavigationService.Navigate(new RosaStep3());
+        }
+         
+        private void GoTo_Start_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(new RosaStep0());
         }
 
-        private async void AlignmentButtonClick(object sender, RoutedEventArgs e)
+        private void AlignmentButtonClick(object sender, RoutedEventArgs e)
         {
             Mouse.OverrideCursor = Cursors.Wait;
 
             ErrorMessages.Clear();
 
-            await TosaStep2();
+            Instruments.instance.SetArroyoLaserOff();
+            ROSAStep2();
 
             Mouse.OverrideCursor = Cursors.Arrow;
         }
@@ -63,6 +66,8 @@ namespace AlignmentStation
 
             NextStepButton.Visibility = Visibility.Visible;
             AlignmentButton.Visibility = Visibility.Collapsed;
+            nextDeviceButton.Visibility = Visibility.Collapsed;
+            endJobButton.Visibility = Visibility.Collapsed;
         }
 
         private void stepErrorUiUpdate()
@@ -70,165 +75,150 @@ namespace AlignmentStation
             errorList.ItemsSource = ErrorMessages;
             errorPanel.Visibility = Visibility.Visible;
             failedMessage.Visibility = Visibility.Visible;
-            failedMessage.Text = $"Test failed, check TO and lens";
+            failedMessage.Text = $"Alignment attempt failed, check TO and lens";
             successMessage.Visibility = Visibility.Collapsed;
             NextStepButton.Visibility = Visibility.Collapsed;
 
             endJobButton.Visibility = Visibility.Visible;
             nextDeviceButton.Visibility = Visibility.Visible;
+
             this.AlignmentButton.Content = "Retry alignment";
+            AlignmentButton.Visibility = Visibility.Visible;
         }
 
-        private async Task TosaStep2()
+        private async void ROSAStep2()
         {
             var w = Window.GetWindow(this) as MainWindow;
-            var o = w.output as TOSAOutput;
-            var d = w.device as TOSADevice;
+            var rosa = w.device as ROSADevice;
+            var output = w.output as ROSAOutput;
 
-            var refUnits = MainWindow.Conn.GetTOSAReferenceUnits(o);
-            var firstLightPower = Instruments.instance.GetThorlabsPower();
+            var refUnits = MainWindow.Conn.GetROSAReferenceUnits(output);
+            var voltage = Instruments.instance.GetAerotechAnalogVoltage();
 
             if (refUnits != null)
             {
-                if (firstLightPower < tosaFirstLightThreshold)
+                if (voltage < rosaFirstLightThreshold)
                 {
                     Instruments.instance.SetAerotechPosition(refUnits.X, refUnits.Y, refUnits.Z);
                 }
             }
 
-            double pFC = 0;
-            double popCt = 0;
-            int iterCount = 0;
+            firstLightInfoPanel.Visibility = Visibility.Visible;
+            firstLightVoltage.Text = $"Initial Resp: {String.Format("{0:0.00}", (((voltage * 0.596) - 0.006) / output.Fiber_Power))}";
 
-            pFC = firstLightPower / Instruments.instance.alignmentPowerCalibration;
-            popCt = pFC / o.P_TO;
-
-            firstLightVoltage.Visibility = Visibility.Visible;
-            firstLightVoltage.Text = $"Fiber Coupled Power: {pFC}";
-
-            if (firstLightPower < tosaFirstLightThreshold)
+            if (voltage < rosaFirstLightThreshold)
             {
-                Debug.Print("Power is too low: {0}", firstLightPower);
+                Debug.Print("Voltage is too low: {0}", voltage);
                 Debug.Print("Finding first light");
 
-                // add progress bar
+                // show progress bar
                 progressPanel.Visibility = Visibility.Visible;
-
                 w.IsHitTestVisible = false;
 
                 var t = Task.Run(() =>
                 {
-                    Instruments.instance.FindFirstLight();
+                    Instruments.instance.FindFirstLightROSA();
                 });
-
-                await t;
 
                 w.IsHitTestVisible = true;
                 progressPanel.Visibility = Visibility.Collapsed;
-            }
-            
-            firstLightPower = Instruments.instance.GetThorlabsPower();
-            firstLightVoltage.Text = $"Input power: {firstLightPower / Instruments.instance.alignmentPowerCalibration}";
 
-            if (firstLightPower < tosaFirstLightThreshold)
+                voltage = Instruments.instance.GetAerotechAnalogVoltage();
+                firstLightVoltage.Text = $"Resp: {String.Format("{0:0.00}", (((voltage * 0.596) - 0.006) / output.Fiber_Power))}";
+            }
+
+            if (voltage < rosaFirstLightThreshold)
             {
-                Debug.Print("Input voltage: {0}", firstLightPower);
+                Debug.Print("Input voltage: {0}", voltage);
                 Debug.Print("Could not find first light");
 
                 ErrorMessages.Clear();
                 ErrorMessages.Add("Could not find first light.");
+
+                firstLightVoltage.Text = $"Resp: {String.Format("{0:0.00}", ((voltage * 0.596) - 0.006) / output.Fiber_Power)}";
+
                 errorList.ItemsSource = ErrorMessages;
                 errorPanel.Visibility = Visibility.Visible;
-                AlignmentButton.Visibility = Visibility.Collapsed;
-
+                AlignmentButton.Visibility = Visibility.Visible;
                 endJobButton.Visibility = Visibility.Visible;
+
+                AlignmentButton.Visibility = Visibility.Collapsed;
                 nextDeviceButton.Visibility = Visibility.Visible;
-                firstLightFail = true;
 
                 retryPanel.Visibility = Visibility.Visible;
 
                 return;
             }
 
-            ErrorMessages.Clear();
+            int iterCount = 0;
+            double resp = voltage * 0.596 - 0.006 / output.Fiber_Power;
 
-            firstLightVoltage.Text = $"Initial popCT: {String.Format("{0:0.00}", popCt * 100)}%";
-
-            if (popCt < d.POPCT_Min)
+            if (resp < rosa.Resp_Min)
             {
-                CancellationToken ct = tokenSource2.Token;
-
                 AlignmentButton.Visibility = Visibility.Collapsed;
+
                 progressPanel.Visibility = Visibility.Visible;
                 w.IsHitTestVisible = false;
 
-                var task = Task.Run(() =>
+                var t = Task.Run(() =>
                 {
-                    while (iterCount < 3 && popCt < 0.72)
+                    while (iterCount < 3 && resp < 0.41)
                     {
-                        firstLightPower = Instruments.instance.GetThorlabsPower();
-                        Debug.Print($"Input power: {firstLightPower/Instruments.instance.alignmentPowerCalibration}");
 
                         if (iterCount == 0)
                         {
-                            Instruments.instance.FindCentroid1(firstLightPower * 0.85, 0.001);
+                            Instruments.instance.FindCentroidRosa1(voltage * 0.85, 0.0015);
                         }
-                        
+
                         if (iterCount == 1)
                         {
-                            Instruments.instance.FindCentroid2(firstLightPower * 0.85, 0.0005);
+                            Instruments.instance.FindCentroidRosa2(voltage * 0.95, 0.001);
                         }
 
                         if (iterCount == 2)
                         {
-                            Instruments.instance.FindCentroid3(firstLightPower * 0.85, 0.00025);
+                            Instruments.instance.FindCentroidRosa3(voltage * 0.95, 0.00025);
                         }
-                       
-                        var powerAfterAlignment = Instruments.instance.GetThorlabsPower();
-                        Debug.Print("Power after alignment: {0}", powerAfterAlignment/Instruments.instance.alignmentPowerCalibration);
 
-                        pFC = powerAfterAlignment / Instruments.instance.alignmentPowerCalibration;
-                        popCt = pFC / o.P_TO;
+                        var voltageAfterAlignment = Instruments.instance.GetAerotechAnalogVoltage();
+                        firstLightVoltage.Text = $"Resp. after alignment: {String.Format("{0:0.00}", (((voltageAfterAlignment * 0.596) - 0.006) / output.Fiber_Power))}";
 
-                        Debug.Print($"Iteration {iterCount} popCT: {popCt}");
+                        var currentAfterAlignment = (voltageAfterAlignment * 0.596) - 0.006;
+                        var responsivityAfterAlignment = currentAfterAlignment / output.Fiber_Power;
+
                         iterCount++;
+
+                        resp = responsivityAfterAlignment;
                     }
                 });
 
-                await task;
+                await t;
 
                 w.IsHitTestVisible = true;
                 progressPanel.Visibility = Visibility.Collapsed;
-                AlignmentButton.Visibility = Visibility.Visible;
 
-                o.P_FC = pFC;
-                o.POPCT = popCt;
-
-                if (o.POPCT < d.POPCT_Min)
+                if (resp < rosa.Resp_Min) // get min responsivity from device
                 {
-                    ErrorMessages.Add("POPCT < POPCT_MIN");
-                    failedMessage.Visibility = Visibility.Visible;
-                    successMessage.Visibility = Visibility.Collapsed;
+                    ErrorMessages.Add($"Responsivity is too low:");
                 }
 
-                if (o.POPCT > 0.85)
+                if (resp > 0.65)
                 {
-                    ErrorMessages.Add("POPCT > Max Possible");
-                    failedMessage.Visibility = Visibility.Visible;
-                    successMessage.Visibility = Visibility.Collapsed;
+                    ErrorMessages.Add($"Restest Fiber Power. Resp is too high: {String.Format("{0:0.00}", (resp))}");
+                    GoToStartButton.Visibility = Visibility.Visible;
+                }
+
+                if (ErrorMessages.Count == 0)
+                {
+                    output.Resp = resp;
+                    stepSuccessUiUpdate();
+                }
+                else
+                {
+                    output.Resp = resp;
+                    stepErrorUiUpdate();
                 }
             }
-
-            if (ErrorMessages.Count == 0) 
-            {
-                stepSuccessUiUpdate();
-            }
-            else
-            {
-                stepErrorUiUpdate();
-            }
-
-            firstLightVoltage.Text = $"Final popCT = {String.Format("{0:0.00}", getTosaPopCT() * 100)}%";
         }
 
         private void Next_Device_Click(object sender, RoutedEventArgs e)
@@ -239,7 +229,7 @@ namespace AlignmentStation
             var unitNumber = currentOutput.Unit_Number;
             var op = currentOutput.Operator;
 
-            w.output = new TOSAOutput
+            w.output = new ROSAOutput
             {
                 Part_Number = w.device.Part_Number,
                 Passed = false,
@@ -248,7 +238,7 @@ namespace AlignmentStation
                 Unit_Number = unitNumber + 1
             };
 
-            NavigationService.Navigate(new Step1());
+            NavigationService.Navigate(new RosaStep1());
         }
 
         private void Quit_Button_Click(object sender, RoutedEventArgs e)
@@ -262,10 +252,10 @@ namespace AlignmentStation
             }
         }
 
-        private async void retryFirstLightButton_Click(object sender, RoutedEventArgs e)
+        private void retryFirstLightButton_Click(object sender, RoutedEventArgs e)
         {
-            var pow = Instruments.instance.GetThorlabsPower();
-            var found = displayFirstLightErrors(pow, tosaFirstLightThreshold);
+            var pow = Instruments.instance.GetAerotechAnalogVoltage();
+            var found = displayFirstLightErrors(pow, rosaFirstLightThreshold);
 
             if (found) return;
 
@@ -279,36 +269,23 @@ namespace AlignmentStation
 
             var t = Task.Run(() =>
             {
-                Instruments.instance.FindFirstLight(false);
+                Instruments.instance.FindFirstLightROSA();
             });
 
-            await t;
-
-            progressPanel.Visibility = Visibility.Collapsed;
             w.IsHitTestVisible = true;
+            progressPanel.Visibility = Visibility.Collapsed;
 
             Mouse.OverrideCursor = Cursors.Arrow;
-           
-            // displayFirstLightErrors should return false here
-            var firstLightPower = Instruments.instance.GetThorlabsPower();
-            displayFirstLightErrors(firstLightPower, tosaFirstLightThreshold);
-        }
 
-        private double getTosaPopCT()
-        {
-            var w = Window.GetWindow(this) as MainWindow;
-            var output = w.output as TOSAOutput;
-
-             
-            double pow = Instruments.instance.GetThorlabsPower();
-            double pFC = pow / Instruments.instance.alignmentPowerCalibration;
-
-            return pFC / output.P_TO;
+            var voltage = Instruments.instance.GetAerotechAnalogVoltage();
+            displayFirstLightErrors(voltage, rosaFirstLightThreshold);
         }
 
         private bool displayFirstLightErrors(double voltage, double threshold)
         {
-            firstLightVoltage.Text = $"Input voltage: {voltage}";
+            var w = Window.GetWindow(this) as MainWindow;
+            var output = w.output as ROSAOutput;
+            firstLightVoltage.Text = $"Resp. after alignment: {String.Format("{0:0.00}", (((voltage * 0.596) - 0.006) / output.Fiber_Power))}";
 
             if (voltage < threshold)
             {
@@ -336,13 +313,12 @@ namespace AlignmentStation
         private void endJobButton_Click(object sender, RoutedEventArgs e)
         {
             var w = Window.GetWindow(this) as MainWindow;
-
             var currentOutput = w.output;
             var job = currentOutput.Job_Number;
             var unitNumber = currentOutput.Unit_Number;
             var op = currentOutput.Operator;
 
-            w.output = new TOSAOutput
+            w.output = new ROSAOutput
             {
                 Part_Number = w.device.Part_Number,
                 Passed = false,
@@ -354,10 +330,10 @@ namespace AlignmentStation
             NavigationService.Navigate(new HomePage());
         }
 
-      //  private void cancelAlignmentButton_Click(object sender, RoutedEventArgs e)
-      //  {
-      //      Instruments.instance.AerotechAbort();
-      //      tokenSource2.Cancel();
-      //  }
+  //      private void cancelAlignmentButton_Click(object sender, RoutedEventArgs e)
+  //      {
+  //          Instruments.instance.AerotechAbort();
+  //          tokenSource2.Cancel();
+ //       }
     }
 }

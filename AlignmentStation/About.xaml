@@ -41,7 +41,7 @@
                 TextAlignment="Center"
                 Margin="0,0,0,50"
                 FontSize="20"
-                >Alignment Station v1.0.0</TextBlock>
+                >COTSWORKS Alignment Station v1.0.0</TextBlock>
             <TextBlock TextAlignment="Center">Created by Dallas Quantum Devices</TextBlock>
         </StackPanel>
     </Grid>

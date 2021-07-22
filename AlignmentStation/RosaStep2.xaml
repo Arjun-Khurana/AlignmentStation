@@ -1,4 +1,4 @@
-﻿<Page x:Class="AlignmentStation.Step2"
+﻿<Page x:Class="AlignmentStation.RosaStep2"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,7 +8,7 @@
       Loaded="OnLoad"
       d:Background="{StaticResource DarkBg}"
       d:DesignHeight="500" d:DesignWidth="450"
-      Title="Step2">
+      Title="ROSA Step2">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -18,7 +18,6 @@
 
         <StackPanel Grid.Row="0" HorizontalAlignment="Right">
             <Button
-                x:Name="QuitButton"
                 Click="Quit_Button_Click"
                 Content="Quit test" 
                 Style="{DynamicResource MinimalButton}"></Button> 
@@ -29,7 +28,7 @@
                 FontSize="26"
                 FontWeight="Light"
                 Margin="0,0,0,15" 
-                Text="TOSA Step 2 - Active Alignment"></TextBlock>
+                Text="ROSA Step 2 - Active Alignment"></TextBlock>
 
             <Border 
                 Padding="10"
@@ -75,13 +74,7 @@
                         Text="(4) Enure correct notch orientation and push down">
                     </TextBlock>
 
-                    <TextBlock
-                        x:Name="fifthInstruction"
-                        Margin="0,0,0,0"
-                        TextWrapping="Wrap"
-                        FontSize="15"
-                        Text="(5) Remove TO Holder and Insert Fiber Holder into Detector Fixture">
-                    </TextBlock>
+
                 </StackPanel>
             </Border>
 
@@ -178,6 +171,17 @@
                     >
                 </Button>
 
+                 <Button
+                    x:Name="GoToStartButton"
+                    HorizontalAlignment="Left"
+                    Visibility="Collapsed"
+                    Click="GoTo_Start_Click"
+                    Content="GoTo Start"
+                    Margin="0,0,10,0" 
+                    VerticalAlignment="Center"
+                    >
+                </Button>
+                
                 <Button
                     x:Name="nextDeviceButton"
                     HorizontalAlignment="Left"
@@ -192,13 +196,13 @@
 
             <StackPanel
                 Visibility="Collapsed"
-                Margin="0,20,0,0"
+                Margin="0,10,0,0"
                 x:Name="progressPanel"
                 HorizontalAlignment="Left"
                 Orientation="Vertical">
                 <ProgressBar 
                     IsIndeterminate="True" 
-                    Margin="0,0,25,10"
+                    Margin="0,0,15,10"
                     Width="200"
                     Height="10">
                 </ProgressBar>

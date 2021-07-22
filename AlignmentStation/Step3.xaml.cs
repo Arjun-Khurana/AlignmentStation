@@ -38,56 +38,56 @@ namespace AlignmentStation
             }
 
             var w = Window.GetWindow(this) as MainWindow;
-            if (w.output is ROSAOutput)
-            {
-                RosaStep3();
-            }
-            else
+         //   if (w.output is ROSAOutput)
+          //  {
+         //       RosaStep3();
+         //   }
+         //   else
             {
                 TosaStep3();
             }
         }
 
-        private void RosaStep3()
-        {
-            var w = Window.GetWindow(this) as MainWindow;
-            var o = w.output as ROSAOutput;
-            var d = w.device as ROSADevice;
+     //   private void RosaStep3()
+     //   {
+     //       var w = Window.GetWindow(this) as MainWindow;
+     //       var o = w.output as ROSAOutput;
+      //      var d = w.device as ROSADevice;
 
-            var voltage = Instruments.instance.GetAerotechAnalogVoltage();
-            var current = (voltage * 0.596) - 0.006;
-            var responsivity = current / o.Fiber_Power;
+      //      var voltage = Instruments.instance.GetAerotechAnalogVoltage();
+      //      var current = (voltage * 0.596) - 0.006;
+      //      var responsivity = current / o.Fiber_Power;
 
-            var resp_shift = 10 * Math.Log(o.Resp / responsivity);
+      //      var resp_shift = 10 * Math.Log(o.Resp / responsivity);
 
-            o.Resp_Post_Cure = responsivity;
-            o.Resp_Shift = resp_shift;
+      //      o.Resp_Post_Cure = responsivity;
+     //       o.Resp_Shift = resp_shift;
 
-            if (resp_shift > 1 || responsivity < d.Resp_Min)
-            {
-                ErrorMessages.Add($"Responsivity: {responsivity}, shift: {resp_shift}");
-                successMessage.Visibility = Visibility.Collapsed;
-                errorList.ItemsSource = ErrorMessages;
-                errorPanel.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                o.Passed = true;
-                successMessage.Visibility = Visibility.Visible;
-                errorPanel.Visibility = Visibility.Collapsed;
-            }
+       //     if (resp_shift > 1 || responsivity < d.Resp_Min)
+      //      {
+      //          ErrorMessages.Add($"Responsivity: {responsivity}, shift: {resp_shift}");
+      //          successMessage.Visibility = Visibility.Collapsed;
+       //         errorList.ItemsSource = ErrorMessages;
+       //         errorPanel.Visibility = Visibility.Visible;
+       //     }
+       //     else
+        //    {
+        //        o.Passed = true;
+       //         successMessage.Visibility = Visibility.Visible;
+       //         errorPanel.Visibility = Visibility.Collapsed;
+       //     }
 
-            MainWindow.Conn.SaveROSAOutput(o);
+       //     MainWindow.Conn.SaveROSAOutput(o);
 
-            if (w.ReferenceMode)
-            {
-                SaveRefUnits();
-            }
+       //     if (w.ReferenceMode)
+        //    {
+       //         SaveRefUnits();
+       //     }
 
-            testComplete = true;
-            TestButton.Content = "End job";
-            nextDeviceButton.Visibility = Visibility.Visible;
-        }
+       //     testComplete = true;
+       //     TestButton.Content = "End job";
+       //     nextDeviceButton.Visibility = Visibility.Visible;
+    //    }
 
         private void TosaStep3()
         {
@@ -106,14 +106,19 @@ namespace AlignmentStation
             if (popCT >= d.POPCT_Min) 
             {
                 o.Passed = true;
+                Finalresult.Visibility = Visibility.Visible;
+                Finalresulttext.Text = $"Final Coupling Eff: {String.Format("{0:0.00}", (popCT*100))}";
+                Finalresulttext2.Text = $"Shift: {String.Format("{0:0.00}",popCT_Shift)}";
                 successMessage.Visibility = Visibility.Visible;
                 errorPanel.Visibility = Visibility.Collapsed;
             }
             else
             {
                 failedMessage.Visibility = Visibility.Visible;
-
-                ErrorMessages.Add($"popCT < {d.POPCT_Min}");
+                Finalresult.Visibility = Visibility.Visible;
+                Finalresulttext.Text = $"Final Coupling Eff: {String.Format("{0:0.00}", (popCT * 100))}%";
+                Finalresulttext2.Text = $"Shift: {String.Format("{0:0.00}", popCT_Shift)}dB";
+                ErrorMessages.Add($"Final Coupling Eff < {d.POPCT_Min}");
                 errorPanel.Visibility = Visibility.Visible;
                 errorList.ItemsSource = ErrorMessages;
             }
@@ -152,23 +157,23 @@ namespace AlignmentStation
                     Unit_Number = currentOutput.Unit_Number + 1
                 };
             }
-            else
-            {
-                var d = w.device as ROSADevice;
-                var currentOutput = w.output as ROSAOutput;
-                var fib = currentOutput.Fiber_Power;
-                var job = currentOutput.Job_Number;
+           // else
+          //  {
+           //     var d = w.device as ROSADevice;
+           //     var currentOutput = w.output as ROSAOutput;
+           //     var fib = currentOutput.Fiber_Power;
+            //    var job = currentOutput.Job_Number;
 
-                w.output = new ROSAOutput 
-                {
-                    Part_Number = d.Part_Number,
-                    Passed = false,
-                    Job_Number = job,
-                    Operator = currentOutput.Operator,
-                    Unit_Number = currentOutput.Unit_Number + 1,
-                    Fiber_Power = fib
-                };
-            }
+           //     w.output = new ROSAOutput 
+            //    {
+            //        Part_Number = d.Part_Number,
+            //        Passed = false,
+           //         Job_Number = job,
+            //        Operator = currentOutput.Operator,
+            //        Unit_Number = currentOutput.Unit_Number + 1,
+           //         Fiber_Power = fib
+           //     };
+          //  }
 
             NavigationService.Navigate(new Step1());
         }
@@ -192,7 +197,7 @@ namespace AlignmentStation
                 X = position.X,
                 Y = position.Y,
                 Z = position.Z,
-                Job_Number = o.Job_Number,
+             //   Job_Number = o.Job_Number,
                 Part_Number = o.Part_Number
             };
 

@@ -25,6 +25,7 @@ namespace AlignmentStation
         public RosaStep0()
         {
             InitializeComponent();
+            Instruments.instance.SetArroyoLaserOff();
         }
 
         void OnLoad(object sender, RoutedEventArgs e)
@@ -53,11 +54,12 @@ namespace AlignmentStation
                 Instruments.instance.OpenRelay(4);
             }
 
+            Instruments.instance.SetArroyoLaserOff();
             var power = Instruments.instance.GetThorlabsPower();
             Debug.Print($"Fiber power: {power}");
             output.Fiber_Power = 1000 * power / Instruments.instance.alignmentPowerCalibration;
 
-            powerText.Text = $"Fiber power: {power}";
+            powerText.Text = $"Fiber power: {String.Format("{0:0.00}",(1000 * power / Instruments.instance.alignmentPowerCalibration))}mW";
             successMessage.Visibility = Visibility.Visible;
             powerText.Visibility = Visibility.Visible;
 
@@ -67,7 +69,7 @@ namespace AlignmentStation
 
         private void Next_Step_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService.Navigate(new Step1());
+            NavigationService.Navigate(new RosaStep1());
         }
     }
 }
