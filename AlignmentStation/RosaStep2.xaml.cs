@@ -120,6 +120,8 @@ namespace AlignmentStation
                     Instruments.instance.FindFirstLightROSA();
                 });
 
+                await t;
+
                 w.IsHitTestVisible = true;
                 progressPanel.Visibility = Visibility.Collapsed;
 
@@ -181,7 +183,6 @@ namespace AlignmentStation
                         }
 
                         var voltageAfterAlignment = Instruments.instance.GetAerotechAnalogVoltage();
-                        firstLightVoltage.Text = $"Resp. after alignment: {String.Format("{0:0.00}", (((voltageAfterAlignment * 0.596) - 0.006) / output.Fiber_Power))}";
 
                         var currentAfterAlignment = (voltageAfterAlignment * 0.596) - 0.006;
                         var responsivityAfterAlignment = currentAfterAlignment / output.Fiber_Power;
@@ -252,7 +253,7 @@ namespace AlignmentStation
             }
         }
 
-        private void retryFirstLightButton_Click(object sender, RoutedEventArgs e)
+        private async void retryFirstLightButton_Click(object sender, RoutedEventArgs e)
         {
             var pow = Instruments.instance.GetAerotechAnalogVoltage();
             var found = displayFirstLightErrors(pow, rosaFirstLightThreshold);
@@ -271,6 +272,8 @@ namespace AlignmentStation
             {
                 Instruments.instance.FindFirstLightROSA();
             });
+
+            await t;
 
             w.IsHitTestVisible = true;
             progressPanel.Visibility = Visibility.Collapsed;
@@ -329,11 +332,5 @@ namespace AlignmentStation
 
             NavigationService.Navigate(new HomePage());
         }
-
-  //      private void cancelAlignmentButton_Click(object sender, RoutedEventArgs e)
-  //      {
-  //          Instruments.instance.AerotechAbort();
-  //          tokenSource2.Cancel();
- //       }
     }
 }

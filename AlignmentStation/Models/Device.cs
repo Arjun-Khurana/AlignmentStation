@@ -81,7 +81,6 @@ namespace AlignmentStation.Models
         public double Y { get; set; }
         public double Z { get; set; }
         public string Part_Number { get; set; }
-    //    public string Job_Number { get; set; }
     }
 
     public class CalibrationLocation

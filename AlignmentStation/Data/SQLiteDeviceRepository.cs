@@ -321,7 +321,6 @@ namespace AlignmentStation.Data
         public ReferenceUnits GetTOSAReferenceUnits(TOSAOutput output)
         {
             var part = output.Part_Number;
-         //   var job = output.Job_Number;
 
             using (var conn = SimpleDbConnection())
             {
@@ -339,7 +338,6 @@ namespace AlignmentStation.Data
         public ReferenceUnits GetROSAReferenceUnits(ROSAOutput output)
         {
             var part = output.Part_Number;
-         //   var job = output.Job_Number;
 
             using (var conn = SimpleDbConnection())
             {
@@ -371,8 +369,7 @@ namespace AlignmentStation.Data
                     X = units.X,
                     Y = units.Y,
                     Z = units.Z,
-                    Part_Number = units.Part_Number,
-            //        Job_Number = units.Job_Number
+                    Part_Number = units.Part_Number
                 });
             }
         }
@@ -394,8 +391,7 @@ namespace AlignmentStation.Data
                     X = units.X,
                     Y = units.Y,
                     Z = units.Z,
-                    Part_Number = units.Part_Number,
-             //       Job_Number = units.Job_Number
+                    Part_Number = units.Part_Number
                 });
             }
         }

@@ -141,39 +141,20 @@ namespace AlignmentStation
 
         private void Next_Device_Click(object sender, RoutedEventArgs e)
         {
-            var w = MainWindow.GetWindow(this) as MainWindow;
-            if (w.device is TOSADevice)
+            var w = Window.GetWindow(this) as MainWindow;
+
+            var d = w.device as TOSADevice;
+            var currentOutput = w.output as TOSAOutput;
+            var job = currentOutput.Job_Number;
+
+            w.output = new TOSAOutput
             {
-                var d = w.device as TOSADevice;
-                var currentOutput = w.output as TOSAOutput;
-                var job = currentOutput.Job_Number;
-
-                w.output = new TOSAOutput
-                {
-                    Part_Number = d.Part_Number,
-                    Passed = false,
-                    Job_Number = job,
-                    Operator = currentOutput.Operator,
-                    Unit_Number = currentOutput.Unit_Number + 1
-                };
-            }
-           // else
-          //  {
-           //     var d = w.device as ROSADevice;
-           //     var currentOutput = w.output as ROSAOutput;
-           //     var fib = currentOutput.Fiber_Power;
-            //    var job = currentOutput.Job_Number;
-
-           //     w.output = new ROSAOutput 
-            //    {
-            //        Part_Number = d.Part_Number,
-            //        Passed = false,
-           //         Job_Number = job,
-            //        Operator = currentOutput.Operator,
-            //        Unit_Number = currentOutput.Unit_Number + 1,
-           //         Fiber_Power = fib
-           //     };
-          //  }
+                Part_Number = d.Part_Number,
+                Passed = false,
+                Job_Number = job,
+                Operator = currentOutput.Operator,
+                Unit_Number = currentOutput.Unit_Number + 1
+            };
 
             NavigationService.Navigate(new Step1());
         }
@@ -197,20 +178,12 @@ namespace AlignmentStation
                 X = position.X,
                 Y = position.Y,
                 Z = position.Z,
-             //   Job_Number = o.Job_Number,
                 Part_Number = o.Part_Number
             };
 
-            if (o is TOSAOutput)
-            {
-                MainWindow.Conn.SaveTOSAReferenceUnits(refUnits);
-            }
-            else
-            {
-                MainWindow.Conn.SaveROSAReferenceUnits(refUnits);
-            }
-
+            MainWindow.Conn.SaveTOSAReferenceUnits(refUnits);
         }
+
         private void Quit_Button_Click(object sender, RoutedEventArgs e)
         {
             MessageBoxResult messageBoxResult = 

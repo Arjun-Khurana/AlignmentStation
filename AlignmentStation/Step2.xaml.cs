@@ -353,11 +353,5 @@ namespace AlignmentStation
 
             NavigationService.Navigate(new HomePage());
         }
-
-      //  private void cancelAlignmentButton_Click(object sender, RoutedEventArgs e)
-      //  {
-      //      Instruments.instance.AerotechAbort();
-      //      tokenSource2.Cancel();
-      //  }
     }
 }
